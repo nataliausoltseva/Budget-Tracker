@@ -18,5 +18,9 @@ export const incomePeriods: IncomePeriod[] = [
     {
         label: "Month",
         value: "month",
+    },
+    {
+        label: "Year",
+        value: "year",
     }
 ];

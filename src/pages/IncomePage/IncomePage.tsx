@@ -1,17 +1,51 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { NativeSyntheticEvent, SafeAreaView, StyleSheet, Text, TextInput, TextInputChangeEventData, View } from 'react-native';
 import { incomePeriods } from '../../constants';
 import { ApplicationProvider, CheckBox, IndexPath, Input, Layout, Select, SelectItem } from '@ui-kitten/components';
+import KiwiSaverForm from './components/KiwiSaverForm';
+import StudentLoanForm from './components/StudentLoanForm';
+import SecondaryIncomeForm from './components/SecondaryIncomeForm';
+import useIncome from './hooks/useIncome';
 
 const IncomePage = () => {
     const [selectedIndex, setSelectedIndex] = useState<IndexPath | IndexPath[]>(new IndexPath(0));
-    const [incomeAmount, setIncomeAmount] = useState("");
-    const [hasKiwiSaver, setHasKiwiSaver] = useState(false);
-    const [hasStudnetLoan, setHasStudentLoan] = useState(false);
-    const [hasSecondaryIncome, setHasSecondaryIncome] = useState(false);
+    const primaryIncomeHolder = useRef("");
+
+    const {
+        primaryIncome,
+        incomePeriod,
+        hasKiwiSaver,
+        hasSecondaryIncome,
+        hasStudentLoan,
+        kiwiSaverOption,
+        isKiwiSaverCustom,
+        loanRate,
+        loanThreshold,
+        secondaryIncome,
+        onPrimaryIncomeChange,
+        onIncomePeriodChange,
+        setHasSecondaryIncome,
+        setHasStudentLoan,
+        setHasKiwiSaver,
+        setKiwiSaverOption,
+        setIsKiwiSaverCustom,
+        setLoanRate,
+        setLoanThreshold,
+        setSecondaryIncome,
+    } = useIncome()
 
     const onIncomeAmountChange = (e: NativeSyntheticEvent<TextInputChangeEventData>) => {
-        setIncomeAmount(e.nativeEvent.text);
+        primaryIncomeHolder.current = e.nativeEvent.text || "";
+
+        if (primaryIncomeHolder.current) {
+            onPrimaryIncomeChange(parseFloat(primaryIncomeHolder.current));
+        } else if (!e.nativeEvent.text) {
+            onPrimaryIncomeChange(0);
+        }
+    }
+
+    const onPreiodSelect = (index: IndexPath | IndexPath[]) => {
+        onIncomePeriodChange(incomePeriods[index.row]);
     }
 
     return (
@@ -20,7 +54,7 @@ const IncomePage = () => {
             <View style={styles.incomeView}>
                 <Input
                     placeholder={"Income amount"}
-                    value={incomeAmount}
+                    value={primaryIncomeHolder.current}
                     onChange={onIncomeAmountChange}
                     style={styles.input}
                     {...{
@@ -31,8 +65,8 @@ const IncomePage = () => {
                 <Layout style={styles.container} level='1'>
                     <Select
                         selectedIndex={selectedIndex}
-                        onSelect={index => setSelectedIndex(index)}
-                        value={incomePeriods[selectedIndex.row].label}
+                        onSelect={onPreiodSelect}
+                        value={incomePeriod.label}
                     >
                         {incomePeriods.map((period: IncomePeriod) => (
                             <SelectItem title={period.label} key={period.value} />
@@ -46,18 +80,40 @@ const IncomePage = () => {
             >
                 KiwiSaver
             </CheckBox>
+            {hasKiwiSaver && (
+                <KiwiSaverForm
+                    option={kiwiSaverOption}
+                    setKiwiSaverOption={setKiwiSaverOption}
+                    isCustom={isKiwiSaverCustom}
+                    setIsCustom={setIsKiwiSaverCustom}
+                />
+            )}
             <CheckBox
-                checked={hasStudnetLoan}
+                checked={hasStudentLoan}
                 onChange={nextChecked => setHasStudentLoan(nextChecked)}
             >
                 Student Loan
             </CheckBox>
+            {hasStudentLoan && (
+                <StudentLoanForm
+                    rate={loanRate}
+                    threshold={loanThreshold}
+                    setRate={setLoanRate}
+                    setThreshold={setLoanThreshold}
+                />
+            )}
             <CheckBox
                 checked={hasSecondaryIncome}
                 onChange={nextChecked => setHasSecondaryIncome(nextChecked)}
             >
-                Student Loan
+                Secondary Income
             </CheckBox>
+            {hasSecondaryIncome && (
+                <SecondaryIncomeForm
+                    income={secondaryIncome}
+                    setIncome={setSecondaryIncome}
+                />
+            )}
 
         </SafeAreaView>
     )
