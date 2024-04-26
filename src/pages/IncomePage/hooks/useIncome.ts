@@ -29,6 +29,12 @@ export const TAX_THRESHOLDS: TaxThreshold[] = [
     }
 ];
 
+export const ACC = {
+    levy: 1.60,
+    incomeCap: 142283,
+    minIncome: 44250
+}
+
 const useIncome = () => {
     const [hasKiwiSaver, setHasKiwiSaver] = useState(false);
     const [hasStudentLoan, setHasStudentLoan] = useState(false);
@@ -41,12 +47,15 @@ const useIncome = () => {
     const [kiwiSaverOption, setKiwiSaverOption] = useState(3);
     const [isKiwiSaverCustom, setIsKiwiSaverCustom] = useState(false);
 
-    const [loanRate, setLoanRate] = useState(12)
-    const [loanThreshold, setLoanThreshold] = useState(24128);
+    const [studentLoanRate, setStudentLoanRate] = useState(12)
+    const [studentLoanThreshold, setStudentLoanThreshold] = useState(24128);
     const [secondaryIncome, setSecondaryIncome] = useState(0);
 
     const [yearGrossPay, setYearlyGrossPay] = useState(0);
     const [yearPaye, setYearPaye] = useState(0);
+    const [yearAcc, setYearAcc] = useState(0);
+    const [yearKiwiSaver, setYearKiwiSaver] = useState(0);
+    const [yearStudentLoan, setYearStudentLoan] = useState(0);
 
     const onPrimaryIncomeChange = (income: number) => {
         setPrimaryIncome(income);
@@ -70,6 +79,33 @@ const useIncome = () => {
         }
     }
 
+    const calculateYearKiwiSaver = (income: number, rate: number) => {
+        setYearKiwiSaver(income * rate / 100);
+    }
+
+    const onKiwiSaverChange = (rate: number) => {
+        setKiwiSaverOption(rate);
+        calculateYearKiwiSaver(primaryIncome, rate);
+    }
+
+    const calculateYearStudentLoan = (rate: number, threshold: number, income: number) => {
+        if (income >= threshold) {
+            setYearStudentLoan(income * rate / 100);
+        }
+    }
+
+    const onStudentLoanChange = (rate: number | null, threshold: number | null) => {
+        if (rate !== null) {
+            setStudentLoanRate(rate);
+        }
+
+        if (threshold !== null) {
+            setStudentLoanThreshold(threshold);
+        }
+
+        calculateYearStudentLoan(rate || studentLoanRate, threshold || studentLoanThreshold, yearGrossPay);
+    }
+
     const calculatePeriod = (income: number) => {
         switch (true) {
             case income === 0:
@@ -87,18 +123,24 @@ const useIncome = () => {
 
     const calculateYearlyPaye = (income: number) => {
         let previousMax = 0;
-        let leftToCalculate = income;
+        let isDone = false;
         let paidTax = 0;
-        // NOT WORKING CORRECTLY
         TAX_THRESHOLDS.forEach((threshold: TaxThreshold) => {
-            if (previousMax >= threshold.min && leftToCalculate > 0) {
-                const amountToTax = Math.max(income - threshold.max, 0);
-                const taxToPay = amountToTax > 0 ? amountToTax * threshold.rate / 100 : 0;
+            if (!isDone) {
+                const amountToTax = previousMax === 0 ?
+                    threshold.max :
+                    (income > threshold.max ? threshold.max - threshold.min : income - threshold.min);
+                const taxToPay = amountToTax * threshold.rate / 100;
                 paidTax += taxToPay;
-                leftToCalculate = Math.max(leftToCalculate - amountToTax, 0);
-                previousMax = threshold.max + 1;
+                previousMax = threshold.max;
+                isDone = income < threshold.max;
             }
         });
+        setYearPaye(paidTax);
+    }
+
+    const calculcateYearAcc = (income: number) => {
+        setYearAcc(Math.max(Math.min(ACC.minIncome), ACC.incomeCap) / 100 * ACC.levy);
     }
 
     const calculateYearGrossPay = (income: number, periodValue: string) => {
@@ -120,9 +162,11 @@ const useIncome = () => {
                 newIncome = income;
                 break;
         }
-        console.log('Year income', newIncome)
         setYearlyGrossPay(newIncome);
         calculateYearlyPaye(newIncome);
+        calculcateYearAcc(newIncome);
+        calculateYearKiwiSaver(newIncome, kiwiSaverOption);
+        calculateYearStudentLoan(studentLoanRate, studentLoanThreshold, newIncome);
     }
 
     return {
@@ -132,19 +176,23 @@ const useIncome = () => {
         hasStudentLoan,
         hasSecondaryIncome,
         kiwiSaverOption,
-        loanRate,
-        loanThreshold,
+        studentLoanRate,
+        studentLoanThreshold,
         secondaryIncome,
         isKiwiSaverCustom,
         yearGrossPay,
+        yearPaye,
+        yearAcc,
+        yearKiwiSaver,
+        yearStudentLoan,
         onPrimaryIncomeChange,
         onIncomePeriodChange,
+        onKiwiSaverChange,
+        onStudentLoanChange,
         setHasKiwiSaver,
         setHasStudentLoan,
         setHasSecondaryIncome,
         setKiwiSaverOption,
-        setLoanRate,
-        setLoanThreshold,
         setSecondaryIncome,
         setIsKiwiSaverCustom,
     }

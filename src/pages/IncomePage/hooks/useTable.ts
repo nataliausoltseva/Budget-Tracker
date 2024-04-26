@@ -1,12 +1,23 @@
 import { incomePeriods } from "../../../constants";
 
 type Props = {
-    yearGrossPay: number
-}
+    yearGrossPay: number,
+    yearPaye: number,
+    yearAcc: number,
+    yearKiwiSaver: number,
+    yearStudentLoan: number
+};
+
+type RowIndicator = {
+    label: string,
+    key: string,
+    values: number[]
+};
 
 export const HEADERS = ["", "Hour", "Week", "Fortnight", "Month", "Year"];
 
-const useTable = ({ yearGrossPay }: Props) => {
+const useTable = ({ yearGrossPay, yearPaye, yearAcc, yearKiwiSaver, yearStudentLoan }: Props) => {
+
     const getGrossPay = () => {
         const values: number[] = [];
         if (yearGrossPay > 0) {
@@ -34,69 +45,88 @@ const useTable = ({ yearGrossPay }: Props) => {
         return values;
     }
 
-    const calculateYearlyPayer = () => {
-
-    }
-
-    const getPaye = () => {
-        const values: number[] = [];
+    const calculateValues = (rows: RowIndicator[]) => {
         if (yearGrossPay > 0) {
-            const yearlyPaye = calculateYearlyPayer();
             incomePeriods.forEach((period: IncomePeriod) => {
                 switch (period.value) {
                     case "hour":
-                        values.push(yearGrossPay / 40 / 52);
+                        rows[0].values.push(yearGrossPay / 40 / 52);
+                        rows[1].values.push(yearPaye / 40 / 52);
+                        rows[2].values.push(yearAcc / 40 / 52);
+                        rows[3].values.push(yearKiwiSaver / 40 / 52);
+                        rows[4].values.push(yearStudentLoan / 40 / 52);
                         break;
                     case "week":
-                        values.push(yearGrossPay / 52);
+                        rows[0].values.push(yearGrossPay / 52);
+                        rows[1].values.push(yearPaye / 52);
+                        rows[2].values.push(yearAcc / 52);
+                        rows[3].values.push(yearKiwiSaver / 52);
+                        rows[4].values.push(yearStudentLoan / 52);
                         break;
-                    case "fortnightly":
-                        values.push(yearGrossPay / 26);
+                    case "fortnight":
+                        rows[0].values.push(yearGrossPay / 26);
+                        rows[1].values.push(yearPaye / 26);
+                        rows[2].values.push(yearAcc / 26);
+                        rows[3].values.push(yearKiwiSaver / 26);
+                        rows[4].values.push(yearStudentLoan / 26);
                         break;
-                    case "monthly":
-                        values.push(yearGrossPay / 12);
-                        break;
+                    case "month":
+                        rows[0].values.push(yearGrossPay / 12);
+                        rows[1].values.push(yearPaye / 12);
+                        rows[2].values.push(yearAcc / 12);
+                        rows[3].values.push(yearKiwiSaver / 12);
+                        rows[4].values.push(yearStudentLoan / 12); break;
                     default:
-                        values.push(yearGrossPay);
+                        rows[0].values.push(yearGrossPay);
+                        rows[1].values.push(yearPaye);
+                        rows[2].values.push(yearAcc);
+                        rows[3].values.push(yearKiwiSaver);
+                        rows[4].values.push(yearStudentLoan);
                         break;
                 }
             });
         }
 
-        return values;
+        return rows;
     }
 
 
-    const rowIndicators = [
-        // {
-        //     label: "Gross Pay",
-        //     values: getGrossPay()
-        // },
-        // {
-        //     lable: "PAYE",
-        //     values: getPaye()
-        // },
-        // {
-        //     label: "AСС",
-        //     values: getAcc()
-        // },
-        // {
-        //     label: "KiwiSaver",
-        //     values: getKiwiSaver()
-        // },
-        // {
-        //     label: "Student Loan",
-        //     values: getStudentLoan()
-        // },
-        // {
-        //     label: "Take Home Pay",
-        //     values: getTaeHomePay()
-        // }
-    ];
-
     const onCalculate = () => {
-        const newRows = [];
+        let rowIndicators: RowIndicator[] = [
+            {
+                label: "Gross Pay",
+                key: 'gross',
+                values: []
+            },
+            {
+                label: "PAYE",
+                key: 'paye',
+                values: []
+            },
+            {
+                label: "AСС",
+                key: 'acc',
+                values: []
+            },
+            {
+                label: "KiwiSaver",
+                key: 'kiwiSaver',
+                values: []
+            },
+            {
+                label: "Student Loan",
+                key: 'studentLoan',
+                values: []
+            },
+            {
+                label: "Take Home Pay",
+                key: 'takeHome',
+                values: []
+            }
+        ];
 
+        rowIndicators = calculateValues(rowIndicators);
+        console.log(rowIndicators);
     }
 
     return {

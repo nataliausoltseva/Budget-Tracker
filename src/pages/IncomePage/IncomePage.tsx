@@ -20,25 +20,28 @@ const IncomePage = () => {
         hasStudentLoan,
         kiwiSaverOption,
         isKiwiSaverCustom,
-        loanRate,
-        loanThreshold,
+        studentLoanRate,
+        studentLoanThreshold,
         secondaryIncome,
         yearGrossPay,
+        yearPaye,
+        yearAcc,
+        yearKiwiSaver,
+        yearStudentLoan,
         onPrimaryIncomeChange,
         onIncomePeriodChange,
+        onKiwiSaverChange,
+        onStudentLoanChange,
         setHasSecondaryIncome,
         setHasStudentLoan,
         setHasKiwiSaver,
-        setKiwiSaverOption,
         setIsKiwiSaverCustom,
-        setLoanRate,
-        setLoanThreshold,
         setSecondaryIncome,
     } = useIncome();
 
     const {
         onCalculate,
-    } = useTable({ yearGrossPay });
+    } = useTable({ yearGrossPay, yearPaye, yearAcc, yearKiwiSaver, yearStudentLoan });
 
     const onIncomeAmountChange = (e: NativeSyntheticEvent<TextInputChangeEventData>) => {
         primaryIncomeHolder.current = e.nativeEvent.text || "";
@@ -89,7 +92,7 @@ const IncomePage = () => {
             {hasKiwiSaver && (
                 <KiwiSaverForm
                     option={kiwiSaverOption}
-                    setKiwiSaverOption={setKiwiSaverOption}
+                    setKiwiSaverOption={onKiwiSaverChange}
                     isCustom={isKiwiSaverCustom}
                     setIsCustom={setIsKiwiSaverCustom}
                 />
@@ -102,10 +105,10 @@ const IncomePage = () => {
             </CheckBox>
             {hasStudentLoan && (
                 <StudentLoanForm
-                    rate={loanRate}
-                    threshold={loanThreshold}
-                    setRate={setLoanRate}
-                    setThreshold={setLoanThreshold}
+                    rate={studentLoanRate}
+                    threshold={studentLoanThreshold}
+                    setRate={(rate: number) => onStudentLoanChange(rate, null)}
+                    setThreshold={(threshold: number) => onStudentLoanChange(null, threshold)}
                 />
             )}
             <CheckBox
