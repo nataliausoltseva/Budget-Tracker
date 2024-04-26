@@ -1,11 +1,12 @@
 import React, { useRef, useState } from 'react';
-import { NativeSyntheticEvent, SafeAreaView, StyleSheet, Text, TextInput, TextInputChangeEventData, View } from 'react-native';
+import { FlatList, NativeSyntheticEvent, SafeAreaView, StyleSheet, Text, TextInput, TextInputChangeEventData, View } from 'react-native';
 import { incomePeriods } from '../../constants';
-import { ApplicationProvider, CheckBox, IndexPath, Input, Layout, Select, SelectItem } from '@ui-kitten/components';
+import { ApplicationProvider, Button, CheckBox, IndexPath, Input, Layout, List, ListItem, Select, SelectItem } from '@ui-kitten/components';
 import KiwiSaverForm from './components/KiwiSaverForm';
 import StudentLoanForm from './components/StudentLoanForm';
 import SecondaryIncomeForm from './components/SecondaryIncomeForm';
 import useIncome from './hooks/useIncome';
+import useTable from './hooks/useTable';
 
 const IncomePage = () => {
     const [selectedIndex, setSelectedIndex] = useState<IndexPath | IndexPath[]>(new IndexPath(0));
@@ -22,6 +23,7 @@ const IncomePage = () => {
         loanRate,
         loanThreshold,
         secondaryIncome,
+        yearGrossPay,
         onPrimaryIncomeChange,
         onIncomePeriodChange,
         setHasSecondaryIncome,
@@ -32,7 +34,11 @@ const IncomePage = () => {
         setLoanRate,
         setLoanThreshold,
         setSecondaryIncome,
-    } = useIncome()
+    } = useIncome();
+
+    const {
+        onCalculate,
+    } = useTable({ yearGrossPay });
 
     const onIncomeAmountChange = (e: NativeSyntheticEvent<TextInputChangeEventData>) => {
         primaryIncomeHolder.current = e.nativeEvent.text || "";
@@ -114,7 +120,19 @@ const IncomePage = () => {
                     setIncome={setSecondaryIncome}
                 />
             )}
-
+            <Button onPress={onCalculate} disabled={primaryIncome === 0}>
+                Calculate
+            </Button>
+            {/* If this works fine, then we can show the value */}
+            <List
+                style={styles.container}
+                data={["one", "two", "three", "four"]}
+                renderItem={({ item, index }: { item: string; index: number }): React.ReactElement => (
+                    <View key={index} style={{ display: "flex", flexDirection: "row" }}>
+                        <ListItem title={item} style={{ flexGrow: 1 }} />
+                    </View>
+                )}
+            />
         </SafeAreaView>
     )
 };
@@ -137,6 +155,9 @@ const styles = StyleSheet.create({
         color: "red",
         top: "28%",
         left: "2%",
+    },
+    row: {
+        color: "red",
     }
 });
 

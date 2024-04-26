@@ -1,5 +1,5 @@
 import { IndexPath, Input, Layout, Select, SelectItem } from '@ui-kitten/components';
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { NativeSyntheticEvent, SafeAreaView, TextInputChangeEventData } from 'react-native';
 
 type Props = {
@@ -11,9 +11,17 @@ type Props = {
 
 const KiwiSaverForm = ({ option, setKiwiSaverOption, isCustom, setIsCustom }: Props) => {
     const [selectedIndex, setSelectedIndex] = useState<IndexPath | IndexPath[]>(new IndexPath(0));
+    const inputHolder = useRef("");
     const kiwiSaverOptions = [3, 4, 6, 8, 10, undefined];
 
     const onCustomOptionChange = (e: NativeSyntheticEvent<TextInputChangeEventData>) => {
+        inputHolder.current = e.nativeEvent.text || "";
+
+        if (inputHolder.current) {
+            setKiwiSaverOption(parseFloat(inputHolder.current));
+        } else if (!e.nativeEvent.text) {
+            setKiwiSaverOption(0);
+        }
         setKiwiSaverOption(parseInt(e.nativeEvent.text));
     }
 
@@ -40,7 +48,7 @@ const KiwiSaverForm = ({ option, setKiwiSaverOption, isCustom, setIsCustom }: Pr
             {isCustom && (
                 <Input
                     placeholder={"Income amount"}
-                    value={option.toString()}
+                    value={inputHolder.current}
                     onChange={onCustomOptionChange}
                     {...{
                         keyboardType: "numeric"
