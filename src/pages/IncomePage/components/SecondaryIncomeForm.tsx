@@ -1,5 +1,5 @@
 import { Input } from '@ui-kitten/components';
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { NativeSyntheticEvent, SafeAreaView, StyleSheet, Text, TextInputChangeEventData, View } from 'react-native';
 
 type Props = {
@@ -8,9 +8,18 @@ type Props = {
 }
 
 const SecondaryIncomeForm = ({ income, setIncome }: Props) => {
+    const secondaryIncomeHolder = useRef("");
+
     const onIncomeChange = (e: NativeSyntheticEvent<TextInputChangeEventData>) => {
-        setIncome(parseFloat(e.nativeEvent.text));
+        secondaryIncomeHolder.current = e.nativeEvent.text || "";
+
+        if (secondaryIncomeHolder.current) {
+            setIncome(parseFloat(secondaryIncomeHolder.current));
+        } else if (!e.nativeEvent.text) {
+            setIncome(0);
+        }
     }
+
     return (
         <SafeAreaView>
             <View style={styles.view}>
@@ -18,7 +27,7 @@ const SecondaryIncomeForm = ({ income, setIncome }: Props) => {
                 <Input
                     style={styles.input}
                     placeholder={"Secondaty income"}
-                    value={income.toString()}
+                    value={secondaryIncomeHolder.current}
                     onChange={onIncomeChange}
                     {...{
                         keyboardType: "numeric"

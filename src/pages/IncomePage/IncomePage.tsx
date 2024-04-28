@@ -1,15 +1,16 @@
 import React, { useRef, useState } from 'react';
-import { FlatList, NativeSyntheticEvent, SafeAreaView, StyleSheet, Text, TextInput, TextInputChangeEventData, View } from 'react-native';
+import { NativeSyntheticEvent, SafeAreaView, StyleSheet, Text, TextInputChangeEventData, View } from 'react-native';
 import { incomePeriods } from '../../constants';
-import { ApplicationProvider, Button, CheckBox, IndexPath, Input, Layout, List, ListItem, Select, SelectItem } from '@ui-kitten/components';
+import { Button, CheckBox, IndexPath, Input, Layout, List, ListItem, Select, SelectItem } from '@ui-kitten/components';
 import KiwiSaverForm from './components/KiwiSaverForm';
 import StudentLoanForm from './components/StudentLoanForm';
 import SecondaryIncomeForm from './components/SecondaryIncomeForm';
 import useIncome from './hooks/useIncome';
-import useTable from './hooks/useTable';
+import useTable, { HEADERS, NEW_HEADERS } from './hooks/useTable';
 
 const IncomePage = () => {
     const [selectedIndex, setSelectedIndex] = useState<IndexPath | IndexPath[]>(new IndexPath(0));
+    const [random, setRandom] = useState(Math.random());
     const primaryIncomeHolder = useRef("");
 
     const {
@@ -23,11 +24,6 @@ const IncomePage = () => {
         studentLoanRate,
         studentLoanThreshold,
         secondaryIncome,
-        yearGrossPay,
-        yearPaye,
-        yearAcc,
-        yearKiwiSaver,
-        yearStudentLoan,
         onPrimaryIncomeChange,
         onIncomePeriodChange,
         onKiwiSaverChange,
@@ -37,11 +33,13 @@ const IncomePage = () => {
         setHasKiwiSaver,
         setIsKiwiSaverCustom,
         setSecondaryIncome,
+        calculateYearlyValues,
     } = useIncome();
 
     const {
-        onCalculate,
-    } = useTable({ yearGrossPay, yearPaye, yearAcc, yearKiwiSaver, yearStudentLoan });
+        populateTableRows,
+        rows,
+    } = useTable();
 
     const onIncomeAmountChange = (e: NativeSyntheticEvent<TextInputChangeEventData>) => {
         primaryIncomeHolder.current = e.nativeEvent.text || "";
@@ -54,7 +52,27 @@ const IncomePage = () => {
     }
 
     const onPreiodSelect = (index: IndexPath | IndexPath[]) => {
+        setSelectedIndex(index);
         onIncomePeriodChange(incomePeriods[index.row]);
+    }
+
+    const onCalculate = () => {
+        const {
+            yearGrossPay,
+            yearPaye,
+            yearAcc,
+            yearKiwiSaver,
+            yearStudentLoan,
+        } = calculateYearlyValues();
+
+        populateTableRows({
+            yearGrossPay,
+            yearPaye,
+            yearAcc,
+            yearKiwiSaver: hasKiwiSaver ? yearKiwiSaver : 0,
+            yearStudentLoan: hasStudentLoan ? yearStudentLoan : 0
+        })
+        setRandom(Math.random());
     }
 
     return (
@@ -126,15 +144,26 @@ const IncomePage = () => {
             <Button onPress={onCalculate} disabled={primaryIncome === 0}>
                 Calculate
             </Button>
-            {/* If this works fine, then we can show the value */}
             <List
                 style={styles.container}
-                data={["one", "two", "three", "four"]}
-                renderItem={({ item, index }: { item: string; index: number }): React.ReactElement => (
+                data={Array.from(Array(rows.length + 1))}
+                renderItem={({ index }: { index: number }): React.ReactElement => (
                     <View key={index} style={{ display: "flex", flexDirection: "row" }}>
-                        <ListItem title={item} style={{ flexGrow: 1 }} />
+                        {index === 0 ? (
+                            HEADERS.map((header: string) => (
+                                <ListItem title={header} style={{ flexGrow: 1 }} key={header || 'header-0'} />
+                            ))
+                        ) : (
+                            <>
+                                <ListItem title={rows[index - 1].label} style={{ flexGrow: 1 }} key={rows[index - 1].label} />
+                                {rows[index - 1].values.map((value: number, valuIndex: number) => (
+                                    <ListItem title={value || "0"} style={{ flexGrow: 1 }} key={`${rows[index - 1].label}-${valuIndex}`} />
+                                ))}
+                            </>
+                        )}
                     </View>
                 )}
+                extraData={random}
             />
         </SafeAreaView>
     )
