@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { incomePeriods } from "../../../constants";
 
 export const TAX_THRESHOLDS: TaxThreshold[] = [
@@ -51,12 +51,6 @@ const useIncome = () => {
     const [studentLoanThreshold, setStudentLoanThreshold] = useState(24128);
     const [secondaryIncome, setSecondaryIncome] = useState(0);
 
-    const [yearGrossPay, setYearlyGrossPay] = useState(0);
-    const [yearPaye, setYearPaye] = useState(0);
-    const [yearAcc, setYearAcc] = useState(0);
-    const [yearKiwiSaver, setYearKiwiSaver] = useState(0);
-    const [yearStudentLoan, setYearStudentLoan] = useState(0);
-
     const onPrimaryIncomeChange = (income: number) => {
         setPrimaryIncome(income);
 
@@ -66,32 +60,26 @@ const useIncome = () => {
             period = calculatePeriod(income);
             setIncomePeriod(period);
         }
-
-        calculateYearGrossPay(income, period.value);
     }
 
     const onIncomePeriodChange = (period: IncomePeriod) => {
         setIncomePeriod(period);
         isIncomePeriodAuto.current = period.value === 'auto';
-
-        if (primaryIncome !== 0) {
-            calculateYearGrossPay(primaryIncome, period.value);
-        }
     }
 
-    const calculateYearKiwiSaver = (income: number, rate: number) => {
-        setYearKiwiSaver(income * rate / 100);
+    const calculateYearKiwiSaver = (yearGrossPay: number) => {
+        return yearGrossPay * kiwiSaverOption / 100;
     }
 
     const onKiwiSaverChange = (rate: number) => {
         setKiwiSaverOption(rate);
-        calculateYearKiwiSaver(primaryIncome, rate);
     }
 
-    const calculateYearStudentLoan = (rate: number, threshold: number, income: number) => {
-        if (income >= threshold) {
-            setYearStudentLoan(income * rate / 100);
+    const calculateYearStudentLoan = (yearGrossPay: number) => {
+        if (yearGrossPay >= studentLoanThreshold) {
+            return yearGrossPay * studentLoanRate / 100;
         }
+        return 0;
     }
 
     const onStudentLoanChange = (rate: number | null, threshold: number | null) => {
@@ -103,7 +91,6 @@ const useIncome = () => {
             setStudentLoanThreshold(threshold);
         }
 
-        calculateYearStudentLoan(rate || studentLoanRate, threshold || studentLoanThreshold, yearGrossPay);
     }
 
     const calculatePeriod = (income: number) => {
@@ -121,7 +108,7 @@ const useIncome = () => {
         }
     }
 
-    const calculateYearlyPaye = (income: number) => {
+    const calculateYearlyPaye = (yearGrossPay: number) => {
         let previousMax = 0;
         let isDone = false;
         let paidTax = 0;
@@ -129,23 +116,29 @@ const useIncome = () => {
             if (!isDone) {
                 const amountToTax = previousMax === 0 ?
                     threshold.max :
-                    (income > threshold.max ? threshold.max - threshold.min : income - threshold.min);
+                    (yearGrossPay > threshold.max ? threshold.max - threshold.min : yearGrossPay - threshold.min);
                 const taxToPay = amountToTax * threshold.rate / 100;
                 paidTax += taxToPay;
                 previousMax = threshold.max;
-                isDone = income < threshold.max;
+                isDone = yearGrossPay < threshold.max;
             }
         });
-        setYearPaye(paidTax);
+        return paidTax;
     }
 
-    const calculcateYearAcc = (income: number) => {
-        setYearAcc(Math.max(Math.min(ACC.minIncome), ACC.incomeCap) / 100 * ACC.levy);
+    const calculateYearSecondaryPaye = (yearGrossPay: number) => {
+        const taxThresholdIndex = TAX_THRESHOLDS.findIndex((threshold: TaxThreshold) => yearGrossPay < threshold.max);
+        const actualThreshold = TAX_THRESHOLDS[taxThresholdIndex];
+        return secondaryIncome * actualThreshold.rate / 100;
     }
 
-    const calculateYearGrossPay = (income: number, periodValue: string) => {
+    const calculcateYearAcc = (yearGrossPay: number) => {
+        return Math.min(Math.max(yearGrossPay, ACC.minIncome), ACC.incomeCap) / 100 * ACC.levy;
+    }
+
+    const calculateYearGrossPay = (income: number) => {
         let newIncome = income;
-        switch (periodValue) {
+        switch (incomePeriod.value) {
             case "hour":
                 newIncome = newIncome * 40 * 52;
                 break;
@@ -162,11 +155,29 @@ const useIncome = () => {
                 newIncome = income;
                 break;
         }
-        setYearlyGrossPay(newIncome);
-        calculateYearlyPaye(newIncome);
-        calculcateYearAcc(newIncome);
-        calculateYearKiwiSaver(newIncome, kiwiSaverOption);
-        calculateYearStudentLoan(studentLoanRate, studentLoanThreshold, newIncome);
+
+        return newIncome;
+    }
+
+    const calculateYearlyValues = () => {
+        const yearPrimaryGrossPay = calculateYearGrossPay(primaryIncome);
+
+        const yearSecondaryPaye = calculateYearSecondaryPaye(yearPrimaryGrossPay);
+        const yearPrimaryPaye = calculateYearlyPaye(yearPrimaryGrossPay);
+
+        const yearAcc = calculcateYearAcc(yearPrimaryGrossPay);
+        const yearKiwiSaver = calculateYearKiwiSaver(yearPrimaryGrossPay);
+        const yearStudentLoan = calculateYearStudentLoan(yearPrimaryGrossPay);
+
+        return {
+            yearGrossPay: yearPrimaryGrossPay,
+            yearPaye: yearPrimaryPaye,
+            yearAcc,
+            yearKiwiSaver,
+            yearStudentLoan,
+            yearSecGrossPay: secondaryIncome,
+            yearSecPaye: yearSecondaryPaye
+        };
     }
 
     return {
@@ -180,11 +191,6 @@ const useIncome = () => {
         studentLoanThreshold,
         secondaryIncome,
         isKiwiSaverCustom,
-        yearGrossPay,
-        yearPaye,
-        yearAcc,
-        yearKiwiSaver,
-        yearStudentLoan,
         onPrimaryIncomeChange,
         onIncomePeriodChange,
         onKiwiSaverChange,
@@ -195,6 +201,7 @@ const useIncome = () => {
         setKiwiSaverOption,
         setSecondaryIncome,
         setIsKiwiSaverCustom,
+        calculateYearlyValues,
     }
 }
 
