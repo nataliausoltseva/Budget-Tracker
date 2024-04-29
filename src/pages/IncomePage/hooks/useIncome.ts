@@ -161,22 +161,22 @@ const useIncome = () => {
 
     const calculateYearlyValues = () => {
         const yearPrimaryGrossPay = calculateYearGrossPay(primaryIncome);
-        const yearGrossPay = yearPrimaryGrossPay + secondaryIncome;
 
-        const yearSecondaryPaye = calculateYearSecondaryPaye(yearGrossPay)
+        const yearSecondaryPaye = calculateYearSecondaryPaye(yearPrimaryGrossPay);
         const yearPrimaryPaye = calculateYearlyPaye(yearPrimaryGrossPay);
-        const yearPaye = yearPrimaryPaye + yearSecondaryPaye;
 
         const yearAcc = calculcateYearAcc(yearPrimaryGrossPay);
         const yearKiwiSaver = calculateYearKiwiSaver(yearPrimaryGrossPay);
         const yearStudentLoan = calculateYearStudentLoan(yearPrimaryGrossPay);
 
         return {
-            yearGrossPay,
-            yearPaye,
+            yearGrossPay: yearPrimaryGrossPay,
+            yearPaye: yearPrimaryPaye,
             yearAcc,
             yearKiwiSaver,
-            yearStudentLoan
+            yearStudentLoan,
+            yearSecGrossPay: secondaryIncome,
+            yearSecPaye: yearSecondaryPaye
         };
     }
 
