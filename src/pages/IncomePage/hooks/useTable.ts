@@ -16,6 +16,8 @@ export type RowIndicator = {
     key: string,
     values: number[],
     isHidden: boolean,
+    isSimple: boolean,
+    hideWhenEmpty: boolean,
 };
 
 export const HEADERS = ["", "Hour", "Week", "Fortnight", "Month", "Year"];
@@ -26,56 +28,74 @@ export const DEFAULT_ROWS: RowIndicator[] = [
         key: 'gross',
         values: [0, 0, 0, 0, 0],
         isHidden: false,
+        isSimple: true,
+        hideWhenEmpty: false,
     },
     {
         label: "Sec Gross",
         key: 'secGross',
         values: [0, 0, 0, 0, 0],
         isHidden: true,
+        isSimple: false,
+        hideWhenEmpty: true,
     },
     {
         label: "PAYE",
         key: 'paye',
         values: [0, 0, 0, 0, 0],
         isHidden: false,
+        isSimple: false,
+        hideWhenEmpty: false,
     },
     {
         label: "Sec PAYE",
         key: 'secPaye',
         values: [0, 0, 0, 0, 0],
         isHidden: true,
+        isSimple: false,
+        hideWhenEmpty: true,
     },
     {
         label: "AСС",
         key: 'acc',
         values: [0, 0, 0, 0, 0],
         isHidden: false,
+        isSimple: false,
+        hideWhenEmpty: false,
     },
     {
         label: "Saver",
         key: 'kiwiSaver',
         values: [0, 0, 0, 0, 0],
-        isHidden: false,
+        isHidden: true,
+        isSimple: false,
+        hideWhenEmpty: true,
     },
     {
         label: "Stu. Loan",
         key: 'studentLoan',
         values: [0, 0, 0, 0, 0],
-        isHidden: false,
+        isHidden: true,
+        isSimple: false,
+        hideWhenEmpty: true,
     },
     {
         label: "NET",
         key: 'takeHome',
         values: [0, 0, 0, 0, 0],
         isHidden: false,
+        isSimple: true,
+        hideWhenEmpty: false,
     }
 ];
 
 const useTable = () => {
-    const [rows, setRows] = useState<RowIndicator[]>(DEFAULT_ROWS)
+    const [rows, setRows] = useState<RowIndicator[]>(DEFAULT_ROWS);
+    const [isSimpleTable, setIsSimpleTable] = useState(false);
+
     const roundToTwoDecimals = (value: number) => (
         Math.round((value + Number.EPSILON) * 100) / 100
-    )
+    );
 
     const calculateValues = ({ yearGrossPay, yearPaye, yearAcc, yearKiwiSaver, yearStudentLoan, yearSecGrossPay, yearSecPaye }: PopulateRowsProps) => {
         if (yearGrossPay > 0) {
@@ -156,6 +176,8 @@ const useTable = () => {
         }
         rows[1].isHidden = yearSecGrossPay === 0;
         rows[3].isHidden = yearSecGrossPay === 0;
+        rows[5].isHidden = yearKiwiSaver === 0;
+        rows[6].isHidden = yearStudentLoan === 0;
 
         return rows;
     }
@@ -167,6 +189,9 @@ const useTable = () => {
     return {
         populateTableRows,
         rows,
+        setIsSimpleTable,
+        isSimpleTable,
+        setRows,
     }
 }
 

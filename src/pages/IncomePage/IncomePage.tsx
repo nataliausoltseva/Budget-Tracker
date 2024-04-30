@@ -1,16 +1,19 @@
 import React, { useRef, useState } from 'react';
 import { NativeSyntheticEvent, SafeAreaView, StyleSheet, Text, TextInputChangeEventData, View } from 'react-native';
 import { incomePeriods } from '../../constants';
-import { Button, CheckBox, IndexPath, Input, Layout, List, ListItem, Select, SelectItem } from '@ui-kitten/components';
+import { Button, CheckBox, IndexPath, Input, Layout, List, ListItem, Select, SelectItem, Toggle } from '@ui-kitten/components';
 import KiwiSaverForm from './components/KiwiSaverForm';
 import StudentLoanForm from './components/StudentLoanForm';
 import SecondaryIncomeForm from './components/SecondaryIncomeForm';
 import useIncome from './hooks/useIncome';
-import useTable, { HEADERS, NEW_HEADERS } from './hooks/useTable';
+import useTable, { HEADERS, RowIndicator } from './hooks/useTable';
 
 const IncomePage = () => {
     const [selectedIndex, setSelectedIndex] = useState<IndexPath | IndexPath[]>(new IndexPath(0));
+
+    // The list (table) only updates if we pass something new to the extraData prop.
     const [random, setRandom] = useState(Math.random());
+
     const primaryIncomeHolder = useRef("");
 
     const {
@@ -39,6 +42,9 @@ const IncomePage = () => {
     const {
         populateTableRows,
         rows,
+        setRows,
+        isSimpleTable,
+        setIsSimpleTable,
     } = useTable();
 
     const onIncomeAmountChange = (e: NativeSyntheticEvent<TextInputChangeEventData>) => {
@@ -77,6 +83,20 @@ const IncomePage = () => {
             yearSecPaye
         })
         setRandom(Math.random());
+    }
+
+    const updateTableRows = (isChecked: boolean) => {
+        const newRows = [...rows];
+        newRows.forEach((row: RowIndicator) => {
+            if (!row.isSimple) {
+                // Only hide all other rows if simple toggle is selectec OR the rows are empty and should be hidden by default.
+                row.isHidden = isChecked || (row.hideWhenEmpty && row.values.every(v => v === 0));
+            }
+        })
+
+        setRows(rows);
+        setRandom(Math.random());
+        setIsSimpleTable(isChecked);
     }
 
     return (
@@ -173,6 +193,12 @@ const IncomePage = () => {
                 )}
                 extraData={random}
             />
+            <Toggle
+                checked={isSimpleTable}
+                onChange={updateTableRows}
+            >
+                Simple table
+            </Toggle>
         </SafeAreaView>
     )
 };
