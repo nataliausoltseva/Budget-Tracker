@@ -8,3 +8,8 @@ type TaxThreshold = {
     max: number,
     rate: number
 }
+
+type PanelTab = {
+    label: string,
+    key: string,
+}
