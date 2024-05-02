@@ -1,14 +1,19 @@
 import React, { useRef, useState } from 'react';
-import { NativeSyntheticEvent, SafeAreaView, StyleSheet, Text, TextInputChangeEventData, View } from 'react-native';
-import { incomePeriods } from '../../constants';
+import { NativeSyntheticEvent, StyleSheet, Text, TextInputChangeEventData, View } from 'react-native';
 import { Button, CheckBox, IndexPath, Input, Layout, List, ListItem, Select, SelectItem, Toggle } from '@ui-kitten/components';
+
+import { incomePeriods } from '../../constants';
 import KiwiSaverForm from './components/KiwiSaverForm';
 import StudentLoanForm from './components/StudentLoanForm';
 import SecondaryIncomeForm from './components/SecondaryIncomeForm';
 import useIncome from './hooks/useIncome';
 import useTable, { HEADERS, RowIndicator } from './hooks/useTable';
 
-const IncomePage = () => {
+type Props = {
+    isHidden: boolean
+}
+
+const IncomePage = ({ isHidden = false }: Props) => {
     const [selectedIndex, setSelectedIndex] = useState<IndexPath | IndexPath[]>(new IndexPath(0));
 
     // The list (table) only updates if we pass something new to the extraData prop.
@@ -59,7 +64,10 @@ const IncomePage = () => {
 
     const onPreiodSelect = (index: IndexPath | IndexPath[]) => {
         setSelectedIndex(index);
-        onIncomePeriodChange(incomePeriods[index.row]);
+
+        if (index instanceof IndexPath) {
+            onIncomePeriodChange(incomePeriods[index.row]);
+        }
     }
 
     const onCalculate = () => {
@@ -100,7 +108,7 @@ const IncomePage = () => {
     }
 
     return (
-        <SafeAreaView>
+        <View style={{ display: isHidden ? "none" : "flex" }}>
             <Text>Your Income</Text>
             <View style={styles.incomeView}>
                 <Input
@@ -199,7 +207,8 @@ const IncomePage = () => {
             >
                 Simple table
             </Toggle>
-        </SafeAreaView>
+
+        </View>
     )
 };
 
