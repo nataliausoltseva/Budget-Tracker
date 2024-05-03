@@ -4,7 +4,7 @@ import * as eva from '@eva-design/eva';
 import { ApplicationProvider } from '@ui-kitten/components';
 
 import IncomePage from './src/pages/IncomePage/IncomePage';
-import BudgetPage from './src/pages/BudgetPage';
+import BudgetPage from './src/pages/BudgetPage/BudgetPage';
 import SavingGoalsPage from './src/pages/SavingGoalsPage';
 import TopNavigationBar from './src/components/TopNavigationBar';
 

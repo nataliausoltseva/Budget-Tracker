@@ -13,3 +13,9 @@ type PanelTab = {
     label: string,
     key: string,
 }
+
+type FrequencyItem = {
+    name: string,
+    key: string,
+    calcToYear: number
+}
