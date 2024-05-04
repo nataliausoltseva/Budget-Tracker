@@ -1,17 +1,19 @@
-import { Button, Divider, IndexPath, Text } from '@ui-kitten/components';
+import { Button, IndexPath, Text } from '@ui-kitten/components';
 import React, { useState } from 'react';
 import { NativeSyntheticEvent, StyleSheet, TextInputChangeEventData, View } from 'react-native';
 import BudgetItem from './components/BudgetItem';
+import PieChartWithSelection from './components/PieChartWithSelection';
 
 type Props = {
     isHidden: boolean
 }
 
-type ExpenseItem = {
+export type ExpenseItem = {
     name: string,
-    value: string,
+    value: number,
     frequencyIndex: IndexPath | IndexPath[],
-    id: number
+    id: number,
+    color: string,
 }
 
 export const FREQUENCES: FrequencyItem[] = [
@@ -53,6 +55,13 @@ const BudgetPage = ({ isHidden = false }: Props) => {
     const [name, setName] = useState(DEFAULT_STATE.name);
     const [amount, setAmount] = useState(DEFAULT_STATE.amount);
     const [selectedIndex, setSelectedIndex] = useState<IndexPath | IndexPath[]>(new IndexPath(DEFAULT_STATE.frequenceIndex));
+    const randomNum = () => Math.floor(Math.random() * 255);
+    const componentToHex = () => {
+        var hex = randomNum().toString(16);
+        return hex.length == 1 ? "0" + hex : hex;
+    }
+
+    const randomHex = () => "#" + componentToHex() + componentToHex() + componentToHex() + "99"
 
     const onChangeExpenseName = (id: number, key: string, value: string | IndexPath | IndexPath[]) => {
         setExpenses((prevState: ExpenseItem[]) => {
@@ -65,7 +74,7 @@ const BudgetPage = ({ isHidden = false }: Props) => {
                         currentItem.name = typeof value === 'string' ? value : '';
                         break;
                     case "value":
-                        currentItem.value = typeof value === 'string' ? value : '';
+                        currentItem.value = typeof value === 'number' ? value : 0;
                         break;
                     case "frequencyIndex":
                         if (value instanceof IndexPath) {
@@ -94,9 +103,10 @@ const BudgetPage = ({ isHidden = false }: Props) => {
             const newExpenses = [...prevState];
             newExpenses.push({
                 name,
-                value: amount || "0",
+                value: parseFloat(amount) || 0,
                 frequencyIndex: selectedIndex,
-                id: newExpenses.length ? newExpenses.length - 1 : 0
+                id: newExpenses.length ? newExpenses.length - 1 : 0,
+                color: randomHex()
             });
             return newExpenses;
         });
@@ -125,7 +135,7 @@ const BudgetPage = ({ isHidden = false }: Props) => {
                 onAmountChange={onAmountChange}
                 onFrequenceChange={setSelectedIndex}
             />
-            <Button onPress={onSave} disabled={!name || !amount || amount === "0"}>Add</Button>
+            <Button onPress={onSave} disabled={!name || !amount || amount === "0" || isNaN(parseFloat(amount))}>Add</Button>
             <View style={styles.spacer} />
             {!!expenses.length && (
                 <Text>Your expenses:</Text>
@@ -134,7 +144,7 @@ const BudgetPage = ({ isHidden = false }: Props) => {
                 <BudgetItem
                     key={`e-${index}`}
                     name={item.name}
-                    amount={item.value}
+                    amount={item.value.toString()}
                     fruquencyIndex={item.frequencyIndex}
                     onNameChange={(e) => onChangeExpenseName(item.id, "name", e.nativeEvent.text)}
                     onAmountChange={(e) => onChangeExpenseName(item.id, "value", e.nativeEvent.text)}
@@ -143,6 +153,9 @@ const BudgetPage = ({ isHidden = false }: Props) => {
                     hasDeleteButton
                 />
             ))}
+            {!!expenses.length && (
+                <PieChartWithSelection expenses={expenses} />
+            )}
         </View>
     );
 }

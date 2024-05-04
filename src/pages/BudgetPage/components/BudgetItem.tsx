@@ -21,6 +21,7 @@ const BudgetItem = ({ name = "", amount = "", fruquencyIndex, onNameChange, onAm
                 placeholder='Enter expense name'
                 value={name}
                 onChange={onNameChange}
+                style={{ maxWidth: 200 }}
             />
             <View style={styles.incomeView}>
                 <Input
@@ -33,7 +34,7 @@ const BudgetItem = ({ name = "", amount = "", fruquencyIndex, onNameChange, onAm
                 />
                 <Text style={styles.dollarSign}>$</Text>
             </View>
-            <Layout level='1' style={{ flexGrow: 1 }}>
+            <Layout level='1' style={{ flexGrow: 1, height: 0 }}>
                 <Select
                     selectedIndex={fruquencyIndex}
                     onSelect={onFrequenceChange}
@@ -45,7 +46,7 @@ const BudgetItem = ({ name = "", amount = "", fruquencyIndex, onNameChange, onAm
                 </Select>
             </Layout>
             {hasDeleteButton && (
-                <Button accessoryLeft={<Icon name='trash' style={styles.icon} />} onPress={onDelete} />
+                <Button accessoryLeft={<Icon name='trash' />} onPress={onDelete} appearance='ghost' status='danger' style={styles.button} />
             )}
         </View>
     );
@@ -72,8 +73,7 @@ const styles = StyleSheet.create({
         top: "28%",
         left: "2%",
     },
-    icon: {
-        height: 20,
+    button: {
         width: 20
     }
 });
