@@ -19,3 +19,8 @@ type FrequencyItem = {
     key: string,
     calcToYear: number
 }
+
+type PieChartitem = {
+    label: string,
+    calcFromYear: number
+}
