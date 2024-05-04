@@ -1,4 +1,4 @@
-import { Button, IndexPath, Input, Layout, Select, SelectItem, Text } from '@ui-kitten/components';
+import { Button, Divider, IndexPath, Text } from '@ui-kitten/components';
 import React, { useState } from 'react';
 import { NativeSyntheticEvent, StyleSheet, TextInputChangeEventData, View } from 'react-native';
 import BudgetItem from './components/BudgetItem';
@@ -11,7 +11,7 @@ type ExpenseItem = {
     name: string,
     value: string,
     frequencyIndex: IndexPath | IndexPath[],
-    index: number
+    id: number
 }
 
 export const FREQUENCES: FrequencyItem[] = [
@@ -54,10 +54,29 @@ const BudgetPage = ({ isHidden = false }: Props) => {
     const [amount, setAmount] = useState(DEFAULT_STATE.amount);
     const [selectedIndex, setSelectedIndex] = useState<IndexPath | IndexPath[]>(new IndexPath(DEFAULT_STATE.frequenceIndex));
 
-    const onChangeExpenseName = (index: number, key: string, value: string | IndexPath | IndexPath[]) => {
+    const onChangeExpenseName = (id: number, key: string, value: string | IndexPath | IndexPath[]) => {
         setExpenses((prevState: ExpenseItem[]) => {
-            const newExpenses = [...prevState];
-            // newExpenses[index].name = newValue;
+            const newExpenses: ExpenseItem[] = [...prevState];
+            const expenseKey: keyof ExpenseItem = key as keyof ExpenseItem;
+            const currentItem = newExpenses.find((item: ExpenseItem) => item.id === id);
+            if (currentItem) {
+                switch (expenseKey) {
+                    case "name":
+                        currentItem.name = typeof value === 'string' ? value : '';
+                        break;
+                    case "value":
+                        currentItem.value = typeof value === 'string' ? value : '';
+                        break;
+                    case "frequencyIndex":
+                        if (value instanceof IndexPath) {
+                            currentItem.frequencyIndex = value;
+                        }
+                        break;
+                }
+                const currentItemIndex = newExpenses.indexOf(currentItem);
+                newExpenses[currentItemIndex] = currentItem;
+            }
+
             return newExpenses;
         });
     }
@@ -77,24 +96,28 @@ const BudgetPage = ({ isHidden = false }: Props) => {
                 name,
                 value: amount || "0",
                 frequencyIndex: selectedIndex,
-                index: newExpenses.length - 1
+                id: newExpenses.length ? newExpenses.length - 1 : 0
             });
+            return newExpenses;
+        });
+        setName(DEFAULT_STATE.name);
+        setAmount(DEFAULT_STATE.amount);
+        setSelectedIndex(new IndexPath(DEFAULT_STATE.frequenceIndex));
+    }
+
+    const onItemDelete = (item: ExpenseItem) => {
+        setExpenses((prevState: ExpenseItem[]) => {
+            const newExpenses: ExpenseItem[] = [...prevState];
+            const itemIndex = newExpenses.indexOf(item);
+            newExpenses.splice(itemIndex, 1);
             return newExpenses;
         });
     }
 
     return (
         <View style={{ display: isHidden ? "none" : "flex" }}>
-            {/* {expenses.map((item: ExpenseItem) => (
-                <BudgetItem
-                    key={item.index}
-                    name={item.name}
-                    amount={item.value}
-                    fruquencyIndex={item.frequencyIndex}
-                    onNameChange={on}
-                />
-            ))} */}
             <BudgetItem
+                key={"new-item"}
                 name={name}
                 amount={amount}
                 fruquencyIndex={selectedIndex}
@@ -102,7 +125,24 @@ const BudgetPage = ({ isHidden = false }: Props) => {
                 onAmountChange={onAmountChange}
                 onFrequenceChange={setSelectedIndex}
             />
-            <Button onPress={onSave}>Add</Button>
+            <Button onPress={onSave} disabled={!name || !amount || amount === "0"}>Add</Button>
+            <View style={styles.spacer} />
+            {!!expenses.length && (
+                <Text>Your expenses:</Text>
+            )}
+            {expenses.map((item: ExpenseItem, index: number) => (
+                <BudgetItem
+                    key={`e-${index}`}
+                    name={item.name}
+                    amount={item.value}
+                    fruquencyIndex={item.frequencyIndex}
+                    onNameChange={(e) => onChangeExpenseName(item.id, "name", e.nativeEvent.text)}
+                    onAmountChange={(e) => onChangeExpenseName(item.id, "value", e.nativeEvent.text)}
+                    onFrequenceChange={(selectedIndex) => onChangeExpenseName(item.id, "frequencyIndex", selectedIndex)}
+                    onDelete={() => onItemDelete(item)}
+                    hasDeleteButton
+                />
+            ))}
         </View>
     );
 }
@@ -128,4 +168,7 @@ const styles = StyleSheet.create({
         top: "28%",
         left: "2%",
     },
+    spacer: {
+        marginBottom: 20
+    }
 });

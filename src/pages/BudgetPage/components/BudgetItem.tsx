@@ -1,4 +1,4 @@
-import { IndexPath, Input, Layout, Select, SelectItem, Text } from '@ui-kitten/components';
+import { Button, Icon, IndexPath, Input, Layout, Select, SelectItem, Text } from '@ui-kitten/components';
 import React from 'react';
 import { NativeSyntheticEvent, StyleSheet, TextInputChangeEventData, View } from 'react-native';
 import { FREQUENCES } from '../BudgetPage';
@@ -10,9 +10,11 @@ type Props = {
     onNameChange: (e: NativeSyntheticEvent<TextInputChangeEventData>) => void,
     onAmountChange: (e: NativeSyntheticEvent<TextInputChangeEventData>) => void,
     onFrequenceChange: (selectedIndex: IndexPath | IndexPath[]) => void,
+    hasDeleteButton?: boolean,
+    onDelete?: () => void
 }
 
-const BudgetItem = ({ name = "", amount = "", fruquencyIndex, onNameChange, onAmountChange, onFrequenceChange }: Props) => {
+const BudgetItem = ({ name = "", amount = "", fruquencyIndex, onNameChange, onAmountChange, onFrequenceChange, hasDeleteButton = false, onDelete }: Props) => {
     return (
         <View style={{ flexDirection: "row" }}>
             <Input
@@ -31,7 +33,6 @@ const BudgetItem = ({ name = "", amount = "", fruquencyIndex, onNameChange, onAm
                 />
                 <Text style={styles.dollarSign}>$</Text>
             </View>
-
             <Layout level='1' style={{ flexGrow: 1 }}>
                 <Select
                     selectedIndex={fruquencyIndex}
@@ -43,8 +44,11 @@ const BudgetItem = ({ name = "", amount = "", fruquencyIndex, onNameChange, onAm
                     ))}
                 </Select>
             </Layout>
+            {hasDeleteButton && (
+                <Button accessoryLeft={<Icon name='trash' style={styles.icon} />} onPress={onDelete} />
+            )}
         </View>
-    )
+    );
 }
 
 export default BudgetItem;
@@ -68,4 +72,8 @@ const styles = StyleSheet.create({
         top: "28%",
         left: "2%",
     },
+    icon: {
+        height: 20,
+        width: 20
+    }
 });

@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { SafeAreaView, View } from 'react-native';
 import * as eva from '@eva-design/eva';
-import { ApplicationProvider } from '@ui-kitten/components';
+import { ApplicationProvider, IconRegistry } from '@ui-kitten/components';
+import { EvaIconsPack } from '@ui-kitten/eva-icons';
 
 import IncomePage from './src/pages/IncomePage/IncomePage';
 import BudgetPage from './src/pages/BudgetPage/BudgetPage';
@@ -28,6 +29,7 @@ function App(): React.JSX.Element {
 
   return (
     <SafeAreaView>
+      <IconRegistry icons={EvaIconsPack} />
       <ApplicationProvider {...eva} theme={{ ...eva.dark }}>
         <SafeAreaView style={{ height: "100%" }}>
           <TopNavigationBar tabs={TABS} onSelect={setSelectedIndex} selectedIndex={selectedIndex} />
