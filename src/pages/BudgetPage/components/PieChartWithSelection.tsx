@@ -1,56 +1,71 @@
 import React, { useState } from 'react';
 import { SafeAreaView, View } from 'react-native';
-import { PieChart } from 'react-native-gifted-charts';
+import { PieChart, pieDataItem } from 'react-native-gifted-charts';
 import { IndexPath, Layout, Select, SelectItem, Text } from '@ui-kitten/components';
 import usePieChart from '../hooks/usePieChart';
 import { ExpenseItem } from '../BudgetPage';
 
 type Props = {
-    expenses: ExpenseItem[]
+    expenses: ExpenseItem[],
+    totalIncome: number
 }
 
-const CHART_FREQUENCY: PieChartitem[] = [
+const CHART_FREQUENCY: FrequencyItem[] = [
     {
-        label: "Week",
-        calcFromYear: 52
+        name: "Week",
+        key: 'week',
+        calcToYear: 52
     },
     {
-        label: "Fortnight",
-        calcFromYear: 26
+        name: "Fortnight",
+        key: 'fortnight',
+        calcToYear: 26
     },
     {
-        label: "Month",
-        calcFromYear: 12
+        name: "Month",
+        key: 'month',
+        calcToYear: 12
     },
     {
-        label: "Year",
-        calcFromYear: 1
+        name: "Year",
+        key: 'year',
+        calcToYear: 1
     },
 ];
 
-const PieChartWithSelection = ({ expenses }: Props) => {
+const PieChartWithSelection = ({ expenses, totalIncome = 0 }: Props) => {
     const [selectedIndex, setSelectedIndex] = useState<IndexPath | IndexPath[]>(new IndexPath(0));
-
+    const frequency: FrequencyItem = CHART_FREQUENCY[selectedIndex.row];
     const {
-        getPieData
-    } = usePieChart({ expenses });
+        pieData,
+        leftOver
+    } = usePieChart({ expenses, totalIncome, frequency });
 
     return (
         <View style={{ flexDirection: 'row' }}>
             <View style={{ alignItems: 'center' }}>
                 <PieChart
-                    data={getPieData(CHART_FREQUENCY[selectedIndex.row].calcFromYear)}
+                    data={pieData}
                     labelsPosition='outward'
                     textColor='white'
                     fontWeight='bold'
-                    showValuesAsLabels
-                    showText
+                    innerRadius={60}
+                    innerCircleColor={'#232B5D'}
+                    centerLabelComponent={() => (
+                        <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                            <Text
+                                style={{ fontSize: 16, color: 'white', fontWeight: 'bold' }}>
+                                ${Number(leftOver).toFixed(2)}
+                            </Text>
+                            <Text style={{ fontSize: 14, color: 'white' }}>Left from income</Text>
+                        </View>
+                    )}
                 />
                 <View style={{ alignItems: "flex-start" }}>
-                    {expenses.map((item: ExpenseItem) => (
-                        <SafeAreaView style={{ flexDirection: 'row', alignItems: 'center' }} key={item.id}>
+                    {pieData.map((item: ExpenseItem, index: number) => (
+                        <SafeAreaView style={{ flexDirection: 'row', alignItems: 'center' }} key={item.id + "-" + index}>
                             <View style={{ backgroundColor: item.color, width: 12, height: 12, borderRadius: 50, marginRight: 10, borderColor: 'white', borderWidth: 1 }} />
-                            <Text key={item.id} style={{ flexWrap: "wrap", maxWidth: 200 }}>{item.name}</Text>
+                            <Text key={item.id} style={{ flexWrap: "wrap", maxWidth: 200 }}>{item.name}: ${Number(item.value).toFixed(2)}</Text>
                         </SafeAreaView>
                     ))}
                 </View>
@@ -59,10 +74,10 @@ const PieChartWithSelection = ({ expenses }: Props) => {
                 <Select
                     selectedIndex={selectedIndex}
                     onSelect={setSelectedIndex}
-                    value={CHART_FREQUENCY[selectedIndex.row].label}
+                    value={CHART_FREQUENCY[selectedIndex.row].name}
                 >
-                    {CHART_FREQUENCY.map((item: PieChartitem) => (
-                        <SelectItem title={item.label} key={item.label} />
+                    {CHART_FREQUENCY.map((item: FrequencyItem) => (
+                        <SelectItem title={item.name} key={item.name} />
                     ))}
                 </Select>
             </Layout>

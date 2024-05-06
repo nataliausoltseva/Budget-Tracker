@@ -26,6 +26,7 @@ const TABS: PanelTab[] = [
 
 function App(): React.JSX.Element {
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const [totalIncome, setTotalIncome] = useState(0);
 
   return (
     <SafeAreaView>
@@ -34,8 +35,8 @@ function App(): React.JSX.Element {
         <SafeAreaView style={{ height: "100%" }}>
           <TopNavigationBar tabs={TABS} onSelect={setSelectedIndex} selectedIndex={selectedIndex} />
           <View style={{ flexGrow: 1, marginTop: 20 }}>
-            <IncomePage isHidden={TABS[selectedIndex].key !== 'income'} />
-            <BudgetPage isHidden={TABS[selectedIndex].key !== 'budget'} />
+            <IncomePage isHidden={TABS[selectedIndex].key !== 'income'} setTotalIncome={setTotalIncome} />
+            <BudgetPage isHidden={TABS[selectedIndex].key !== 'budget'} totalIncome={totalIncome} />
             <SavingGoalsPage isHidden={TABS[selectedIndex].key !== 'savingGoals'} />
           </View>
         </SafeAreaView >
