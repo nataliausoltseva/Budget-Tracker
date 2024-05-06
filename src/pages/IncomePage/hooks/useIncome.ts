@@ -90,7 +90,6 @@ const useIncome = () => {
         if (threshold !== null) {
             setStudentLoanThreshold(threshold);
         }
-
     }
 
     const calculatePeriod = (income: number) => {

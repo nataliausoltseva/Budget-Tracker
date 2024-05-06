@@ -5,7 +5,8 @@ import BudgetItem from './components/BudgetItem';
 import PieChartWithSelection from './components/PieChartWithSelection';
 
 type Props = {
-    isHidden: boolean
+    isHidden: boolean,
+    totalIncome: number
 }
 
 export type ExpenseItem = {
@@ -50,11 +51,12 @@ const DEFAULT_STATE = {
     amount: "0"
 }
 
-const BudgetPage = ({ isHidden = false }: Props) => {
+const BudgetPage = ({ isHidden = false, totalIncome = 0 }: Props) => {
     const [expenses, setExpenses] = useState<ExpenseItem[]>([]);
     const [name, setName] = useState(DEFAULT_STATE.name);
     const [amount, setAmount] = useState(DEFAULT_STATE.amount);
     const [selectedIndex, setSelectedIndex] = useState<IndexPath | IndexPath[]>(new IndexPath(DEFAULT_STATE.frequenceIndex));
+
     const randomNum = () => Math.floor(Math.random() * 255);
     const componentToHex = () => {
         var hex = randomNum().toString(16);
@@ -154,7 +156,7 @@ const BudgetPage = ({ isHidden = false }: Props) => {
                 />
             ))}
             {!!expenses.length && (
-                <PieChartWithSelection expenses={expenses} />
+                <PieChartWithSelection expenses={expenses} totalIncome={totalIncome} />
             )}
         </View>
     );
