@@ -36,7 +36,7 @@ export const FREQUENCES: FrequencyItem[] = [
     {
         name: "Month",
         key: "month",
-        calcToYear: 12
+        calcToYear: 13
     },
     {
         name: "Year",

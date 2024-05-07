@@ -18,7 +18,7 @@ const usePieChart = ({ expenses, totalIncome = 0, frequency = FREQUENCES[0] }: P
             } else {
                 yearly.push({
                     ...item,
-                    value: item.value * frequency.calcToYear
+                    value: item.value * FREQUENCES[item.frequencyIndex.row].calcToYear
                 })
             }
         })
