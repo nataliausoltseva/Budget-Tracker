@@ -10,10 +10,11 @@ import useIncome from './hooks/useIncome';
 import useTable, { HEADERS, RowIndicator } from './hooks/useTable';
 
 type Props = {
-    isHidden: boolean
+    isHidden: boolean,
+    setTotalIncome: (amount: number) => void
 }
 
-const IncomePage = ({ isHidden = false }: Props) => {
+const IncomePage = ({ isHidden = false, setTotalIncome }: Props) => {
     const [selectedIndex, setSelectedIndex] = useState<IndexPath | IndexPath[]>(new IndexPath(0));
 
     // The list (table) only updates if we pass something new to the extraData prop.
@@ -80,6 +81,7 @@ const IncomePage = ({ isHidden = false }: Props) => {
             yearSecGrossPay,
             yearSecPaye,
         } = calculateYearlyValues();
+        setTotalIncome(yearGrossPay + yearSecGrossPay - yearPaye - yearAcc - yearKiwiSaver - yearStudentLoan - yearSecPaye);
 
         populateTableRows({
             yearGrossPay,
@@ -87,8 +89,8 @@ const IncomePage = ({ isHidden = false }: Props) => {
             yearAcc,
             yearKiwiSaver: hasKiwiSaver ? yearKiwiSaver : 0,
             yearStudentLoan: hasStudentLoan ? yearStudentLoan : 0,
-            yearSecGrossPay,
-            yearSecPaye
+            yearSecGrossPay: hasSecondaryIncome ? yearSecGrossPay : 0,
+            yearSecPaye: hasSecondaryIncome ? yearSecPaye : 0
         })
         setRandom(Math.random());
     }
