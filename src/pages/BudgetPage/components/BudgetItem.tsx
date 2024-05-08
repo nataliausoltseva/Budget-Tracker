@@ -1,5 +1,5 @@
 import { Button, Icon, IndexPath, Input, Layout, Select, SelectItem, Text } from '@ui-kitten/components';
-import React from 'react';
+import React, { useRef } from 'react';
 import { NativeSyntheticEvent, StyleSheet, TextInputChangeEventData, View } from 'react-native';
 import { FREQUENCES } from '../BudgetPage';
 
@@ -8,13 +8,24 @@ type Props = {
     amount: string,
     fruquencyIndex: IndexPath | IndexPath[],
     onNameChange: (e: NativeSyntheticEvent<TextInputChangeEventData>) => void,
-    onAmountChange: (e: NativeSyntheticEvent<TextInputChangeEventData>) => void,
+    onAmountChange: (amount: string) => void,
     onFrequenceChange: (selectedIndex: IndexPath | IndexPath[]) => void,
     hasDeleteButton?: boolean,
     onDelete?: () => void
 }
 
 const BudgetItem = ({ name = "", amount = "", fruquencyIndex, onNameChange, onAmountChange, onFrequenceChange, hasDeleteButton = false, onDelete }: Props) => {
+    const amountInputHolder = useRef(amount || "");
+
+    const _onAmountChange = (e: NativeSyntheticEvent<TextInputChangeEventData>) => {
+        amountInputHolder.current = e.nativeEvent.text || "";
+        if (amountInputHolder.current) {
+            onAmountChange(amountInputHolder.current);
+        } else if (!amountInputHolder.current) {
+            onAmountChange("");
+        }
+    }
+
     return (
         <View style={{ flexDirection: "row" }}>
             <Input
@@ -25,8 +36,8 @@ const BudgetItem = ({ name = "", amount = "", fruquencyIndex, onNameChange, onAm
             />
             <View style={styles.incomeView}>
                 <Input
-                    value={amount}
-                    onChange={onAmountChange}
+                    value={amountInputHolder.current}
+                    onChange={_onAmountChange}
                     style={{ minWidth: 100 }}
                     {...{
                         keyboardType: "numeric"

@@ -1,6 +1,5 @@
 import { useMemo } from "react";
 import { ExpenseItem, FREQUENCES } from "../BudgetPage"
-import { pieDataItem } from "react-native-gifted-charts";
 
 type Props = {
     expenses: ExpenseItem[],
@@ -13,7 +12,7 @@ const usePieChart = ({ expenses, totalIncome = 0, frequency = FREQUENCES[0] }: P
         const yearly: ExpenseItem[] = [];
         const oneOff: ExpenseItem[] = [];
         expenses.map((item: ExpenseItem) => {
-            if (frequency.key === 'oneOff') {
+            if (FREQUENCES[item.frequencyIndex.row].key === 'oneOff') {
                 oneOff.push(item);
             } else {
                 yearly.push({
@@ -41,10 +40,9 @@ const usePieChart = ({ expenses, totalIncome = 0, frequency = FREQUENCES[0] }: P
 
     const leftOver = useMemo(() => {
         let income = totalIncome / frequency.calcToYear;
-        [...yearlyExpenses, ...oneOffExpenses].forEach((item: ExpenseItem) => {
-            income -= (item.value / frequency.calcToYear);
-        });
-        return income;
+        const yearExpensesSum = yearlyExpenses.reduce((partialSum, item) => partialSum + (item.value / frequency.calcToYear), 0);
+        const oneOffExpensesSum = oneOffExpenses.reduce((partialSum, item) => partialSum + item.value, 0);
+        return income - yearExpensesSum - oneOffExpensesSum;
     }, [frequency, expenses, totalIncome]);
 
     return {
