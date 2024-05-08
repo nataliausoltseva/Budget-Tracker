@@ -56,6 +56,7 @@ const BudgetPage = ({ isHidden = false, totalIncome = 0 }: Props) => {
     const [name, setName] = useState(DEFAULT_STATE.name);
     const [amount, setAmount] = useState(DEFAULT_STATE.amount);
     const [selectedIndex, setSelectedIndex] = useState<IndexPath | IndexPath[]>(new IndexPath(DEFAULT_STATE.frequenceIndex));
+    const [random, setRandom] = useState(Math.random());
 
     const randomNum = () => Math.floor(Math.random() * 255);
     const componentToHex = () => {
@@ -65,7 +66,7 @@ const BudgetPage = ({ isHidden = false, totalIncome = 0 }: Props) => {
 
     const randomHex = () => "#" + componentToHex() + componentToHex() + componentToHex() + "99"
 
-    const onChangeExpenseName = (id: number, key: string, value: string | IndexPath | IndexPath[]) => {
+    const onChangeExpense = (id: number, key: string, value: string | IndexPath | IndexPath[]) => {
         setExpenses((prevState: ExpenseItem[]) => {
             const newExpenses: ExpenseItem[] = [...prevState];
             const expenseKey: keyof ExpenseItem = key as keyof ExpenseItem;
@@ -76,7 +77,7 @@ const BudgetPage = ({ isHidden = false, totalIncome = 0 }: Props) => {
                         currentItem.name = typeof value === 'string' ? value : '';
                         break;
                     case "value":
-                        currentItem.value = typeof value === 'number' ? value : 0;
+                        currentItem.value = typeof value === 'string' ? isNaN(parseFloat(value)) ? 0 : parseFloat(value) : 0;
                         break;
                     case "frequencyIndex":
                         if (value instanceof IndexPath) {
@@ -96,8 +97,8 @@ const BudgetPage = ({ isHidden = false, totalIncome = 0 }: Props) => {
         setName(e.nativeEvent.text || "");
     }
 
-    const onAmountChange = (e: NativeSyntheticEvent<TextInputChangeEventData>) => {
-        setAmount(e.nativeEvent.text || "");
+    const onAmountChange = (amount: string) => {
+        setAmount(amount);
     }
 
     const onSave = () => {
@@ -107,7 +108,7 @@ const BudgetPage = ({ isHidden = false, totalIncome = 0 }: Props) => {
                 name,
                 value: parseFloat(amount) || 0,
                 frequencyIndex: selectedIndex,
-                id: newExpenses.length ? newExpenses.length - 1 : 0,
+                id: newExpenses.length,
                 color: randomHex()
             });
             return newExpenses;
@@ -115,6 +116,7 @@ const BudgetPage = ({ isHidden = false, totalIncome = 0 }: Props) => {
         setName(DEFAULT_STATE.name);
         setAmount(DEFAULT_STATE.amount);
         setSelectedIndex(new IndexPath(DEFAULT_STATE.frequenceIndex));
+        setRandom(Math.random());
     }
 
     const onItemDelete = (item: ExpenseItem) => {
@@ -129,7 +131,7 @@ const BudgetPage = ({ isHidden = false, totalIncome = 0 }: Props) => {
     return (
         <View style={{ display: isHidden ? "none" : "flex" }}>
             <BudgetItem
-                key={"new-item"}
+                key={`new-item-${random}`}
                 name={name}
                 amount={amount}
                 fruquencyIndex={selectedIndex}
@@ -148,9 +150,9 @@ const BudgetPage = ({ isHidden = false, totalIncome = 0 }: Props) => {
                     name={item.name}
                     amount={item.value.toString()}
                     fruquencyIndex={item.frequencyIndex}
-                    onNameChange={(e) => onChangeExpenseName(item.id, "name", e.nativeEvent.text)}
-                    onAmountChange={(e) => onChangeExpenseName(item.id, "value", e.nativeEvent.text)}
-                    onFrequenceChange={(selectedIndex) => onChangeExpenseName(item.id, "frequencyIndex", selectedIndex)}
+                    onNameChange={(e) => onChangeExpense(item.id, "name", e.nativeEvent.text)}
+                    onAmountChange={(amount: string) => onChangeExpense(item.id, "value", amount)}
+                    onFrequenceChange={(selectedIndex) => onChangeExpense(item.id, "frequencyIndex", selectedIndex)}
                     onDelete={() => onItemDelete(item)}
                     hasDeleteButton
                 />
