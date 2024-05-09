@@ -8,6 +8,7 @@ import IncomePage from './src/pages/IncomePage/IncomePage';
 import BudgetPage from './src/pages/BudgetPage/BudgetPage';
 import SavingGoalsPage from './src/pages/SavingGoalsPage';
 import TopNavigationBar from './src/components/TopNavigationBar';
+import { AppContextProvider } from './src/context/AppContext';
 
 const TABS: PanelTab[] = [
   {
@@ -26,7 +27,6 @@ const TABS: PanelTab[] = [
 
 function App(): React.JSX.Element {
   const [selectedIndex, setSelectedIndex] = useState(0);
-  const [totalIncome, setTotalIncome] = useState(0);
 
   return (
     <SafeAreaView>
@@ -35,9 +35,11 @@ function App(): React.JSX.Element {
         <SafeAreaView style={{ height: "100%" }}>
           <TopNavigationBar tabs={TABS} onSelect={setSelectedIndex} selectedIndex={selectedIndex} />
           <View style={{ flexGrow: 1, marginTop: 20 }}>
-            <IncomePage isHidden={TABS[selectedIndex].key !== 'income'} setTotalIncome={setTotalIncome} />
-            <BudgetPage isHidden={TABS[selectedIndex].key !== 'budget'} totalIncome={totalIncome} />
-            <SavingGoalsPage isHidden={TABS[selectedIndex].key !== 'savingGoals'} />
+            <AppContextProvider>
+              <IncomePage isHidden={TABS[selectedIndex].key !== 'income'} />
+              <BudgetPage isHidden={TABS[selectedIndex].key !== 'budget'} />
+              <SavingGoalsPage isHidden={TABS[selectedIndex].key !== 'savingGoals'} />
+            </AppContextProvider>
           </View>
         </SafeAreaView >
       </ApplicationProvider>

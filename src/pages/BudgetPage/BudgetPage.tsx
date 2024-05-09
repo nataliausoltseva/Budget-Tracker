@@ -1,12 +1,12 @@
 import { Button, IndexPath, Text } from '@ui-kitten/components';
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { NativeSyntheticEvent, StyleSheet, TextInputChangeEventData, View } from 'react-native';
 import BudgetItem from './components/BudgetItem';
 import PieChartWithSelection from './components/PieChartWithSelection';
+import { AppContext } from '../../context/AppContext';
 
 type Props = {
-    isHidden: boolean,
-    totalIncome: number
+    isHidden: boolean
 }
 
 export type ExpenseItem = {
@@ -51,7 +51,7 @@ const DEFAULT_STATE = {
     amount: "0"
 }
 
-const BudgetPage = ({ isHidden = false, totalIncome = 0 }: Props) => {
+const BudgetPage = ({ isHidden = false }: Props) => {
     const [expenses, setExpenses] = useState<ExpenseItem[]>([]);
     const [name, setName] = useState(DEFAULT_STATE.name);
     const [amount, setAmount] = useState(DEFAULT_STATE.amount);
@@ -158,7 +158,7 @@ const BudgetPage = ({ isHidden = false, totalIncome = 0 }: Props) => {
                 />
             ))}
             {!!expenses.length && (
-                <PieChartWithSelection expenses={expenses} totalIncome={totalIncome} />
+                <PieChartWithSelection expenses={expenses} />
             )}
         </View>
     );

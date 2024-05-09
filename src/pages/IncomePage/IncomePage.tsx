@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useContext, useRef, useState } from 'react';
 import { NativeSyntheticEvent, StyleSheet, Text, TextInputChangeEventData, View } from 'react-native';
 import { Button, CheckBox, IndexPath, Input, Layout, List, ListItem, Select, SelectItem, Toggle } from '@ui-kitten/components';
 
@@ -8,13 +8,14 @@ import StudentLoanForm from './components/StudentLoanForm';
 import SecondaryIncomeForm from './components/SecondaryIncomeForm';
 import useIncome from './hooks/useIncome';
 import useTable, { HEADERS, RowIndicator } from './hooks/useTable';
+import { AppContext } from '../../context/AppContext';
 
 type Props = {
     isHidden: boolean,
-    setTotalIncome: (amount: number) => void
 }
 
-const IncomePage = ({ isHidden = false, setTotalIncome }: Props) => {
+const IncomePage = ({ isHidden = false }: Props) => {
+    const appState = useContext(AppContext);
     const [selectedIndex, setSelectedIndex] = useState<IndexPath | IndexPath[]>(new IndexPath(0));
 
     // The list (table) only updates if we pass something new to the extraData prop.
@@ -81,7 +82,7 @@ const IncomePage = ({ isHidden = false, setTotalIncome }: Props) => {
             yearSecGrossPay,
             yearSecPaye,
         } = calculateYearlyValues();
-        setTotalIncome(yearGrossPay + yearSecGrossPay - yearPaye - yearAcc - yearKiwiSaver - yearStudentLoan - yearSecPaye);
+        appState?.setTotalIncome(yearGrossPay + yearSecGrossPay - yearPaye - yearAcc - yearKiwiSaver - yearStudentLoan - yearSecPaye);
 
         populateTableRows({
             yearGrossPay,
