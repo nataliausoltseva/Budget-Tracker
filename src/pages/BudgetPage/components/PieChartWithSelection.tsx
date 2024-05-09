@@ -6,8 +6,7 @@ import usePieChart from '../hooks/usePieChart';
 import { ExpenseItem } from '../BudgetPage';
 
 type Props = {
-    expenses: ExpenseItem[],
-    totalIncome: number
+    expenses: ExpenseItem[]
 }
 
 const CHART_FREQUENCY: FrequencyItem[] = [
@@ -33,13 +32,13 @@ const CHART_FREQUENCY: FrequencyItem[] = [
     },
 ];
 
-const PieChartWithSelection = ({ expenses, totalIncome = 0 }: Props) => {
+const PieChartWithSelection = ({ expenses }: Props) => {
     const [selectedIndex, setSelectedIndex] = useState<IndexPath | IndexPath[]>(new IndexPath(0));
     const frequency: FrequencyItem = CHART_FREQUENCY[selectedIndex.row];
     const {
         pieData,
         leftOver
-    } = usePieChart({ expenses, totalIncome, frequency });
+    } = usePieChart({ expenses, frequency });
 
     return (
         <View style={{ flexDirection: 'row' }}>
