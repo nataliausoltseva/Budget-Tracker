@@ -6,7 +6,7 @@ import { EvaIconsPack } from '@ui-kitten/eva-icons';
 
 import IncomePage from './src/pages/IncomePage/IncomePage';
 import BudgetPage from './src/pages/BudgetPage/BudgetPage';
-import SavingGoalsPage from './src/pages/SavingGoalsPage';
+import SavingGoalsPage from './src/pages/SavingGoalsPage/SavingGoalsPage';
 import TopNavigationBar from './src/components/TopNavigationBar';
 import { AppContextProvider } from './src/context/AppContext';
 

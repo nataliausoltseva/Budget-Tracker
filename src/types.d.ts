@@ -24,3 +24,11 @@ type PieChartitem = {
     label: string,
     calcFromYear: number
 }
+
+type SavingGoalItem = {
+    name: string,
+    amount: number,
+    savedAmount: number,
+    date: string,
+    isReached: boolean,
+}
