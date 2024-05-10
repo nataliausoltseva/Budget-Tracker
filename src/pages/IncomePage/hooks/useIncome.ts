@@ -115,7 +115,7 @@ const useIncome = () => {
             if (!isDone) {
                 const amountToTax = previousMax === 0 ?
                     threshold.max :
-                    (yearGrossPay > threshold.max ? threshold.max - threshold.min : yearGrossPay - threshold.min);
+                    (yearGrossPay > threshold.max ? threshold.max - threshold.min + 1 : yearGrossPay - threshold.min + 1);
                 const taxToPay = amountToTax * threshold.rate / 100;
                 paidTax += taxToPay;
                 previousMax = threshold.max;
