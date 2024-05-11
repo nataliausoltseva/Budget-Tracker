@@ -2,6 +2,7 @@ import { Button, Text } from '@ui-kitten/components';
 import React, { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import AddModal from './components/AddModal';
+import Goal from './components/Goal';
 
 type Props = {
     isHidden: boolean
@@ -20,24 +21,29 @@ const SavingGoalsPage = ({ isHidden = false }: Props) => {
         setVisible(false);
     }
 
+    const onDeleteGoal = (index: number) => {
+        setGoals((prevState: SavingGoalItem[]) => {
+            const newGoals = [...prevState];
+            newGoals.splice(index, 1);
+            return newGoals;
+        });
+    }
+
     return (
         <View style={containerStyles(isHidden).container}>
+            <View style={styles.buttonContainer}>
+                <Button onPress={() => setVisible(true)} style={styles.button}>
+                    Add
+                </Button>
+            </View>
             {!!goals.length && (
                 <View>
                     {goals.map((goal: SavingGoalItem, index: number) => (
-                        <View key={index}>
-                            <Text>Name: {goal.name}</Text>
-                            <Text>Amount: {goal.amount.toString()}</Text>
-                            <Text>SavedAmount: {goal.savedAmount.toString()}</Text>
-                            <Text>Date: {formatDate(goal.date)}</Text>
-                        </View>
+                        <Goal key={index} goal={goal} onDelete={() => onDeleteGoal(index)} />
                     ))}
                 </View>
             )}
             <AddModal onSave={onAddGoal} isVisible={visible} onClose={() => setVisible(false)} />
-            <Button onPress={() => setVisible(true)} style={styles.button}>
-                Add
-            </Button>
         </View>
     );
 }
@@ -47,21 +53,14 @@ export default SavingGoalsPage;
 const containerStyles = (isHidden: boolean) => StyleSheet.create({
     container: {
         display: isHidden ? "none" : "flex",
-        height: '100%',
-        justifyContent: "center",
-        alignItems: "center"
     },
 });
 
 const styles = StyleSheet.create({
+    buttonContainer: {
+        alignItems: "flex-end"
+    },
     button: {
-        width: 100
-    }
+        width: 100,
+    },
 });
-
-const formatDate = (date: string) => {
-    const newDate = new Date(date);
-    const formatter = new Intl.DateTimeFormat('en', { month: 'long' });
-    const month1 = formatter.format(newDate);
-    return newDate.getDate() + " " + month1 + " " + newDate.getFullYear();
-}
