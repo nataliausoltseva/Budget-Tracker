@@ -29,6 +29,6 @@ type SavingGoalItem = {
     name: string,
     amount: number,
     savedAmount: number,
-    date: string,
+    date: Date,
     isReached: boolean,
 }

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { SafeAreaView, View } from 'react-native';
-import { PieChart, pieDataItem } from 'react-native-gifted-charts';
+import { PieChart } from 'react-native-gifted-charts';
 import { IndexPath, Layout, Select, SelectItem, Text } from '@ui-kitten/components';
 import usePieChart from '../hooks/usePieChart';
 import { ExpenseItem } from '../BudgetPage';
