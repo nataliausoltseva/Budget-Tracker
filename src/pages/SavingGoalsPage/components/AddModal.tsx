@@ -7,15 +7,19 @@ type Props = {
     onSave: (goal: SavingGoalItem) => void,
     isVisible: boolean,
     onClose: () => void,
+    nameValue?: string,
+    amountValue?: string,
+    savedAmountValue?: string,
+    dateValue?: Date | null,
 }
 
-const AddModal = ({ onSave, isVisible = false, onClose }: Props) => {
+const AddModal = ({ onSave, isVisible = false, onClose, nameValue = "", amountValue = "0", savedAmountValue = "0", dateValue = null }: Props) => {
     const now = new Date();
     const tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
-    const [name, setName] = useState("");
-    const [amount, setAmount] = useState("0");
-    const [savedAmount, setSavedAmount] = useState("0");
-    const [date, setDate] = useState<Date>(tomorrow);
+    const [name, setName] = useState(nameValue);
+    const [amount, setAmount] = useState(amountValue);
+    const [savedAmount, setSavedAmount] = useState(savedAmountValue);
+    const [date, setDate] = useState<Date>(dateValue || tomorrow);
 
     const _onSave = () => {
         onSave({

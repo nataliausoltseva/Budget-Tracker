@@ -1,16 +1,18 @@
 import { Button, CircularProgressBar, Icon, ProgressBar, Text } from "@ui-kitten/components"
 import { StyleSheet, View } from "react-native"
 import { formatDate, getDateDiffSeconds } from "../../../hooks/date";
-import React from "react";
-import CountDown from 'react-native-countdown-component';
-
+import React, { useState } from "react";
+import CountDown from 'react-native-countdown-fixed';
+import AddModal from "./AddModal";
 
 type Props = {
     goal: SavingGoalItem,
     onDelete: () => void,
+    onEdit: () => void,
+    onAdd: () => void,
 }
 
-const Goal = ({ goal, onDelete }: Props) => {
+const Goal = ({ goal, onDelete, onEdit, onAdd }: Props) => {
     const seconds = getDateDiffSeconds(goal.date);
 
     return (
@@ -23,14 +25,17 @@ const Goal = ({ goal, onDelete }: Props) => {
             </View>
             <CircularProgressBar progress={goal.savedAmount / goal.amount} />
             <CountDown
-                until={seconds}
+                until={seconds || 0}
                 onFinish={() => console.log('finished')}
-                onPress={() => console.log('hello')}
                 size={20}
                 timeLabelStyle={styles.timeLabel}
                 digitStyle={styles.time}
             />
-            <Button accessoryLeft={<Icon name='trash' />} onPress={onDelete} appearance='ghost' status='danger' style={styles.button} />
+            <View style={styles.actionContainer}>
+                <Button accessoryLeft={<Icon name='trash' />} onPress={onDelete} appearance='ghost' status='danger' style={styles.button} />
+                <Button accessoryLeft={<Icon name='edit' />} onPress={onEdit} appearance='ghost' status='primary' style={styles.button} />
+                <Button accessoryLeft={<Icon name='plus' />} onPress={onAdd} appearance='ghost' status='primary' style={styles.button} />
+            </View>
         </View>
     );
 }
@@ -54,6 +59,9 @@ const styles = StyleSheet.create({
         color: "white"
     },
     time: {
-        backgroundColor: "#a3c2e3"
+        backgroundColor: "#a3c2e3",
+    },
+    actionContainer: {
+        flexDirection: "column"
     }
 });

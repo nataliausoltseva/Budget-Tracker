@@ -11,6 +11,7 @@ type Props = {
 const SavingGoalsPage = ({ isHidden = false }: Props) => {
     const [visible, setVisible] = useState(false);
     const [goals, setGoals] = useState<SavingGoalItem[]>([]);
+    const [visibleAdditionModal, setVisibleAdditionModal] = useState(false);
 
     const onAddGoal = (goal: SavingGoalItem) => {
         setGoals((prevState: SavingGoalItem[]) => {
@@ -39,11 +40,21 @@ const SavingGoalsPage = ({ isHidden = false }: Props) => {
             {!!goals.length && (
                 <View>
                     {goals.map((goal: SavingGoalItem, index: number) => (
-                        <Goal key={index} goal={goal} onDelete={() => onDeleteGoal(index)} />
+                        <Goal
+                            key={index}
+                            goal={goal}
+                            onDelete={() => onDeleteGoal(index)}
+                            onAdd={() => setVisible(true)}
+                            onEdit={() => setVisibleAdditionModal(true)}
+                        />
                     ))}
                 </View>
             )}
-            <AddModal onSave={onAddGoal} isVisible={visible} onClose={() => setVisible(false)} />
+            <AddModal
+                onSave={onAddGoal}
+                isVisible={visible}
+                onClose={() => setVisible(false)}
+            />
         </View>
     );
 }
