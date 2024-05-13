@@ -1,6 +1,6 @@
 import { Button, Card, Datepicker, Input, Modal, Text } from "@ui-kitten/components";
 import moment from "moment";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { NativeSyntheticEvent, StyleSheet, TextInputChangeEventData, View } from "react-native";
 
 type Props = {
@@ -11,15 +11,25 @@ type Props = {
     amountValue?: string,
     savedAmountValue?: string,
     dateValue?: Date | null,
+    goal?: SavingGoalItem | null,
 }
 
-const AddModal = ({ onSave, isVisible = false, onClose, nameValue = "", amountValue = "0", savedAmountValue = "0", dateValue = null }: Props) => {
+const GoalModal = ({ onSave, isVisible = false, onClose, goal = null }: Props) => {
     const now = new Date();
     const tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
-    const [name, setName] = useState(nameValue);
-    const [amount, setAmount] = useState(amountValue);
-    const [savedAmount, setSavedAmount] = useState(savedAmountValue);
-    const [date, setDate] = useState<Date>(dateValue || tomorrow);
+    const [name, setName] = useState(goal?.name || "");
+    const [amount, setAmount] = useState(goal?.amount?.toString() || "0");
+    const [savedAmount, setSavedAmount] = useState(goal?.savedAmount?.toString() || "0");
+    const [date, setDate] = useState<Date>(goal?.date || tomorrow);
+
+    useEffect(() => {
+        if (goal) {
+            setName(goal.name);
+            setAmount(goal.amount.toString());
+            setSavedAmount(goal.savedAmount.toString());
+            setDate(goal.date);
+        }
+    }, [goal]);
 
     const _onSave = () => {
         onSave({
@@ -27,7 +37,8 @@ const AddModal = ({ onSave, isVisible = false, onClose, nameValue = "", amountVa
             amount: parseFloat(amount),
             savedAmount: parseFloat(savedAmount),
             date,
-            isReached: parseFloat(savedAmount) >= parseFloat(amount)
+            isReached: parseFloat(savedAmount) >= parseFloat(amount),
+            transactions: goal?.transactions || []
         });
         _onClose();
     }
@@ -51,7 +62,6 @@ const AddModal = ({ onSave, isVisible = false, onClose, nameValue = "", amountVa
         setSavedAmount("0");
         onClose();
     }
-
 
     return (
         <View style={styles.container}>
@@ -101,7 +111,7 @@ const AddModal = ({ onSave, isVisible = false, onClose, nameValue = "", amountVa
     )
 }
 
-export default AddModal;
+export default GoalModal;
 
 const styles = StyleSheet.create({
     container: {

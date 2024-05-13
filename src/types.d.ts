@@ -31,4 +31,10 @@ type SavingGoalItem = {
     savedAmount: number,
     date: Date,
     isReached: boolean,
+    transactions: TransactionItem[]
+}
+
+type TransactionItem = {
+    amount: number,
+    date: Date
 }

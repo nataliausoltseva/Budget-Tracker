@@ -3,16 +3,21 @@ import { StyleSheet, View } from "react-native"
 import { formatDate, getDateDiffSeconds } from "../../../hooks/date";
 import React, { useState } from "react";
 import CountDown from 'react-native-countdown-fixed';
-import AddModal from "./AddModal";
+import AddModal from "./GoalModal";
+import GoalModal from "./GoalModal";
+import TransactionModal from "./TransactionModal";
+import TransactionItem from "./TransactionItem";
 
 type Props = {
     goal: SavingGoalItem,
     onDelete: () => void,
-    onEdit: () => void,
-    onAdd: () => void,
+    onEdit: (g: SavingGoalItem) => void,
+    onAdd: (item: TransactionItem) => void,
 }
 
 const Goal = ({ goal, onDelete, onEdit, onAdd }: Props) => {
+    const [editVisible, setEditVisible] = useState(false);
+    const [transactionVisible, setTransactionVisible] = useState(false);
     const seconds = getDateDiffSeconds(goal.date);
 
     return (
@@ -22,6 +27,13 @@ const Goal = ({ goal, onDelete, onEdit, onAdd }: Props) => {
                 <Text>Amount: {goal.amount.toString()}</Text>
                 <Text>SavedAmount: {goal.savedAmount.toString()}</Text>
                 <Text>Date: {formatDate(goal.date)}</Text>
+                {goal.transactions.length > 0 && (
+                    <View style={styles.transactionsContainer}>
+                        {goal.transactions.map((item: TransactionItem, i: number) => (
+                            <TransactionItem key={i} item={item} />
+                        ))}
+                    </View>
+                )}
             </View>
             <CircularProgressBar progress={goal.savedAmount / goal.amount} />
             <CountDown
@@ -33,9 +45,20 @@ const Goal = ({ goal, onDelete, onEdit, onAdd }: Props) => {
             />
             <View style={styles.actionContainer}>
                 <Button accessoryLeft={<Icon name='trash' />} onPress={onDelete} appearance='ghost' status='danger' style={styles.button} />
-                <Button accessoryLeft={<Icon name='edit' />} onPress={onEdit} appearance='ghost' status='primary' style={styles.button} />
-                <Button accessoryLeft={<Icon name='plus' />} onPress={onAdd} appearance='ghost' status='primary' style={styles.button} />
+                <Button accessoryLeft={<Icon name='edit' />} onPress={() => setEditVisible(true)} appearance='ghost' status='primary' style={styles.button} />
+                <Button accessoryLeft={<Icon name='plus' />} onPress={() => setTransactionVisible(true)} appearance='ghost' status='primary' style={styles.button} />
             </View>
+            <GoalModal
+                onSave={onEdit}
+                isVisible={editVisible}
+                onClose={() => setEditVisible(false)}
+                goal={goal}
+            />
+            <TransactionModal
+                onSave={onAdd}
+                isVisible={transactionVisible}
+                onClose={() => setTransactionVisible(false)}
+            />
         </View>
     );
 }
@@ -63,5 +86,8 @@ const styles = StyleSheet.create({
     },
     actionContainer: {
         flexDirection: "column"
+    },
+    transactionsContainer: {
+        marginLeft: 20
     }
 });

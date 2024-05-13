@@ -1,7 +1,7 @@
 import { Button, Text } from '@ui-kitten/components';
 import React, { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
-import AddModal from './components/AddModal';
+import GoalModal from './components/GoalModal';
 import Goal from './components/Goal';
 
 type Props = {
@@ -30,6 +30,23 @@ const SavingGoalsPage = ({ isHidden = false }: Props) => {
         });
     }
 
+    const onEdit = (goal: SavingGoalItem, index: number) => {
+        setGoals((prevState: SavingGoalItem[]) => {
+            const newGoals = [...prevState];
+            newGoals[index] = goal;;
+            return newGoals;
+        });
+    }
+
+    const onAddTransaction = (item: TransactionItem, index: number) => {
+        setGoals((prevState: SavingGoalItem[]) => {
+            const newGoals = [...prevState];
+            newGoals[index].savedAmount += item.amount;
+            newGoals[index].transactions.push(item);
+            return newGoals;
+        });
+    }
+
     return (
         <View style={containerStyles(isHidden).container}>
             <View style={styles.buttonContainer}>
@@ -44,13 +61,13 @@ const SavingGoalsPage = ({ isHidden = false }: Props) => {
                             key={index}
                             goal={goal}
                             onDelete={() => onDeleteGoal(index)}
-                            onAdd={() => setVisible(true)}
-                            onEdit={() => setVisibleAdditionModal(true)}
+                            onAdd={(item: TransactionItem) => onAddTransaction(item, index)}
+                            onEdit={(g: SavingGoalItem) => onEdit(g, index)}
                         />
                     ))}
                 </View>
             )}
-            <AddModal
+            <GoalModal
                 onSave={onAddGoal}
                 isVisible={visible}
                 onClose={() => setVisible(false)}
