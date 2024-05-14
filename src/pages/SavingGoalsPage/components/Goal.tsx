@@ -1,9 +1,8 @@
-import { Button, CircularProgressBar, Icon, ProgressBar, Text } from "@ui-kitten/components"
+import { Button, CircularProgressBar, Icon, Text } from "@ui-kitten/components"
 import { StyleSheet, View } from "react-native"
 import { formatDate, getDateDiffSeconds } from "../../../hooks/date";
 import React, { useState } from "react";
 import CountDown from 'react-native-countdown-fixed';
-import AddModal from "./GoalModal";
 import GoalModal from "./GoalModal";
 import TransactionModal from "./TransactionModal";
 import TransactionItem from "./TransactionItem";
@@ -18,6 +17,12 @@ type Props = {
 const Goal = ({ goal, onDelete, onEdit, onAdd }: Props) => {
     const [editVisible, setEditVisible] = useState(false);
     const [transactionVisible, setTransactionVisible] = useState(false);
+    const [isTransactionsExpanded, setIsTransactionsExpanded] = useState(false);
+
+    const onTransactionToggle = () => {
+        setIsTransactionsExpanded((prevState: boolean) => !prevState);
+    }
+
     const seconds = getDateDiffSeconds(goal.date);
 
     return (
@@ -29,7 +34,8 @@ const Goal = ({ goal, onDelete, onEdit, onAdd }: Props) => {
                 <Text>Date: {formatDate(goal.date)}</Text>
                 {goal.transactions.length > 0 && (
                     <View style={styles.transactionsContainer}>
-                        {goal.transactions.map((item: TransactionItem, i: number) => (
+                        <Button accessoryLeft={<Icon name={'arrow-ios-downward'} />} onPress={onTransactionToggle} appearance='ghost' style={buttonStyle(isTransactionsExpanded).icon} />
+                        {isTransactionsExpanded && goal.transactions.map((item: TransactionItem, i: number) => (
                             <TransactionItem key={i} item={item} />
                         ))}
                     </View>
@@ -91,3 +97,10 @@ const styles = StyleSheet.create({
         marginLeft: 20
     }
 });
+
+const buttonStyle = (isExpanded: boolean) => StyleSheet.create({
+    icon: {
+        width: 20,
+        transform: [{ rotate: `${isExpanded ? 180 : 0}deg` }]
+    }
+})
