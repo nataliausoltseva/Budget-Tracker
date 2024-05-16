@@ -3,21 +3,23 @@ import { useState } from "react";
 import { NativeSyntheticEvent, StyleSheet, TextInputChangeEventData, View } from "react-native";
 
 type Props = {
+    amountValue?: string,
+    dateValue?: Date | null,
     isVisible: boolean,
     onSave: (transaction: TransactionItem) => void,
     onClose: () => void
 }
 
-const TransactionModal = ({ isVisible = false, onSave, onClose }: Props) => {
+const TransactionModal = ({ amountValue = "0", dateValue = null, isVisible = false, onSave, onClose }: Props) => {
     const now = new Date();
 
-    const [amount, setAmount] = useState("0");
-    const [date, setDate] = useState<Date>(now);
+    const [amount, setAmount] = useState(amountValue);
+    const [date, setDate] = useState<Date>(dateValue || now);
 
     const _onSave = () => {
         onSave({
             amount: parseFloat(amount),
-            date,
+            date: date,
         });
         _onClose();
     }

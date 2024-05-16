@@ -38,15 +38,6 @@ const SavingGoalsPage = ({ isHidden = false }: Props) => {
         });
     }
 
-    const onAddTransaction = (item: TransactionItem, index: number) => {
-        setGoals((prevState: SavingGoalItem[]) => {
-            const newGoals = [...prevState];
-            newGoals[index].savedAmount += item.amount;
-            newGoals[index].transactions.push(item);
-            return newGoals;
-        });
-    }
-
     return (
         <View style={containerStyles(isHidden).container}>
             <View style={styles.buttonContainer}>
@@ -61,7 +52,6 @@ const SavingGoalsPage = ({ isHidden = false }: Props) => {
                             key={index}
                             goal={goal}
                             onDelete={() => onDeleteGoal(index)}
-                            onAdd={(item: TransactionItem) => onAddTransaction(item, index)}
                             onEdit={(g: SavingGoalItem) => onEdit(g, index)}
                         />
                     ))}

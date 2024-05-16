@@ -11,21 +11,39 @@ type Props = {
     goal: SavingGoalItem,
     onDelete: () => void,
     onEdit: (g: SavingGoalItem) => void,
-    onAdd: (item: TransactionItem) => void,
 }
 
-const Goal = ({ goal, onDelete, onEdit, onAdd }: Props) => {
+const Goal = ({ goal, onDelete, onEdit }: Props) => {
     const [editVisible, setEditVisible] = useState(false);
     const [transactionVisible, setTransactionVisible] = useState(false);
-    const [isTransactionsExpanded, setIsTransactionsExpanded] = useState(false);
     const [isGoalExpanded, setIsGoalExpanded] = useState(false);
 
-    const onTransactionToggle = () => {
-        setIsTransactionsExpanded((prevState: boolean) => !prevState);
-    }
 
     const onGoalToggle = () => {
         setIsGoalExpanded((prevState: boolean) => !prevState);
+    }
+
+    const onTransactionAdd = (transaction: TransactionItem) => {
+        const newTransactions = [...goal.transactions];
+        newTransactions.push(transaction);
+        goal.transactions = newTransactions;
+        goal.savedAmount = goal.transactions.reduce((partialSum, item) => partialSum + item.amount, 0);
+        onEdit(goal);
+    }
+
+    const onTransactionDelete = (index: number) => {
+        const newTransactions = [...goal.transactions];
+        newTransactions.splice(index, 1);
+        goal.transactions = newTransactions;
+        onEdit(goal);
+    }
+
+    const onTransactionEdit = (index: number, transaction: TransactionItem) => {
+        const newTransactions = [...goal.transactions];
+        newTransactions[index] = transaction;
+        goal.transactions = newTransactions;
+        goal.savedAmount = goal.transactions.reduce((partialSum, item) => partialSum + item.amount, 0);
+        onEdit(goal);
     }
 
     const seconds = getDateDiffSeconds(goal.date);
@@ -45,11 +63,10 @@ const Goal = ({ goal, onDelete, onEdit, onAdd }: Props) => {
             {isGoalExpanded && (
                 <View style={{ alignItems: "flex-start", marginLeft: 35 }}>
                     <Text>Amount: {goal.amount.toString()}</Text>
-                    <Text>SavedAmount: {goal.savedAmount.toString()}</Text>
+                    <Text>Saved Amount: {goal.savedAmount.toString()}</Text>
                     <Text>Date: {formatDate(goal.date)}</Text>
                     <CountDown
                         until={seconds || 0}
-                        onFinish={() => console.log('finished')}
                         size={20}
                         timeLabelStyle={styles.timeLabel}
                         digitStyle={styles.time}
@@ -61,7 +78,12 @@ const Goal = ({ goal, onDelete, onEdit, onAdd }: Props) => {
                     {goal.transactions.length > 0 && (
                         <View style={styles.transactionsContainer}>
                             {goal.transactions.map((item: TransactionItem, i: number) => (
-                                <TransactionItem key={i} item={item} />
+                                <TransactionItem
+                                    key={i}
+                                    item={item}
+                                    onDelete={() => onTransactionDelete(i)}
+                                    onEdit={(t: TransactionItem) => onTransactionEdit(i, t)}
+                                />
                             ))}
                         </View>
                     )}
@@ -77,7 +99,7 @@ const Goal = ({ goal, onDelete, onEdit, onAdd }: Props) => {
             )}
             {transactionVisible && (
                 <TransactionModal
-                    onSave={onAdd}
+                    onSave={onTransactionAdd}
                     isVisible={true}
                     onClose={() => setTransactionVisible(false)}
                 />
