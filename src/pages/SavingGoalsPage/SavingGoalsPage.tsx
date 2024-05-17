@@ -1,7 +1,7 @@
 import { Button, Text } from '@ui-kitten/components';
 import React, { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
-import AddModal from './components/AddModal';
+import GoalModal from './components/GoalModal';
 import Goal from './components/Goal';
 
 type Props = {
@@ -11,6 +11,7 @@ type Props = {
 const SavingGoalsPage = ({ isHidden = false }: Props) => {
     const [visible, setVisible] = useState(false);
     const [goals, setGoals] = useState<SavingGoalItem[]>([]);
+    const [visibleAdditionModal, setVisibleAdditionModal] = useState(false);
 
     const onAddGoal = (goal: SavingGoalItem) => {
         setGoals((prevState: SavingGoalItem[]) => {
@@ -29,6 +30,14 @@ const SavingGoalsPage = ({ isHidden = false }: Props) => {
         });
     }
 
+    const onEdit = (goal: SavingGoalItem, index: number) => {
+        setGoals((prevState: SavingGoalItem[]) => {
+            const newGoals = [...prevState];
+            newGoals[index] = goal;;
+            return newGoals;
+        });
+    }
+
     return (
         <View style={containerStyles(isHidden).container}>
             <View style={styles.buttonContainer}>
@@ -39,11 +48,20 @@ const SavingGoalsPage = ({ isHidden = false }: Props) => {
             {!!goals.length && (
                 <View>
                     {goals.map((goal: SavingGoalItem, index: number) => (
-                        <Goal key={index} goal={goal} onDelete={() => onDeleteGoal(index)} />
+                        <Goal
+                            key={index}
+                            goal={goal}
+                            onDelete={() => onDeleteGoal(index)}
+                            onEdit={(g: SavingGoalItem) => onEdit(g, index)}
+                        />
                     ))}
                 </View>
             )}
-            <AddModal onSave={onAddGoal} isVisible={visible} onClose={() => setVisible(false)} />
+            <GoalModal
+                onSave={onAddGoal}
+                isVisible={visible}
+                onClose={() => setVisible(false)}
+            />
         </View>
     );
 }
