@@ -36,5 +36,6 @@ type SavingGoalItem = {
 
 type TransactionItem = {
     amount: number,
-    date: Date
+    date: Date,
+    totalSaved: number,
 }

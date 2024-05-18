@@ -1,11 +1,12 @@
 import { Button, CircularProgressBar, Icon, Text } from "@ui-kitten/components"
-import { StyleSheet, View } from "react-native"
+import { StyleSheet, View, useWindowDimensions } from "react-native"
 import { formatDate, getDateDiffSeconds } from "../../../hooks/date";
 import React, { useState } from "react";
 import CountDown from 'react-native-countdown-fixed';
 import GoalModal from "./GoalModal";
 import TransactionModal from "./TransactionModal";
 import TransactionItem from "./TransactionItem";
+import { LineChart } from "react-native-gifted-charts";
 
 type Props = {
     goal: SavingGoalItem,
@@ -35,6 +36,7 @@ const Goal = ({ goal, onDelete, onEdit }: Props) => {
         const newTransactions = [...goal.transactions];
         newTransactions.splice(index, 1);
         goal.transactions = newTransactions;
+        goal.savedAmount = goal.transactions.reduce((partialSum, item) => partialSum + item.amount, 0);
         onEdit(goal);
     }
 
@@ -47,6 +49,7 @@ const Goal = ({ goal, onDelete, onEdit }: Props) => {
     }
 
     const seconds = getDateDiffSeconds(goal.date);
+    const windowDimensions = useWindowDimensions();
 
     return (
         <View style={styles.container}>
@@ -76,17 +79,39 @@ const Goal = ({ goal, onDelete, onEdit }: Props) => {
                         <Button accessoryLeft={<Icon name='plus' />} onPress={() => setTransactionVisible(true)} appearance='ghost' status='primary' style={styles.button} />
                     </View>
                     {goal.transactions.length > 0 && (
-                        <View style={styles.transactionsContainer}>
-                            {goal.transactions.map((item: TransactionItem, i: number) => (
-                                <TransactionItem
-                                    key={i}
-                                    item={item}
-                                    onDelete={() => onTransactionDelete(i)}
-                                    onEdit={(t: TransactionItem) => onTransactionEdit(i, t)}
+                        <View>
+                            <View style={styles.transactionsContainer}>
+                                {goal.transactions.map((item: TransactionItem, i: number) => (
+                                    <TransactionItem
+                                        key={i}
+                                        item={item}
+                                        onDelete={() => onTransactionDelete(i)}
+                                        onEdit={(t: TransactionItem) => onTransactionEdit(i, t)}
+                                    />
+                                ))}
+                            </View>
+                            <View style={{ width: "90%" }}>
+                                <LineChart
+                                    data={goal.transactions.map((t: TransactionItem) => ({ value: t.totalSaved, label: t.date.toLocaleDateString() }))}
+                                    data2={[]}
+                                    height={250}
+                                    width={windowDimensions.width - 100}
+                                    initialSpacing={0}
+                                    color1="skyblue"
+                                    color2="orange"
+                                    textColor1="green"
+                                    dataPointsColor1="blue"
+                                    dataPointsColor2="red"
+                                    textShiftY={-2}
+                                    textShiftX={-5}
+                                    textFontSize={13}
+                                    adjustToWidth
+                                    showVerticalLines
                                 />
-                            ))}
+                            </View>
                         </View>
                     )}
+
                 </View>
             )}
             {editVisible && (
@@ -99,6 +124,7 @@ const Goal = ({ goal, onDelete, onEdit }: Props) => {
             )}
             {transactionVisible && (
                 <TransactionModal
+                    goalTotalSaved={goal.savedAmount}
                     onSave={onTransactionAdd}
                     isVisible={true}
                     onClose={() => setTransactionVisible(false)}

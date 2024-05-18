@@ -1,6 +1,6 @@
 import { Button, IndexPath, Text } from '@ui-kitten/components';
 import React, { useContext, useState } from 'react';
-import { NativeSyntheticEvent, StyleSheet, TextInputChangeEventData, View } from 'react-native';
+import { NativeSyntheticEvent, ScrollView, StyleSheet, TextInputChangeEventData, View } from 'react-native';
 import BudgetItem from './components/BudgetItem';
 import PieChartWithSelection from './components/PieChartWithSelection';
 import { AppContext } from '../../context/AppContext';
@@ -129,7 +129,7 @@ const BudgetPage = ({ isHidden = false }: Props) => {
     }
 
     return (
-        <View style={{ display: isHidden ? "none" : "flex" }}>
+        <ScrollView style={{ display: isHidden ? "none" : "flex" }}>
             <BudgetItem
                 key={`new-item-${random}`}
                 name={name}
@@ -160,7 +160,7 @@ const BudgetPage = ({ isHidden = false }: Props) => {
             {!!expenses.length && (
                 <PieChartWithSelection expenses={expenses} />
             )}
-        </View>
+        </ScrollView>
     );
 }
 
