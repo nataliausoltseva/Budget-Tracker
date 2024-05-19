@@ -50,6 +50,10 @@ const Goal = ({ goal, onDelete, onEdit }: Props) => {
 
     const seconds = getDateDiffSeconds(goal.date);
     const windowDimensions = useWindowDimensions();
+    const graphData = goal.transactions.length ? [
+        ...[{ value: goal.transactions[0].totalSaved === goal.transactions[0].amount ? 0 : goal.transactions[0].totalSaved - goal.transactions[0].amount }],
+        ...goal.transactions.map((t: TransactionItem) => ({ value: t.totalSaved }))
+    ] : [];
 
     return (
         <View style={styles.container}>
@@ -90,10 +94,11 @@ const Goal = ({ goal, onDelete, onEdit }: Props) => {
                                     />
                                 ))}
                             </View>
-                            <View style={{ width: "90%" }}>
+                            <View>
+                                <Text>Your saving progress:</Text>
                                 <LineChart
-                                    data={goal.transactions.map((t: TransactionItem) => ({ value: t.totalSaved, label: t.date.toLocaleDateString() }))}
-                                    data2={[]}
+                                    data={graphData}
+                                    data2={graphData.map(_ => ({ value: goal.amount }))}
                                     height={250}
                                     width={windowDimensions.width - 100}
                                     initialSpacing={0}
@@ -103,9 +108,7 @@ const Goal = ({ goal, onDelete, onEdit }: Props) => {
                                     dataPointsColor1="blue"
                                     dataPointsColor2="red"
                                     textShiftY={-2}
-                                    textShiftX={-5}
                                     textFontSize={13}
-                                    adjustToWidth
                                     showVerticalLines
                                 />
                             </View>
