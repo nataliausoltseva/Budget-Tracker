@@ -1,25 +1,33 @@
 import { Button, Card, Datepicker, Input, Modal, Text } from "@ui-kitten/components";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { NativeSyntheticEvent, StyleSheet, TextInputChangeEventData, View } from "react-native";
 
 type Props = {
-    amountValue?: string,
-    dateValue?: Date | null,
     isVisible: boolean,
     onSave: (transaction: TransactionItem) => void,
     onClose: () => void
+    goalTotalSaved?: number,
+    transaction?: TransactionItem,
 }
 
-const TransactionModal = ({ amountValue = "0", dateValue = null, isVisible = false, onSave, onClose }: Props) => {
+const TransactionModal = ({ goalTotalSaved = 0, transaction, isVisible = false, onSave, onClose }: Props) => {
     const now = new Date();
 
-    const [amount, setAmount] = useState(amountValue);
-    const [date, setDate] = useState<Date>(dateValue || now);
+    const [amount, setAmount] = useState("0");
+    const [date, setDate] = useState<Date>(now);
+
+    useEffect(() => {
+        if (transaction) {
+            setAmount(transaction.amount.toString());
+            setDate(transaction.date);
+        }
+    }, [transaction]);
 
     const _onSave = () => {
         onSave({
             amount: parseFloat(amount),
             date: date,
+            totalSaved: transaction ? transaction.totalSaved + (transaction.amount - parseFloat(amount)) : goalTotalSaved + parseFloat(amount),
         });
         _onClose();
     }
@@ -59,7 +67,7 @@ const TransactionModal = ({ amountValue = "0", dateValue = null, isVisible = fal
                         date={date}
                         onSelect={nextDate => setDate(nextDate)}
                     />
-                    <Button onPress={_onSave} disabled={!amount || amount === "0"}>
+                    <Button onPress={_onSave} disabled={amount === ''}>
                         Save
                     </Button>
                 </Card>

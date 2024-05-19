@@ -25,8 +25,7 @@ const TransactionItem = ({ item, onDelete, onEdit }: Props) => {
             </View>
             {editVisible && (
                 <TransactionModal
-                    amountValue={item.amount.toString()}
-                    dateValue={item.date}
+                    transaction={item}
                     onSave={onEdit}
                     isVisible={true}
                     onClose={() => setEditVisible(false)}
