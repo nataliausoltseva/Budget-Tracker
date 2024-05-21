@@ -82,8 +82,7 @@ const IncomePage = ({ isHidden = false }: Props) => {
             yearSecGrossPay,
             yearSecPaye,
         } = calculateYearlyValues();
-        appState?.setTotalIncome(yearGrossPay + yearSecGrossPay - yearPaye - yearAcc - yearKiwiSaver - yearStudentLoan - yearSecPaye);
-
+        appState?.setTotalIncome(yearGrossPay + yearSecGrossPay - yearPaye - yearAcc - (hasKiwiSaver ? yearKiwiSaver : 0) - (hasStudentLoan ? yearStudentLoan : 0) - yearSecPaye);
         populateTableRows({
             yearGrossPay,
             yearPaye,

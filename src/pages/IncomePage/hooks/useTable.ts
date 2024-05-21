@@ -171,7 +171,7 @@ const useTable = () => {
                 rows[4].values.push(acc);
                 rows[5].values.push(kiwiSaver);
                 rows[6].values.push(studentLoan);
-                rows[7].values.push(roundToTwoDecimals(grossPay + secGrossPay - paye - acc - kiwiSaver - studentLoan));
+                rows[7].values.push(roundToTwoDecimals(grossPay + secGrossPay - paye - acc - kiwiSaver - studentLoan - secPaye));
             });
         }
         rows[1].isHidden = yearSecGrossPay === 0;
