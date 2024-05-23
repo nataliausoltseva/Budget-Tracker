@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { SafeAreaView, View } from 'react-native';
 import { PieChart } from 'react-native-gifted-charts';
-import { IndexPath, Layout, Select, SelectItem, Text } from '@ui-kitten/components';
+import { Button, IndexPath, Layout, Select, SelectItem, Text } from '@ui-kitten/components';
 import usePieChart from '../hooks/usePieChart';
 import { ExpenseItem } from '../BudgetPage';
 
 type Props = {
-    expenses: ExpenseItem[]
+    expenses: ExpenseItem[],
+    onAddToSavings: (amount: number, selectedIndex: IndexPath | IndexPath[]) => void
 }
 
 const CHART_FREQUENCY: FrequencyItem[] = [
@@ -32,7 +33,7 @@ const CHART_FREQUENCY: FrequencyItem[] = [
     },
 ];
 
-const PieChartWithSelection = ({ expenses }: Props) => {
+const PieChartWithSelection = ({ expenses, onAddToSavings }: Props) => {
     const [selectedIndex, setSelectedIndex] = useState<IndexPath | IndexPath[]>(new IndexPath(0));
     const frequency: FrequencyItem = CHART_FREQUENCY[selectedIndex.row];
     const {
@@ -69,17 +70,20 @@ const PieChartWithSelection = ({ expenses }: Props) => {
                     ))}
                 </View>
             </View>
-            <Layout level='1' style={{ flexGrow: 1, height: 0 }}>
-                <Select
-                    selectedIndex={selectedIndex}
-                    onSelect={setSelectedIndex}
-                    value={CHART_FREQUENCY[selectedIndex.row].name}
-                >
-                    {CHART_FREQUENCY.map((item: FrequencyItem) => (
-                        <SelectItem title={item.name} key={item.name} />
-                    ))}
-                </Select>
-            </Layout>
+            <View style={{ flexGrow: 1, flexDirection: "column", justifyContent: "space-between" }}>
+                <Layout level='1'>
+                    <Select
+                        selectedIndex={selectedIndex}
+                        onSelect={setSelectedIndex}
+                        value={CHART_FREQUENCY[selectedIndex.row].name}
+                    >
+                        {CHART_FREQUENCY.map((item: FrequencyItem) => (
+                            <SelectItem title={item.name} key={item.name} />
+                        ))}
+                    </Select>
+                </Layout>
+                <Button onPress={() => onAddToSavings(leftOver, new IndexPath(selectedIndex.row + 1))} disabled={leftOver <= 0} status="success">Add to savings</Button>
+            </View>
         </View>
     )
 }

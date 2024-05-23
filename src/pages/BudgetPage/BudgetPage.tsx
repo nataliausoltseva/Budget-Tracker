@@ -10,6 +10,7 @@ type Props = {
 }
 
 export type ExpenseItem = {
+    key?: string,
     name: string,
     value: number,
     frequencyIndex: IndexPath | IndexPath[],
@@ -104,9 +105,10 @@ const BudgetPage = ({ isHidden = false }: Props) => {
     const onSave = () => {
         setExpenses((prevState: ExpenseItem[]) => {
             const newExpenses = [...prevState];
+            const value = Math.round(amount * 100) / 100;
             newExpenses.push({
                 name,
-                value: parseFloat(amount) || 0,
+                value,
                 frequencyIndex: selectedIndex,
                 id: newExpenses.length,
                 color: randomHex()
@@ -128,6 +130,32 @@ const BudgetPage = ({ isHidden = false }: Props) => {
         });
     }
 
+    const onAddToSavings = (leftOver: number, frequencyIndex: IndexPath | IndexPath[]) => {
+        setExpenses((prevState: ExpenseItem[]) => {
+            const value = Math.round(leftOver * 100) / 100;
+            const newExpenses: ExpenseItem[] = [...prevState];
+            let savingItem = newExpenses.find((item: ExpenseItem) => !!item.key);
+
+            if (!savingItem) {
+                newExpenses.push({
+                    key: 'savings',
+                    value,
+                    name: "Savings",
+                    frequencyIndex,
+                    id: newExpenses.length,
+                    color: randomHex()
+                });
+            } else {
+                const itemIndex = newExpenses.indexOf(savingItem);
+                savingItem.value += value;
+                newExpenses[itemIndex] = savingItem
+            }
+
+            return newExpenses;
+        });
+        setRandom(Math.random());
+    }
+
     return (
         <ScrollView style={{ display: isHidden ? "none" : "flex" }}>
             <BudgetItem
@@ -146,7 +174,7 @@ const BudgetPage = ({ isHidden = false }: Props) => {
             )}
             {expenses.map((item: ExpenseItem, index: number) => (
                 <BudgetItem
-                    key={`e-${index}`}
+                    key={`e-${index}-${random}`}
                     name={item.name}
                     amount={item.value.toString()}
                     fruquencyIndex={item.frequencyIndex}
@@ -158,7 +186,7 @@ const BudgetPage = ({ isHidden = false }: Props) => {
                 />
             ))}
             {!!expenses.length && (
-                <PieChartWithSelection expenses={expenses} />
+                <PieChartWithSelection expenses={expenses} onAddToSavings={onAddToSavings} />
             )}
         </ScrollView>
     );
