@@ -47,7 +47,8 @@ const usePieChart = ({ expenses, frequency = FREQUENCES[0] }: Props) => {
         let income = totalIncome / frequency.calcToYear;
         const yearExpensesSum = yearlyExpenses.reduce((partialSum, item) => partialSum + (item.value / frequency.calcToYear), 0);
         const oneOffExpensesSum = oneOffExpenses.reduce((partialSum, item) => partialSum + item.value, 0);
-        return income - yearExpensesSum - oneOffExpensesSum;
+        const leftOver = income - yearExpensesSum - oneOffExpensesSum;
+        return Math.round(leftOver * 100) / 100;
     }, [frequency, expenses, totalIncome]);
 
     return {

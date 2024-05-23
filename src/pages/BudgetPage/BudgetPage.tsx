@@ -154,7 +154,6 @@ const BudgetPage = ({ isHidden = false }: Props) => {
             return newExpenses;
         });
         setRandom(Math.random());
-
     }
 
     return (
@@ -175,7 +174,7 @@ const BudgetPage = ({ isHidden = false }: Props) => {
             )}
             {expenses.map((item: ExpenseItem, index: number) => (
                 <BudgetItem
-                    key={`e-${index}`}
+                    key={`e-${index}-${random}`}
                     name={item.name}
                     amount={item.value.toString()}
                     fruquencyIndex={item.frequencyIndex}
