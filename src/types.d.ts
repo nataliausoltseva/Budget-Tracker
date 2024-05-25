@@ -39,3 +39,12 @@ type TransactionItem = {
     date: Date,
     totalSaved: number,
 }
+
+type InvestmentItem = {
+    name: string,
+    amount: number,
+    rate: number,
+    term: number,
+    taxRate: number,
+    startDate: Date
+}
