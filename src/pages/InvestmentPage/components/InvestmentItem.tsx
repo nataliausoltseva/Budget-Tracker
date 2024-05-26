@@ -1,6 +1,7 @@
-import { Datepicker, Input, Text } from "@ui-kitten/components";
-import { useEffect, useRef } from "react";
-import { NativeSyntheticEvent, StyleSheet, TextInputChangeEventData, View } from "react-native";
+import { Button, Icon, Text } from "@ui-kitten/components";
+import { useState } from "react";
+import { StyleSheet, View } from "react-native";
+import { formatDate } from "../../../hooks/date";
 
 type Props = {
     item: InvestmentItem,
@@ -8,120 +9,31 @@ type Props = {
 }
 
 const InvestmentItem = ({ item, onItemChange }: Props) => {
-    const amountInputHolder = useRef("0");
-    const rateInputHolder = useRef("0");
-    const termInputHolder = useRef("0");
-    const taxRateInputHolder = useRef("10");
+    const [isExpanded, setIsExpanded] = useState(false);
 
-    useEffect(() => {
-        if (item) {
-            amountInputHolder.current = item.amount.toString();
-            rateInputHolder.current = item.rate.toString();
-            termInputHolder.current = item.term.toString();
-            termInputHolder.current = item.term.toString();
-            taxRateInputHolder.current = item.taxRate.toString();
-        }
-    }, [item]);
-
-    const _onNameChange = (e: NativeSyntheticEvent<TextInputChangeEventData>) => {
-        onItemChange({
-            ...item,
-            name: e.nativeEvent.text || ""
-        });
-    }
-
-    const _onAmountChange = (e: NativeSyntheticEvent<TextInputChangeEventData>) => {
-        amountInputHolder.current = e.nativeEvent.text || "";
-        onItemChange({
-            ...item,
-            amount: isNaN(parseFloat(amountInputHolder.current)) ? 0 : parseFloat(amountInputHolder.current)
-        });
-    }
-
-    const _onRateChange = (e: NativeSyntheticEvent<TextInputChangeEventData>) => {
-        rateInputHolder.current = e.nativeEvent.text || "";
-        onItemChange({
-            ...item,
-            rate: isNaN(parseFloat(rateInputHolder.current)) ? 0 : parseFloat(rateInputHolder.current)
-        });
-    }
-
-    const _onTermChange = (e: NativeSyntheticEvent<TextInputChangeEventData>) => {
-        termInputHolder.current = e.nativeEvent.text || "";
-        onItemChange({
-            ...item,
-            term: isNaN(parseFloat(termInputHolder.current)) ? 0 : parseFloat(termInputHolder.current)
-        });
-    }
-
-    const _onTaxRateChange = (e: NativeSyntheticEvent<TextInputChangeEventData>) => {
-        taxRateInputHolder.current = e.nativeEvent.text || "";
-        onItemChange({
-            ...item,
-            taxRate: isNaN(parseFloat(taxRateInputHolder.current)) ? 0 : parseFloat(taxRateInputHolder.current)
-        });
-    }
-
-    const _onStartDateChange = (date: Date) => {
-        onItemChange({
-            ...item,
-            startDate: date,
-        });
-    }
+    const onToggle = () => setIsExpanded((prevState: boolean) => !prevState);
 
     return (
         <View>
-            <Input
-                label={"Name:"}
-                placeholder='Enter expense name'
-                value={item.name}
-                onChange={_onNameChange}
-                style={{ maxWidth: 200 }}
-            />
-            <View style={styles.incomeView}>
-                <Input
-                    label={"Amount:"}
-                    value={amountInputHolder.current}
-                    onChange={_onAmountChange}
-                    style={{ minWidth: 100 }}
-                    {...{
-                        keyboardType: "numeric"
-                    }}
-                />
-                <Text style={styles.dollarSign}>$</Text>
+            <View style={styles.goalContainer}>
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                    <Button accessoryLeft={<Icon name={'arrow-ios-downward'} />} onPress={onToggle} appearance='ghost' style={buttonStyle(isExpanded).icon} />
+                    <Text>Name: {item.name}</Text>
+                </View>
+                <View style={styles.actionContainer}>
+                    <Button accessoryLeft={<Icon name='trash' />} appearance='ghost' status='danger' style={styles.button} />
+                    <Button accessoryLeft={<Icon name='edit' />} appearance='ghost' status='primary' style={styles.button} />
+                </View>
             </View>
-            <Input
-                label={"Rate:"}
-                value={rateInputHolder.current}
-                onChange={_onRateChange}
-                style={{ minWidth: 100 }}
-                {...{
-                    keyboardType: "numeric"
-                }}
-            />
-            <Input
-                label={"Term (in years):"}
-                value={termInputHolder.current}
-                onChange={_onTermChange}
-                style={{ minWidth: 100 }}
-                {...{
-                    keyboardType: "numeric"
-                }}
-            />
-            <Input
-                label={"Tax rate:"}
-                value={taxRateInputHolder.current}
-                onChange={_onTaxRateChange}
-                style={{ minWidth: 100 }}
-                {...{
-                    keyboardType: "numeric"
-                }}
-            />
-            <Datepicker
-                label={"Start date:"}
-                date={item.startDate}
-                onSelect={_onStartDateChange}
-            />
+            {isExpanded && (
+                <View style={{ alignItems: "flex-start", marginLeft: 35 }}>
+                    <Text>Amount: {item.amount.toString()}</Text>
+                    <Text>Rate: {item.rate.toString()}</Text>
+                    <Text>Term: {item.term.toString()}</Text>
+                    <Text>Tax Rate: {item.taxRate.toString()}</Text>
+                    <Text>Date: {formatDate(item.startDate)}</Text>
+                </View>
+            )}
         </View>
     )
 };
@@ -129,25 +41,39 @@ const InvestmentItem = ({ item, onItemChange }: Props) => {
 export default InvestmentItem;
 
 const styles = StyleSheet.create({
-    incomeView: {
-        display: "flex",
-        flexDirection: 'row',
-        position: "relative"
-    },
     container: {
-        minWidth: 150
+        flexDirection: "column",
+        marginBottom: 20,
     },
-    input: {
-        flexGrow: 1
-    },
-    dollarSign: {
-        position: "absolute",
-        zIndex: 5,
-        color: "red",
-        top: "28%",
-        left: "2%",
+    goalContainer: {
+        flexDirection: 'row',
+        justifyContent: "space-between",
+        alignItems: "center",
+        height: 30,
     },
     button: {
         width: 20
+    },
+    dueDateContainer: {
+        flexDirection: "row"
+    },
+    timeLabel: {
+        color: "white"
+    },
+    time: {
+        backgroundColor: "#a3c2e3",
+    },
+    actionContainer: {
+        flexDirection: "row"
+    },
+    transactionsContainer: {
+        marginLeft: 20
     }
 });
+
+const buttonStyle = (isExpanded: boolean) => StyleSheet.create({
+    icon: {
+        width: 20,
+        transform: [{ rotate: `${isExpanded ? 180 : 0}deg` }]
+    }
+})

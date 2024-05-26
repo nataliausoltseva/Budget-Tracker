@@ -11,7 +11,6 @@ type Props = {
 const SavingGoalsPage = ({ isHidden = false }: Props) => {
     const [visible, setVisible] = useState(false);
     const [goals, setGoals] = useState<SavingGoalItem[]>([]);
-    const [visibleAdditionModal, setVisibleAdditionModal] = useState(false);
 
     const onAddGoal = (goal: SavingGoalItem) => {
         setGoals((prevState: SavingGoalItem[]) => {

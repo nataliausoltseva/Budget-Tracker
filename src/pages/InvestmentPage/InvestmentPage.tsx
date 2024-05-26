@@ -1,42 +1,55 @@
 import { ScrollView, StyleSheet } from "react-native"
 import InvestmentItem from "./components/InvestmentItem"
 import { useState } from "react"
-import { Button } from "@ui-kitten/components"
+import { Button, Text } from "@ui-kitten/components"
+import InvestmentModal from "./components/InvestmentModal"
 
 type Props = {
     isHidden: boolean
 }
 
 const InvestmentPage = ({ isHidden = false }: Props) => {
-    const [newInvestment, setNewInvestment] = useState<InvestmentItem>({
-        name: '',
-        amount: 0,
-        rate: 0,
-        term: 0.583,
-        taxRate: 0,
-        startDate: new Date()
-    });
 
+    const [random, setRandom] = useState(Math.random());
     const [investments, setInvestments] = useState<InvestmentItem[]>([]);
+    const [isModalVisible, setIsModalVisible] = useState(false);
 
-    const onSave = () => {
+    const onSave = (newInvestment: InvestmentItem) => {
         setInvestments((prevState: InvestmentItem[]) => {
             const newInvestments = [...prevState];
             newInvestments.push(newInvestment);
             return newInvestments;
         });
+        setRandom(Math.random());
     }
 
-    console.log(newInvestment);
+    const onItemChange = (item: InvestmentItem, index: number) => {
+        setInvestments((prevState: InvestmentItem[]) => {
+            const newInvestments = [...prevState];
+            newInvestments[index] = item;
+            return newInvestments;
+        });
+    }
 
     return (
         <ScrollView style={containerStyles(isHidden).container}>
-            <InvestmentItem
-                item={newInvestment}
-                onItemChange={setNewInvestment}
-            />
-            <Button onPress={onSave} disabled={!newInvestment.name || !newInvestment.amount || newInvestment.amount === 0}>Add</Button>
-
+            <Button onPress={() => setIsModalVisible(true)}>Add</Button>
+            {!!investments.length && (
+                <Text>Your investments:</Text>
+            )}
+            {investments.map((item: InvestmentItem, index: number) => (
+                <InvestmentItem
+                    key={`i-${index}-${random}`}
+                    item={item}
+                    onItemChange={(investment: InvestmentItem) => onItemChange(investment, index)}
+                />
+            ))}
+            {isModalVisible && (
+                <InvestmentModal
+                    onSave={onSave}
+                    onClose={() => setIsModalVisible(false)}
+                />
+            )}
         </ScrollView>
     )
 }
