@@ -2,27 +2,48 @@ import { Button, Icon, Text } from "@ui-kitten/components";
 import { useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { formatDate } from "../../../hooks/date";
+import InvestmentModal from "./InvestmentModal";
 
 type Props = {
     item: InvestmentItem,
     onItemChange: (item: InvestmentItem) => void,
+    onDelete: () => void,
 }
 
-const InvestmentItem = ({ item, onItemChange }: Props) => {
+const InvestmentItem = ({ item, onItemChange, onDelete }: Props) => {
     const [isExpanded, setIsExpanded] = useState(false);
+    const [isModalVisible, setIsModalVisible] = useState(false);
 
-    const onToggle = () => setIsExpanded((prevState: boolean) => !prevState);
+    const onToggleExpand = () => setIsExpanded((prevState: boolean) => !prevState);
+    const onToggleModal = () => setIsModalVisible((prevState: boolean) => !prevState);
 
     return (
         <View>
             <View style={styles.goalContainer}>
                 <View style={{ flexDirection: "row", alignItems: "center" }}>
-                    <Button accessoryLeft={<Icon name={'arrow-ios-downward'} />} onPress={onToggle} appearance='ghost' style={buttonStyle(isExpanded).icon} />
+                    <Button
+                        accessoryLeft={<Icon name={'arrow-ios-downward'} />}
+                        onPress={onToggleExpand}
+                        appearance='ghost'
+                        style={buttonStyle(isExpanded).icon}
+                    />
                     <Text>Name: {item.name}</Text>
                 </View>
                 <View style={styles.actionContainer}>
-                    <Button accessoryLeft={<Icon name='trash' />} appearance='ghost' status='danger' style={styles.button} />
-                    <Button accessoryLeft={<Icon name='edit' />} appearance='ghost' status='primary' style={styles.button} />
+                    <Button
+                        accessoryLeft={<Icon name='trash' />}
+                        appearance='ghost'
+                        status='danger'
+                        style={styles.button}
+                        onPress={onDelete}
+                    />
+                    <Button
+                        accessoryLeft={<Icon name='edit' />}
+                        appearance='ghost'
+                        status='primary'
+                        style={styles.button}
+                        onPress={onToggleModal}
+                    />
                 </View>
             </View>
             {isExpanded && (
@@ -33,6 +54,13 @@ const InvestmentItem = ({ item, onItemChange }: Props) => {
                     <Text>Tax Rate: {item.taxRate.toString()}</Text>
                     <Text>Date: {formatDate(item.startDate)}</Text>
                 </View>
+            )}
+            {isModalVisible && (
+                <InvestmentModal
+                    investment={item}
+                    onSave={onItemChange}
+                    onClose={() => setIsModalVisible(false)}
+                />
             )}
         </View>
     )

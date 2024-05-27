@@ -1,7 +1,7 @@
-import { ScrollView, StyleSheet } from "react-native"
-import InvestmentItem from "./components/InvestmentItem"
-import { useState } from "react"
+import { ScrollView, StyleSheet, View } from "react-native"
 import { Button, Text } from "@ui-kitten/components"
+import { useState } from "react"
+import InvestmentItem from "./components/InvestmentItem"
 import InvestmentModal from "./components/InvestmentModal"
 
 type Props = {
@@ -9,7 +9,6 @@ type Props = {
 }
 
 const InvestmentPage = ({ isHidden = false }: Props) => {
-
     const [random, setRandom] = useState(Math.random());
     const [investments, setInvestments] = useState<InvestmentItem[]>([]);
     const [isModalVisible, setIsModalVisible] = useState(false);
@@ -31,9 +30,21 @@ const InvestmentPage = ({ isHidden = false }: Props) => {
         });
     }
 
+    const onItemDelete = (index: number) => {
+        setInvestments((prevState: InvestmentItem[]) => {
+            const newInvestments = [...prevState];
+            newInvestments.splice(index, 1);
+            return newInvestments;
+        });
+    }
+
     return (
         <ScrollView style={containerStyles(isHidden).container}>
-            <Button onPress={() => setIsModalVisible(true)}>Add</Button>
+            <View style={styles.buttonContainer}>
+                <Button onPress={() => setIsModalVisible(true)} style={styles.button}>
+                    Add
+                </Button>
+            </View>
             {!!investments.length && (
                 <Text>Your investments:</Text>
             )}
@@ -42,6 +53,7 @@ const InvestmentPage = ({ isHidden = false }: Props) => {
                     key={`i-${index}-${random}`}
                     item={item}
                     onItemChange={(investment: InvestmentItem) => onItemChange(investment, index)}
+                    onDelete={() => onItemDelete(index)}
                 />
             ))}
             {isModalVisible && (
@@ -59,5 +71,14 @@ export default InvestmentPage;
 const containerStyles = (isHidden: boolean) => StyleSheet.create({
     container: {
         display: isHidden ? "none" : "flex",
+    },
+});
+
+const styles = StyleSheet.create({
+    buttonContainer: {
+        alignItems: "flex-end"
+    },
+    button: {
+        width: 100,
     },
 });

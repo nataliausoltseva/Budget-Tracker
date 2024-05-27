@@ -1,10 +1,11 @@
 import { Button, Card, Datepicker, Input, Modal, Text } from "@ui-kitten/components"
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { NativeSyntheticEvent, StyleSheet, TextInputChangeEventData, View } from "react-native"
 
 type Props = {
     onClose: () => void,
     onSave: (item: InvestmentItem) => void,
+    investment?: InvestmentItem | null,
 }
 
 const DEFAULT_STATE = {
@@ -16,8 +17,20 @@ const DEFAULT_STATE = {
     startDate: new Date()
 };
 
-const InvestmentModal = ({ onSave, onClose }: Props) => {
+const InvestmentModal = ({ onSave, onClose, investment = null }: Props) => {
     const [item, setItem] = useState(DEFAULT_STATE);
+
+    useEffect(() => {
+        if (investment) {
+            setItem({
+                ...investment,
+                amount: investment.amount.toString(),
+                rate: investment.rate.toString(),
+                term: investment.term.toString(),
+                taxRate: investment.taxRate.toString(),
+            });
+        }
+    }, [investment]);
 
     const _onNameChange = (e: NativeSyntheticEvent<TextInputChangeEventData>) => {
         setItem({
