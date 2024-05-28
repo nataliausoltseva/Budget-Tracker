@@ -50,7 +50,7 @@ const InvestmentItem = ({ item, onItemChange, onDelete }: Props) => {
                 <View style={{ alignItems: "flex-start", marginLeft: 35 }}>
                     <Text>Amount: {item.amount.toString()}</Text>
                     <Text>Rate: {item.rate.toString()}</Text>
-                    <Text>Term: {item.term.toString()}</Text>
+                    <Text>Term: {item.term.toString()} {item.term > 1 ? `${item.termPeriod.name}s` : item.termPeriod.name} </Text>
                     <Text>Tax Rate: {item.taxRate.toString()}</Text>
                     <Text>Date: {formatDate(item.startDate)}</Text>
                 </View>

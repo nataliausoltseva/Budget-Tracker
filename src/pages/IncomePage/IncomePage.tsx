@@ -188,16 +188,14 @@ const IncomePage = ({ isHidden = false }: Props) => {
                                 <ListItem title={header} style={{ flexGrow: 1 }} key={header || 'header-0'} />
                             ))
                         ) : (
-                            <>
-                                {!rows[index - 1].isHidden && (
-                                    <>
-                                        <ListItem title={rows[index - 1].label} style={{ flexGrow: 1 }} key={rows[index - 1].label} />
-                                        {rows[index - 1].values.map((value: number, valuIndex: number) => (
-                                            <ListItem title={value || "0"} style={{ flexGrow: 1 }} key={`${rows[index - 1].label}-${valuIndex}`} />
-                                        ))}
-                                    </>
-                                )}
-                            </>
+                            !rows[index - 1].isHidden && (
+                                <>
+                                    <ListItem title={rows[index - 1].label} style={{ flexGrow: 1 }} key={rows[index - 1].label} />
+                                    {rows[index - 1].values.map((value: number, valuIndex: number) => (
+                                        <ListItem title={value || "0"} style={{ flexGrow: 1 }} key={`${rows[index - 1].label}-${valuIndex}`} />
+                                    ))}
+                                </>
+                            )
                         )}
                     </View>
                 )}

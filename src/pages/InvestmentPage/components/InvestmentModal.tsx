@@ -1,4 +1,4 @@
-import { Button, Card, Datepicker, Input, Modal, Text } from "@ui-kitten/components"
+import { Button, Card, Datepicker, IndexPath, Input, Layout, Modal, Select, SelectItem, Text } from "@ui-kitten/components"
 import { useEffect, useState } from "react";
 import { NativeSyntheticEvent, StyleSheet, TextInputChangeEventData, View } from "react-native"
 
@@ -8,17 +8,30 @@ type Props = {
     investment?: InvestmentItem | null,
 }
 
+export const PERIODS: TermPeriod[] = [
+    {
+        name: "month",
+        label: "Month"
+    },
+    {
+        name: "year",
+        label: "Year"
+    }
+];
+
 const DEFAULT_STATE = {
     name: '',
     amount: "0",
     rate: "0",
-    term: "0.583",
+    term: "6",
+    termPeriod: PERIODS[0],
     taxRate: "0",
     startDate: new Date()
 };
 
 const InvestmentModal = ({ onSave, onClose, investment = null }: Props) => {
     const [item, setItem] = useState(DEFAULT_STATE);
+    const [selectedIndex, setSelectedIndex] = useState<IndexPath | IndexPath[]>(new IndexPath(0));
 
     useEffect(() => {
         if (investment) {
@@ -27,6 +40,7 @@ const InvestmentModal = ({ onSave, onClose, investment = null }: Props) => {
                 amount: investment.amount.toString(),
                 rate: investment.rate.toString(),
                 term: investment.term.toString(),
+                termPeriod: investment.termPeriod,
                 taxRate: investment.taxRate.toString(),
             });
         }
@@ -74,6 +88,17 @@ const InvestmentModal = ({ onSave, onClose, investment = null }: Props) => {
         });
     }
 
+    const onTermPeriodChange = (index: IndexPath | IndexPath[]) => {
+        setSelectedIndex(index);
+
+        if (index instanceof IndexPath) {
+            setItem({
+                ...item,
+                termPeriod: PERIODS[index.row],
+            });
+        }
+    }
+
     const _onSave = () => {
         onSave({
             ...item,
@@ -119,21 +144,35 @@ const InvestmentModal = ({ onSave, onClose, investment = null }: Props) => {
                         <Text style={styles.dollarSign}>$</Text>
                     </View>
                     <Input
-                        label={"Rate:"}
+                        label={"Interest Rate:"}
                         value={item.rate.toString()}
                         onChange={_onRateChange}
                         {...{
                             keyboardType: "numeric"
                         }}
                     />
-                    <Input
-                        label={"Term (in years):"}
-                        value={item.term.toString()}
-                        onChange={_onTermChange}
-                        {...{
-                            keyboardType: "numeric"
-                        }}
-                    />
+                    <View style={{ flexDirection: "row", alignItems: "flex-end" }}>
+                        <Input
+                            label={"Term:"}
+                            value={item.term.toString()}
+                            onChange={_onTermChange}
+                            style={{ minWidth: 100 }}
+                            {...{
+                                keyboardType: "numeric"
+                            }}
+                        />
+                        <Layout style={{ minWidth: 150 }} level='1'>
+                            <Select
+                                selectedIndex={selectedIndex}
+                                onSelect={onTermPeriodChange}
+                                value={item.termPeriod.label}
+                            >
+                                {PERIODS.map((period: TermPeriod) => (
+                                    <SelectItem title={period.label} key={period.name} />
+                                ))}
+                            </Select>
+                        </Layout>
+                    </View>
                     <Input
                         label={"Tax rate:"}
                         value={item.taxRate.toString()}

@@ -46,5 +46,11 @@ type InvestmentItem = {
     rate: number,
     term: number,
     taxRate: number,
-    startDate: Date
+    startDate: Date,
+    termPeriod: TermPeriod
+}
+
+type TermPeriod = {
+    name: string,
+    label: string,
 }
