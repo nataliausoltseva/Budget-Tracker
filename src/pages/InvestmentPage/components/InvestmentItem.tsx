@@ -3,6 +3,7 @@ import { useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { formatDate } from "../../../hooks/date";
 import InvestmentModal from "./InvestmentModal";
+import InvestmentChart from "./InvestmentChart";
 
 type Props = {
     item: InvestmentItem,
@@ -53,6 +54,7 @@ const InvestmentItem = ({ item, onItemChange, onDelete }: Props) => {
                     <Text>Term: {item.term.toString()} {item.term > 1 ? `${item.termPeriod.name}s` : item.termPeriod.name} </Text>
                     <Text>Tax Rate: {item.taxRate.toString()}</Text>
                     <Text>Date: {formatDate(item.startDate)}</Text>
+                    <InvestmentChart item={item} />
                 </View>
             )}
             {isModalVisible && (
