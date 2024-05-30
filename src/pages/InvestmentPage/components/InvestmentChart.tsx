@@ -1,7 +1,7 @@
 import React from 'react';
 import { View } from 'react-native';
-import useChart from '../hooks/useChart';
 import { BarChart } from 'react-native-gifted-charts';
+import useChart from '../hooks/useChart';
 
 type Props = {
     item: InvestmentItem
@@ -10,12 +10,15 @@ type Props = {
 const InvestmentChart = ({ item }: Props) => {
     const { data } = useChart({ item });
     return (
-        <View>
+        <View style={{ flexGrow: 1, height: "100%" }}>
             <BarChart
                 width={340}
                 noOfSections={5}
                 stackData={data}
-                spacing={100}
+                spacing={50}
+                initialSpacing={5}
+                xAxisLabelsHeight={30}
+                rotateLabel
             />
         </View>
     )
