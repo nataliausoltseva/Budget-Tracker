@@ -9,6 +9,7 @@ import BudgetPage from './src/pages/BudgetPage/BudgetPage';
 import SavingGoalsPage from './src/pages/SavingGoalsPage/SavingGoalsPage';
 import TopNavigationBar from './src/components/TopNavigationBar';
 import { AppContextProvider } from './src/context/AppContext';
+import InvestmentPage from './src/pages/InvestmentPage/InvestmentPage';
 
 const TABS: PanelTab[] = [
   {
@@ -22,6 +23,10 @@ const TABS: PanelTab[] = [
   {
     label: "Saving Goals",
     key: "savingGoals"
+  },
+  {
+    label: "Investments",
+    key: "investment"
   }
 ];
 
@@ -39,6 +44,7 @@ function App(): React.JSX.Element {
               <IncomePage isHidden={TABS[selectedIndex].key !== 'income'} />
               <BudgetPage isHidden={TABS[selectedIndex].key !== 'budget'} />
               <SavingGoalsPage isHidden={TABS[selectedIndex].key !== 'savingGoals'} />
+              <InvestmentPage isHidden={TABS[selectedIndex].key !== 'investment'} />
             </AppContextProvider>
           </View>
         </SafeAreaView >
