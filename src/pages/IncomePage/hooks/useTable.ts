@@ -94,7 +94,7 @@ const useTable = () => {
     const [isSimpleTable, setIsSimpleTable] = useState(false);
 
     const roundToTwoDecimals = (value: number) => (
-        Math.round((value + Number.EPSILON) * 100) / 100
+        Math.round(value * 100) / 100
     );
 
     const calculateValues = ({ yearGrossPay, yearPaye, yearAcc, yearKiwiSaver, yearStudentLoan, yearSecGrossPay, yearSecPaye }: PopulateRowsProps) => {
