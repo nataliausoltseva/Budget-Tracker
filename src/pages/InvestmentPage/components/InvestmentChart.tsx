@@ -10,15 +10,15 @@ type Props = {
 const InvestmentChart = ({ item }: Props) => {
     const { data } = useChart({ item });
     return (
-        <View style={{ flexGrow: 1, height: "100%" }}>
+        <View style={{ flexGrow: 1 }}>
             <BarChart
                 width={340}
                 noOfSections={5}
                 stackData={data}
-                spacing={50}
+                spacing={item.termPeriod.name === "month" ? 100 : 50}
                 initialSpacing={5}
                 xAxisLabelsHeight={30}
-                rotateLabel
+            // rotateLabel
             />
         </View>
     )

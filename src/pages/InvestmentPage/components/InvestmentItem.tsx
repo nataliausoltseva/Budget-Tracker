@@ -4,6 +4,7 @@ import { StyleSheet, View } from "react-native";
 import { formatDate } from "../../../hooks/date";
 import InvestmentModal from "./InvestmentModal";
 import InvestmentChart from "./InvestmentChart";
+import InvestmentList from "./InvestmentList";
 
 type Props = {
     item: InvestmentItem,
@@ -55,6 +56,7 @@ const InvestmentItem = ({ item, onItemChange, onDelete }: Props) => {
                     <Text>Tax Rate: {item.taxRate.toString()}</Text>
                     <Text>Date: {formatDate(item.startDate)}</Text>
                     <InvestmentChart item={item} />
+                    <InvestmentList item={item} />
                 </View>
             )}
             {isModalVisible && (
