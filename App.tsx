@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { SafeAreaView, ScrollView, View } from 'react-native';
 import * as eva from '@eva-design/eva';
-import { ApplicationProvider, IconRegistry } from '@ui-kitten/components';
+import { ApplicationProvider, IconRegistry, Text, Toggle } from '@ui-kitten/components';
 import { EvaIconsPack } from '@ui-kitten/eva-icons';
 
 import IncomePage from './src/pages/IncomePage/IncomePage';
@@ -32,6 +32,7 @@ const TABS: PanelTab[] = [
 
 function App(): React.JSX.Element {
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const [isDarkMode, setIsDarkMode] = useState(false);
 
   return (
     <SafeAreaView>
@@ -46,6 +47,15 @@ function App(): React.JSX.Element {
               <SavingGoalsPage isHidden={TABS[selectedIndex].key !== 'savingGoals'} />
               <InvestmentPage isHidden={TABS[selectedIndex].key !== 'investment'} />
             </AppContextProvider>
+          </View>
+          <View style={{ alignItems: "flex-end", marginRight: 20, marginBottom: 20 }}>
+            <View style={{ alignItems: "center" }}>
+              <Text>Dark mode</Text>
+              <Toggle
+                checked={isDarkMode}
+                onChange={setIsDarkMode}
+              />
+            </View>
           </View>
         </SafeAreaView >
       </ApplicationProvider>
