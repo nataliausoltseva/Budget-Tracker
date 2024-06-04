@@ -1,6 +1,6 @@
 import React, { useContext, useRef, useState } from 'react';
-import { NativeSyntheticEvent, StyleSheet, Text, TextInputChangeEventData, View } from 'react-native';
-import { Button, CheckBox, IndexPath, Input, Layout, List, ListItem, Select, SelectItem, Toggle } from '@ui-kitten/components';
+import { NativeSyntheticEvent, ScrollView, StyleSheet, Text, TextInputChangeEventData, View } from 'react-native';
+import { Button, CheckBox, IndexPath, Input, Layout, ListItem, Select, SelectItem, Toggle } from '@ui-kitten/components';
 
 import { incomePeriods } from '../../constants';
 import KiwiSaverForm from './components/KiwiSaverForm';
@@ -9,17 +9,21 @@ import SecondaryIncomeForm from './components/SecondaryIncomeForm';
 import useIncome from './hooks/useIncome';
 import useTable, { HEADERS, RowIndicator } from './hooks/useTable';
 import { AppContext } from '../../context/AppContext';
+import { PieChart } from 'react-native-gifted-charts';
+import usePieChart from './hooks/usePieChart';
 
 type Props = {
     isHidden: boolean,
 }
+
+const COLORS: string[] = ["#f6abb6", "#b3cde0", "#851e3e", "#3da4ab", "#4b86b4", "#fec8c1", "#83d0c9", " #e0a899", "#8b9dc3"];
 
 const IncomePage = ({ isHidden = false }: Props) => {
     const appState = useContext(AppContext);
     const [selectedIndex, setSelectedIndex] = useState<IndexPath | IndexPath[]>(new IndexPath(0));
 
     // The list (table) only updates if we pass something new to the extraData prop.
-    const [random, setRandom] = useState(Math.random());
+    const [, setRandom] = useState(Math.random());
 
     const primaryIncomeHolder = useRef("");
 
@@ -54,6 +58,11 @@ const IncomePage = ({ isHidden = false }: Props) => {
         setIsSimpleTable,
     } = useTable();
 
+    const {
+        pieData,
+        populateData
+    } = usePieChart();
+
     const onIncomeAmountChange = (e: NativeSyntheticEvent<TextInputChangeEventData>) => {
         primaryIncomeHolder.current = e.nativeEvent.text || "";
 
@@ -72,16 +81,17 @@ const IncomePage = ({ isHidden = false }: Props) => {
         }
     }
 
+    const {
+        yearGrossPay,
+        yearPaye,
+        yearAcc,
+        yearKiwiSaver,
+        yearStudentLoan,
+        yearSecGrossPay,
+        yearSecPaye,
+    } = calculateYearlyValues();
+
     const onCalculate = () => {
-        const {
-            yearGrossPay,
-            yearPaye,
-            yearAcc,
-            yearKiwiSaver,
-            yearStudentLoan,
-            yearSecGrossPay,
-            yearSecPaye,
-        } = calculateYearlyValues();
         appState?.setTotalIncome(yearGrossPay + yearSecGrossPay - yearPaye - yearAcc - (hasKiwiSaver ? yearKiwiSaver : 0) - (hasStudentLoan ? yearStudentLoan : 0) - yearSecPaye);
         populateTableRows({
             yearGrossPay,
@@ -93,6 +103,14 @@ const IncomePage = ({ isHidden = false }: Props) => {
             yearSecPaye: hasSecondaryIncome ? yearSecPaye : 0
         })
         setRandom(Math.random());
+        populateData({
+            yearPaye,
+            yearAcc,
+            yearKiwiSaver: hasKiwiSaver ? yearKiwiSaver : 0,
+            yearStudentLoan: hasStudentLoan ? yearStudentLoan : 0,
+            yearSecPaye: hasSecondaryIncome ? yearSecPaye : 0,
+            colors: COLORS,
+        });
     }
 
     const updateTableRows = (isChecked: boolean) => {
@@ -110,7 +128,7 @@ const IncomePage = ({ isHidden = false }: Props) => {
     }
 
     return (
-        <View style={{ display: isHidden ? "none" : "flex" }}>
+        <ScrollView style={{ display: isHidden ? "none" : "flex" }}>
             <Text>Your Income</Text>
             <View style={styles.incomeView}>
                 <Input
@@ -178,11 +196,9 @@ const IncomePage = ({ isHidden = false }: Props) => {
             <Button onPress={onCalculate} disabled={primaryIncome === 0}>
                 Calculate
             </Button>
-            <List
-                style={styles.container}
-                data={Array.from(Array(rows.length + 1))}
-                renderItem={({ index }: { index: number }): React.ReactElement => (
-                    <View key={index} style={{ display: "flex", flexDirection: "row" }}>
+            <View style={{ flexGrow: 1, width: "100%" }}>
+                {new Array(rows.length + 1).fill(0).map((_, index) => (
+                    <View key={index} style={{ position: "relative", display: "flex", flexDirection: "row" }}>
                         {index === 0 ? (
                             HEADERS.map((header: string) => (
                                 <ListItem title={header} style={{ flexGrow: 1 }} key={header || 'header-0'} />
@@ -190,25 +206,43 @@ const IncomePage = ({ isHidden = false }: Props) => {
                         ) : (
                             !rows[index - 1].isHidden && (
                                 <>
+                                    <View style={{ position: "absolute", left: 5, top: "45%", width: 5, height: 5, backgroundColor: COLORS[index - 1], zIndex: 1, borderRadius: 50 }} />
                                     <ListItem title={rows[index - 1].label} style={{ flexGrow: 1 }} key={rows[index - 1].label} />
                                     {rows[index - 1].values.map((value: number, valuIndex: number) => (
                                         <ListItem title={value || "0"} style={{ flexGrow: 1 }} key={`${rows[index - 1].label}-${valuIndex}`} />
                                     ))}
+
                                 </>
                             )
                         )}
                     </View>
-                )}
-                extraData={random}
-            />
+                ))}
+            </View>
             <Toggle
                 checked={isSimpleTable}
                 onChange={updateTableRows}
             >
                 Simple table
             </Toggle>
-
-        </View>
+            <PieChart
+                data={pieData}
+                labelsPosition='outward'
+                textColor='white'
+                fontWeight='bold'
+                innerRadius={60}
+                innerCircleColor={'#232B5D'}
+                showText
+                centerLabelComponent={() => (
+                    <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                        <Text
+                            style={{ fontSize: 16, color: 'white', fontWeight: 'bold' }}>
+                            ${Number(yearGrossPay).toFixed(2)}
+                        </Text>
+                        <Text style={{ fontSize: 14, color: 'white' }}>Gross Pay</Text>
+                    </View>
+                )}
+            />
+        </ScrollView>
     )
 };
 

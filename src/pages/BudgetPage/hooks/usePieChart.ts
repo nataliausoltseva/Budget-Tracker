@@ -55,7 +55,6 @@ const usePieChart = ({ expenses, frequency = FREQUENCES[0] }: Props) => {
         pieData,
         leftOver
     }
-
 }
 
 export default usePieChart;
