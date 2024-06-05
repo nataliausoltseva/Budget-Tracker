@@ -4,6 +4,7 @@ import { NativeSyntheticEvent, ScrollView, StyleSheet, TextInputChangeEventData,
 import BudgetItem from './components/BudgetItem';
 import PieChartWithSelection from './components/PieChartWithSelection';
 import { AppContext } from '../../context/AppContext';
+import { randomHex } from '../../hooks/color';
 
 type Props = {
     isHidden: boolean
@@ -58,14 +59,6 @@ const BudgetPage = ({ isHidden = false }: Props) => {
     const [amount, setAmount] = useState(DEFAULT_STATE.amount);
     const [selectedIndex, setSelectedIndex] = useState<IndexPath | IndexPath[]>(new IndexPath(DEFAULT_STATE.frequenceIndex));
     const [random, setRandom] = useState(Math.random());
-
-    const randomNum = () => Math.floor(Math.random() * 255);
-    const componentToHex = () => {
-        var hex = randomNum().toString(16);
-        return hex.length == 1 ? "0" + hex : hex;
-    }
-
-    const randomHex = () => "#" + componentToHex() + componentToHex() + componentToHex() + "99"
 
     const onChangeExpense = (id: number, key: string, value: string | IndexPath | IndexPath[]) => {
         setExpenses((prevState: ExpenseItem[]) => {
