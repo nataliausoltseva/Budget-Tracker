@@ -2,7 +2,7 @@ import React, { useContext, useRef, useState } from 'react';
 import { NativeSyntheticEvent, ScrollView, StyleSheet, Text, TextInputChangeEventData, View } from 'react-native';
 import { Button, CheckBox, IndexPath, Input, Layout, ListItem, Select, SelectItem, Toggle } from '@ui-kitten/components';
 
-import { incomePeriods } from '../../constants';
+import { CURRENCIES, incomePeriods } from '../../constants';
 import KiwiSaverForm from './components/KiwiSaverForm';
 import StudentLoanForm from './components/StudentLoanForm';
 import SecondaryIncomeForm from './components/SecondaryIncomeForm';
@@ -21,6 +21,7 @@ const COLORS: string[] = ["#f6abb6", "#b3cde0", "#851e3e", "#3da4ab", "#4b86b4",
 const IncomePage = ({ isHidden = false }: Props) => {
     const appState = useContext(AppContext);
     const [selectedIndex, setSelectedIndex] = useState<IndexPath | IndexPath[]>(new IndexPath(0));
+    const [selectedCurrencyIndex, setSelectedCurrencyIndex] = useState<IndexPath | IndexPath[]>(new IndexPath(0));
 
     // The list (table) only updates if we pass something new to the extraData prop.
     const [, setRandom] = useState(Math.random());
@@ -127,10 +128,23 @@ const IncomePage = ({ isHidden = false }: Props) => {
         setIsSimpleTable(isChecked);
     }
 
+    const selectedCurrency = selectedCurrencyIndex instanceof IndexPath ? CURRENCIES[selectedCurrencyIndex.row] : CURRENCIES[0];
+
     return (
         <ScrollView style={{ display: isHidden ? "none" : "flex" }}>
             <Text>Your Income</Text>
             <View style={styles.incomeView}>
+                <Layout style={styles.currencyContainer} level='1'>
+                    <Select
+                        selectedIndex={selectedCurrencyIndex}
+                        onSelect={setSelectedCurrencyIndex}
+                        value={selectedCurrency}
+                    >
+                        {CURRENCIES.map((currency: string) => (
+                            <SelectItem title={currency} key={currency} />
+                        ))}
+                    </Select>
+                </Layout>
                 <Input
                     placeholder={"Income amount"}
                     value={primaryIncomeHolder.current}
@@ -140,7 +154,6 @@ const IncomePage = ({ isHidden = false }: Props) => {
                         keyboardType: "numeric"
                     }}
                 />
-                <Text style={styles.dollarSign}>$</Text>
                 <Layout style={styles.container} level='1'>
                     <Select
                         selectedIndex={selectedIndex}
@@ -255,15 +268,11 @@ const styles = StyleSheet.create({
     container: {
         minWidth: 150
     },
+    currencyContainer: {
+        minWidth: 110
+    },
     input: {
         flexGrow: 1
-    },
-    dollarSign: {
-        position: "absolute",
-        zIndex: 5,
-        color: "red",
-        top: "28%",
-        left: "2%",
     },
     row: {
         color: "red",
