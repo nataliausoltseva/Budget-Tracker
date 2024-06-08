@@ -1,6 +1,6 @@
 import React, { useContext, useRef, useState } from 'react';
-import { NativeSyntheticEvent, ScrollView, StyleSheet, Text, TextInputChangeEventData, View } from 'react-native';
-import { Button, CheckBox, IndexPath, Input, Layout, ListItem, Select, SelectItem, Toggle } from '@ui-kitten/components';
+import { NativeSyntheticEvent, ScrollView, StyleSheet, TextInputChangeEventData, View } from 'react-native';
+import { Button, CheckBox, IndexPath, Input, Layout, ListItem, Select, SelectItem, Text, Toggle } from '@ui-kitten/components';
 
 import { CURRENCIES, incomePeriods } from '../../constants';
 import KiwiSaverForm from './components/KiwiSaverForm';
