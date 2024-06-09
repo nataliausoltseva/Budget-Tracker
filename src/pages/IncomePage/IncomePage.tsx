@@ -1,4 +1,4 @@
-import React, { useContext, useRef, useState } from 'react';
+import React, { memo, useContext, useRef, useState } from 'react';
 import { NativeSyntheticEvent, ScrollView, StyleSheet, TextInputChangeEventData, View } from 'react-native';
 import { Button, CheckBox, IndexPath, Input, Layout, ListItem, Select, SelectItem, Text, Toggle } from '@ui-kitten/components';
 
@@ -11,6 +11,7 @@ import useTable, { HEADERS, RowIndicator } from './hooks/useTable';
 import { AppContext } from '../../context/AppContext';
 import { PieChart } from 'react-native-gifted-charts';
 import usePieChart from './hooks/usePieChart';
+import CustomToggle from '../../components/CustomToggle';
 
 type Props = {
     isHidden: boolean,
@@ -114,18 +115,19 @@ const IncomePage = ({ isHidden = false }: Props) => {
         });
     }
 
-    const updateTableRows = (isChecked: boolean) => {
+    const updateTableRows = () => {
         const newRows = [...rows];
+        const newValue = !isSimpleTable;
         newRows.forEach((row: RowIndicator) => {
             if (!row.isSimple) {
                 // Only hide all other rows if simple toggle is selectec OR the rows are empty and should be hidden by default.
-                row.isHidden = isChecked || (row.hideWhenEmpty && row.values.every(v => v === 0));
+                row.isHidden = newValue || (row.hideWhenEmpty && row.values.every(v => v === 0));
             }
         })
-
+        setIsSimpleTable(prevState => !prevState);
         setRows(rows);
         setRandom(Math.random());
-        setIsSimpleTable(isChecked);
+
     }
 
     const selectedCurrency = selectedCurrencyIndex instanceof IndexPath ? CURRENCIES[selectedCurrencyIndex.row] : CURRENCIES[0];
@@ -231,12 +233,7 @@ const IncomePage = ({ isHidden = false }: Props) => {
                     </View>
                 ))}
             </View>
-            <Toggle
-                checked={isSimpleTable}
-                onChange={updateTableRows}
-            >
-                Simple table
-            </Toggle>
+            <CustomToggle label={"Simple table"} isChecked={isSimpleTable} onChange={updateTableRows} />
             <PieChart
                 data={pieData}
                 labelsPosition='outward'
@@ -279,4 +276,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default IncomePage;
+export default memo(IncomePage);

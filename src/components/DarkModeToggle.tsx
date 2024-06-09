@@ -1,28 +1,27 @@
 import { useContext } from "react"
 import { AppContext } from "../context/AppContext"
 import { View } from "react-native";
-import CustomText from "./CustomText";
-import { Toggle } from "@ui-kitten/components";
+import CustomToggle from "./CustomToggle";
 
 type Props = {
-    onToggle: (checked: boolean) => void
+    onToggle: () => void
 }
 
 const DarkModeToggle = ({ onToggle }: Props) => {
     const appState = useContext(AppContext);
 
-    const _onToggle = (checked: boolean) => {
-        appState.setIsDarkMode(checked);
-        onToggle(checked);
+    const _onToggle = () => {
+        appState.setIsDarkMode(prevState => !prevState);
+        onToggle();
     }
 
     return (
         <View style={{ alignItems: "flex-end", marginRight: 20, marginBottom: 20 }}>
             <View style={{ alignItems: "center" }}>
-                <CustomText>Dark mode</CustomText>
-                <Toggle
-                    checked={appState.isDarkMode}
+                <CustomToggle
+                    isChecked={appState.isDarkMode}
                     onChange={_onToggle}
+                    label="Dark mode"
                 />
             </View>
         </View>

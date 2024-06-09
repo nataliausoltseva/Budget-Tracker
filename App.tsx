@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { SafeAreaView, View } from 'react-native';
 import * as eva from '@eva-design/eva';
-import { ApplicationProvider, IconRegistry, Text, Toggle } from '@ui-kitten/components';
+import { ApplicationProvider, IconRegistry } from '@ui-kitten/components';
 import { EvaIconsPack } from '@ui-kitten/eva-icons';
 
 import IncomePage from './src/pages/IncomePage/IncomePage';
@@ -36,11 +36,11 @@ function App(): React.JSX.Element {
   const [isDarkMode, setIsDarkMode] = useState(false);
 
   return (
-    <SafeAreaView style={{ backgroundColor: isDarkMode ? '#443472' : "white" }}>
+    <SafeAreaView>
       <IconRegistry icons={EvaIconsPack} />
       <ApplicationProvider {...eva} theme={isDarkMode ? eva.dark : eva.light}>
         <AppContextProvider>
-          <SafeAreaView style={{ height: "100%" }}>
+          <SafeAreaView style={{ backgroundColor: isDarkMode ? '#443472' : "white", height: "100%" }}>
             <TopNavigationBar tabs={TABS} onSelect={setSelectedIndex} selectedIndex={selectedIndex} />
             <View style={{ flexGrow: 1, marginTop: 20 }}>
               <IncomePage isHidden={TABS[selectedIndex].key !== 'income'} />
@@ -48,7 +48,7 @@ function App(): React.JSX.Element {
               <SavingGoalsPage isHidden={TABS[selectedIndex].key !== 'savingGoals'} />
               <InvestmentPage isHidden={TABS[selectedIndex].key !== 'investment'} />
             </View>
-            <DarkModeToggle onToggle={setIsDarkMode} />
+            <DarkModeToggle onToggle={() => setIsDarkMode(prevState => !prevState)} />
           </SafeAreaView>
         </AppContextProvider>
       </ApplicationProvider>
