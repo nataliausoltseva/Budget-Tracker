@@ -1,28 +1,32 @@
 import React, { memo, useContext, useRef, useState } from 'react';
-import { NativeSyntheticEvent, ScrollView, StyleSheet, TextInputChangeEventData, View } from 'react-native';
-import { Button, CheckBox, IndexPath, Input, Layout, ListItem, Select, SelectItem, Text, Toggle } from '@ui-kitten/components';
+import { Modal, NativeSyntheticEvent, ScrollView, StyleSheet, TextInputChangeEventData, View } from 'react-native';
+import { Button, Card, CheckBox, IndexPath, Input, Layout, ListItem, Select, SelectItem, Text, Toggle } from '@ui-kitten/components';
 
 import { CURRENCIES, incomePeriods } from '../../constants';
 import KiwiSaverForm from './components/KiwiSaverForm';
 import StudentLoanForm from './components/StudentLoanForm';
 import SecondaryIncomeForm from './components/SecondaryIncomeForm';
-import useIncome from './hooks/useIncome';
-import useTable, { HEADERS, RowIndicator } from './hooks/useTable';
+import useIncome, { COLORS } from './hooks/useIncome';
+import useTable from './hooks/useTable';
 import { AppContext } from '../../context/AppContext';
 import { PieChart } from 'react-native-gifted-charts';
 import usePieChart from './hooks/usePieChart';
 import CustomToggle from '../../components/CustomToggle';
+import FilterIcon from '../../components/FilterIcon';
+import IncomeTable from './components/IncomeTable';
+import IncomePieChart from './components/IncomePieChart';
+import CustomModal from '../../components/CustomModal';
+import FilterPopover from './components/FilterPopver';
 
 type Props = {
     isHidden: boolean,
 }
 
-const COLORS: string[] = ["#f6abb6", "#b3cde0", "#851e3e", "#3da4ab", "#4b86b4", "#fec8c1", "#83d0c9", " #e0a899", "#8b9dc3"];
-
 const IncomePage = ({ isHidden = false }: Props) => {
     const appState = useContext(AppContext);
     const [selectedIndex, setSelectedIndex] = useState<IndexPath | IndexPath[]>(new IndexPath(0));
     const [selectedCurrencyIndex, setSelectedCurrencyIndex] = useState<IndexPath | IndexPath[]>(new IndexPath(0));
+    const [showFilter, setShowFilter] = useState(false);
 
     // The list (table) only updates if we pass something new to the extraData prop.
     const [, setRandom] = useState(Math.random());
@@ -167,6 +171,14 @@ const IncomePage = ({ isHidden = false }: Props) => {
                         ))}
                     </Select>
                 </Layout>
+                <View>
+                    <FilterIcon onPress={() => setShowFilter(true)} />
+                    {showFilter && (
+                        <CustomModal onClose={() => setShowFilter(false)} isVisible={true}>
+                            <Text>Test</Text>
+                        </CustomModal>
+                    )}
+                </View>
             </View>
             <CheckBox
                 checked={hasKiwiSaver}
@@ -211,47 +223,9 @@ const IncomePage = ({ isHidden = false }: Props) => {
             <Button onPress={onCalculate} disabled={primaryIncome === 0}>
                 Calculate
             </Button>
-            <View style={{ flexGrow: 1, width: "100%" }}>
-                {new Array(rows.length + 1).fill(0).map((_, index) => (
-                    <View key={index} style={{ position: "relative", display: "flex", flexDirection: "row" }}>
-                        {index === 0 ? (
-                            HEADERS.map((header: string) => (
-                                <ListItem title={header} style={{ flexGrow: 1 }} key={header || 'header-0'} />
-                            ))
-                        ) : (
-                            !rows[index - 1].isHidden && (
-                                <>
-                                    <View style={{ position: "absolute", left: 5, top: "45%", width: 5, height: 5, backgroundColor: COLORS[index - 1], zIndex: 1, borderRadius: 50 }} />
-                                    <ListItem title={rows[index - 1].label} style={{ flexGrow: 1 }} key={rows[index - 1].label} />
-                                    {rows[index - 1].values.map((value: number, valuIndex: number) => (
-                                        <ListItem title={value || "0"} style={{ flexGrow: 1 }} key={`${rows[index - 1].label}-${valuIndex}`} />
-                                    ))}
-
-                                </>
-                            )
-                        )}
-                    </View>
-                ))}
-            </View>
+            <IncomeTable rows={rows} />
             <CustomToggle label={"Simple table"} isChecked={isSimpleTable} onChange={updateTableRows} />
-            <PieChart
-                data={pieData}
-                labelsPosition='outward'
-                textColor='white'
-                fontWeight='bold'
-                innerRadius={60}
-                innerCircleColor={'#232B5D'}
-                showText
-                centerLabelComponent={() => (
-                    <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-                        <Text
-                            style={{ fontSize: 16, color: 'white', fontWeight: 'bold' }}>
-                            ${Number(yearGrossPay).toFixed(2)}
-                        </Text>
-                        <Text style={{ fontSize: 14, color: 'white' }}>Gross Pay</Text>
-                    </View>
-                )}
-            />
+            <IncomePieChart pieData={pieData} yearGrossPay={yearGrossPay} />
         </ScrollView>
     )
 };

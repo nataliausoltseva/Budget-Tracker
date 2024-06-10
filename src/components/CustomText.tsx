@@ -1,12 +1,13 @@
 import { useContext } from "react"
-import { StyleSheet, Text } from "react-native"
+import { StyleProp, StyleSheet, Text, TextStyle } from "react-native"
 import { AppContext } from "../context/AppContext"
 
 type Props = {
-    children: React.ReactNode
+    children: React.ReactNode,
+    style?: StyleProp<TextStyle> | undefined,
 }
 
-const CustomText = ({ children }: Props) => {
+const CustomText = ({ children, style }: Props) => {
     const appState = useContext(AppContext);
     const styles = StyleSheet.create({
         text: {
@@ -14,7 +15,7 @@ const CustomText = ({ children }: Props) => {
         }
     })
     return (
-        <Text style={styles.text}>{children}</Text>
+        <Text style={[styles.text, style]}>{children}</Text>
     )
 }
 export default CustomText;

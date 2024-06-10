@@ -54,3 +54,18 @@ type TermPeriod = {
     name: string,
     label: string,
 }
+
+type RowIndicator = {
+    label: string,
+    key: string,
+    values: number[],
+    isHidden: boolean,
+    isSimple: boolean,
+    hideWhenEmpty: boolean,
+};
+
+type PieChartItem = {
+    value: number,
+    color: string,
+    text: string,
+}

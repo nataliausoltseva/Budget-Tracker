@@ -11,15 +11,6 @@ type PopulateRowsProps = {
     yearStudentLoan: number
 };
 
-export type RowIndicator = {
-    label: string,
-    key: string,
-    values: number[],
-    isHidden: boolean,
-    isSimple: boolean,
-    hideWhenEmpty: boolean,
-};
-
 export const HEADERS = ["", "Hour", "Week", "Fortnight", "Month", "Year"];
 
 export const DEFAULT_ROWS: RowIndicator[] = [

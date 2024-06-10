@@ -1,6 +1,7 @@
-import { Button, Card, Datepicker, Input, Modal, Text } from "@ui-kitten/components";
+import { Button, Datepicker, Input, Text } from "@ui-kitten/components";
 import { useEffect, useState } from "react";
 import { NativeSyntheticEvent, StyleSheet, TextInputChangeEventData, View } from "react-native";
+import CustomModal from "../../../components/CustomModal";
 
 type Props = {
     isVisible: boolean,
@@ -44,34 +45,31 @@ const TransactionModal = ({ goalTotalSaved = 0, transaction, isVisible = false, 
 
     return (
         <View style={styles.container}>
-            <Modal
-                visible={isVisible}
-                backdropStyle={styles.backdrop}
-                onBackdropPress={_onClose}
+            <CustomModal
+                isVisible={true}
+                onClose={_onClose}
             >
-                <Card disabled={true}>
-                    <Text>
-                        Add transaction to your goal
-                    </Text>
-                    <Input
-                        label={"Amount"}
-                        placeholder='Transaction amount'
-                        value={amount}
-                        onChange={onAmountChange}
-                        {...{
-                            keyboardType: "numeric"
-                        }}
-                    />
-                    <Datepicker
-                        label={"Date by"}
-                        date={date}
-                        onSelect={nextDate => setDate(nextDate)}
-                    />
-                    <Button onPress={_onSave} disabled={amount === ''}>
-                        Save
-                    </Button>
-                </Card>
-            </Modal>
+                <Text>
+                    Add transaction to your goal
+                </Text>
+                <Input
+                    label={"Amount"}
+                    placeholder='Transaction amount'
+                    value={amount}
+                    onChange={onAmountChange}
+                    {...{
+                        keyboardType: "numeric"
+                    }}
+                />
+                <Datepicker
+                    label={"Date by"}
+                    date={date}
+                    onSelect={nextDate => setDate(nextDate)}
+                />
+                <Button onPress={_onSave} disabled={amount === ''}>
+                    Save
+                </Button>
+            </CustomModal>
         </View>
     )
 }
@@ -81,8 +79,5 @@ export default TransactionModal;
 const styles = StyleSheet.create({
     container: {
         minHeight: 192,
-    },
-    backdrop: {
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
     },
 });

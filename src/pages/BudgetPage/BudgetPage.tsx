@@ -1,5 +1,5 @@
 import { Button, IndexPath, Text } from '@ui-kitten/components';
-import React, { memo, useContext, useState } from 'react';
+import React, { memo, useState } from 'react';
 import { NativeSyntheticEvent, ScrollView, StyleSheet, TextInputChangeEventData, View } from 'react-native';
 import BudgetItem from './components/BudgetItem';
 import PieChartWithSelection from './components/PieChartWithSelection';

@@ -1,6 +1,7 @@
-import { Button, Card, Datepicker, IndexPath, Input, Layout, Modal, Select, SelectItem, Text } from "@ui-kitten/components"
+import { Button, Datepicker, IndexPath, Input, Layout, Select, SelectItem, Text } from "@ui-kitten/components"
 import { useEffect, useState } from "react";
 import { NativeSyntheticEvent, StyleSheet, TextInputChangeEventData, View } from "react-native"
+import CustomModal from "../../../components/CustomModal";
 
 type Props = {
     onClose: () => void,
@@ -117,80 +118,74 @@ const InvestmentModal = ({ onSave, onClose, investment = null }: Props) => {
 
     return (
         <View style={styles.container}>
-            <Modal
-                visible={true}
-                backdropStyle={styles.backdrop}
-                onBackdropPress={_onClose}
-            >
-                <Card disabled={true}>
-                    <Text>
-                        Your new instment
-                    </Text>
+            <CustomModal isVisible={true} onClose={_onClose} >
+                <Text>
+                    Your new instment
+                </Text>
+                <Input
+                    label={"Name:"}
+                    placeholder='Enter expense name'
+                    value={item.name}
+                    onChange={_onNameChange}
+                />
+                <View>
                     <Input
-                        label={"Name:"}
-                        placeholder='Enter expense name'
-                        value={item.name}
-                        onChange={_onNameChange}
-                    />
-                    <View>
-                        <Input
-                            label={"Amount:"}
-                            value={item.amount.toString()}
-                            onChange={_onAmountChange}
-                            {...{
-                                keyboardType: "numeric"
-                            }}
-                        />
-                        <Text style={styles.dollarSign}>$</Text>
-                    </View>
-                    <Input
-                        label={"Interest Rate:"}
-                        value={item.rate.toString()}
-                        onChange={_onRateChange}
+                        label={"Amount:"}
+                        value={item.amount.toString()}
+                        onChange={_onAmountChange}
                         {...{
                             keyboardType: "numeric"
                         }}
                     />
-                    <View style={{ flexDirection: "row", alignItems: "flex-end" }}>
-                        <Input
-                            label={"Term:"}
-                            value={item.term.toString()}
-                            onChange={_onTermChange}
-                            style={{ minWidth: 100 }}
-                            {...{
-                                keyboardType: "numeric"
-                            }}
-                        />
-                        <Layout style={{ minWidth: 150 }} level='1'>
-                            <Select
-                                selectedIndex={selectedIndex}
-                                onSelect={onTermPeriodChange}
-                                value={item.termPeriod.label}
-                            >
-                                {PERIODS.map((period: TermPeriod) => (
-                                    <SelectItem title={period.label} key={period.name} />
-                                ))}
-                            </Select>
-                        </Layout>
-                    </View>
+                    <Text style={styles.dollarSign}>$</Text>
+                </View>
+                <Input
+                    label={"Interest Rate:"}
+                    value={item.rate.toString()}
+                    onChange={_onRateChange}
+                    {...{
+                        keyboardType: "numeric"
+                    }}
+                />
+                <View style={{ flexDirection: "row", alignItems: "flex-end" }}>
                     <Input
-                        label={"Tax rate:"}
-                        value={item.taxRate.toString()}
-                        onChange={_onTaxRateChange}
+                        label={"Term:"}
+                        value={item.term.toString()}
+                        onChange={_onTermChange}
+                        style={{ minWidth: 100 }}
                         {...{
                             keyboardType: "numeric"
                         }}
                     />
-                    <Datepicker
-                        label={"Start date:"}
-                        date={item.startDate}
-                        onSelect={_onStartDateChange}
-                    />
-                    <Button onPress={_onSave} disabled={!item.name || !item.amount || item.amount === "0"}>
-                        Save
-                    </Button>
-                </Card>
-            </Modal>
+                    <Layout style={{ minWidth: 150 }} level='1'>
+                        <Select
+                            selectedIndex={selectedIndex}
+                            onSelect={onTermPeriodChange}
+                            value={item.termPeriod.label}
+                        >
+                            {PERIODS.map((period: TermPeriod) => (
+                                <SelectItem title={period.label} key={period.name} />
+                            ))}
+                        </Select>
+                    </Layout>
+                </View>
+                <Input
+                    label={"Tax rate:"}
+                    value={item.taxRate.toString()}
+                    onChange={_onTaxRateChange}
+                    {...{
+                        keyboardType: "numeric"
+                    }}
+                />
+                <Datepicker
+                    label={"Start date:"}
+                    date={item.startDate}
+                    onSelect={_onStartDateChange}
+                />
+                <Button onPress={_onSave} disabled={!item.name || !item.amount || item.amount === "0"}>
+                    Save
+                </Button>
+            </CustomModal>
         </View>
     )
 }
