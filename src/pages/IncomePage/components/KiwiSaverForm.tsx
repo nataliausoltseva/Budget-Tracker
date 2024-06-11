@@ -33,7 +33,7 @@ const KiwiSaverForm = ({ option, setKiwiSaverOption, isCustom, setIsCustom }: Pr
 
     return (
         <SafeAreaView>
-            <Layout level='1'>
+            <Layout level='1' style={{ width: 100 }}>
                 <Select
                     selectedIndex={selectedIndex}
                     onSelect={onSelection}

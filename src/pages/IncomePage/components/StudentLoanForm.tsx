@@ -1,6 +1,7 @@
 import { Input } from '@ui-kitten/components';
 import React, { useState } from 'react';
 import { NativeSyntheticEvent, SafeAreaView, StyleSheet, Text, TextInputChangeEventData, View } from 'react-native';
+import CustomText from '../../../components/CustomText';
 
 type Props = {
     rate: number,
@@ -19,9 +20,9 @@ const StudentLoanForm = ({ rate, threshold, setRate, setThreshold }: Props) => {
     }
 
     return (
-        <SafeAreaView>
+        <SafeAreaView style={{ flexDirection: "row" }}>
             <View style={styles.view}>
-                <Text>Student loan rate</Text>
+                <CustomText>Rate:</CustomText>
                 <Input
                     style={styles.input}
                     placeholder={"Student loan rate"}
@@ -32,8 +33,8 @@ const StudentLoanForm = ({ rate, threshold, setRate, setThreshold }: Props) => {
                     }}
                 />
             </View>
-            <View style={styles.view}>
-                <Text>Student oan threshold</Text>
+            <View style={[styles.view, { marginLeft: 10 }]}>
+                <CustomText>Threshold:</CustomText>
                 <Input
                     style={styles.input}
                     placeholder={"Student loan threshold"}
@@ -59,7 +60,7 @@ const styles = StyleSheet.create({
         justifyContent: "space-between",
     },
     input: {
-        flexGrow: 1,
-        marginLeft: 10
+        marginLeft: 10,
+        maxWidth: 100
     }
 });

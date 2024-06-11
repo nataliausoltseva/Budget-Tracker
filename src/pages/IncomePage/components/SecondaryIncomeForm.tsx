@@ -23,9 +23,7 @@ const SecondaryIncomeForm = ({ income, setIncome }: Props) => {
     return (
         <SafeAreaView>
             <View style={styles.view}>
-                <Text>Total annual income from other sources</Text>
                 <Input
-                    style={styles.input}
                     placeholder={"Secondaty income"}
                     value={secondaryIncomeHolder.current}
                     onChange={onIncomeChange}
@@ -48,8 +46,4 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "space-between",
     },
-    input: {
-        flexGrow: 1,
-        marginLeft: 10
-    }
 });

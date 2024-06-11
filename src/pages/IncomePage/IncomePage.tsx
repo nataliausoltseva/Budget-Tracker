@@ -1,6 +1,6 @@
 import React, { memo, useContext, useRef, useState } from 'react';
 import { Modal, NativeSyntheticEvent, ScrollView, StyleSheet, TextInputChangeEventData, View } from 'react-native';
-import { Button, Card, CheckBox, IndexPath, Input, Layout, ListItem, Select, SelectItem, Text, Toggle } from '@ui-kitten/components';
+import { Button, CheckBox, IndexPath, Input, Layout, Select, SelectItem, Text } from '@ui-kitten/components';
 
 import { CURRENCIES, incomePeriods } from '../../constants';
 import KiwiSaverForm from './components/KiwiSaverForm';
@@ -9,14 +9,13 @@ import SecondaryIncomeForm from './components/SecondaryIncomeForm';
 import useIncome, { COLORS } from './hooks/useIncome';
 import useTable from './hooks/useTable';
 import { AppContext } from '../../context/AppContext';
-import { PieChart } from 'react-native-gifted-charts';
 import usePieChart from './hooks/usePieChart';
 import CustomToggle from '../../components/CustomToggle';
 import FilterIcon from '../../components/FilterIcon';
 import IncomeTable from './components/IncomeTable';
 import IncomePieChart from './components/IncomePieChart';
 import CustomModal from '../../components/CustomModal';
-import FilterPopover from './components/FilterPopver';
+import FilterModal from './components/FilterModal';
 
 type Props = {
     isHidden: boolean,
@@ -174,52 +173,28 @@ const IncomePage = ({ isHidden = false }: Props) => {
                 <View>
                     <FilterIcon onPress={() => setShowFilter(true)} />
                     {showFilter && (
-                        <CustomModal onClose={() => setShowFilter(false)} isVisible={true}>
-                            <Text>Test</Text>
-                        </CustomModal>
+                        <FilterModal
+                            onClose={() => setShowFilter(false)}
+                            hasKiwiSaver={hasKiwiSaver}
+                            setHasKiwiSaver={setHasKiwiSaver}
+                            kiwiSaverOption={kiwiSaverOption}
+                            onKiwiSaverChange={onKiwiSaverChange}
+                            isKiwiSaverCustom={isKiwiSaverCustom}
+                            setIsKiwiSaverCustom={setIsKiwiSaverCustom}
+                            hasStudentLoan={hasStudentLoan}
+                            setHasStudentLoan={setHasStudentLoan}
+                            studentLoanRate={studentLoanRate}
+                            studentLoanThreshold={studentLoanThreshold}
+                            onStudentLoanChange={onStudentLoanChange}
+                            hasSecondaryIncome={hasSecondaryIncome}
+                            setHasSecondaryIncome={setHasSecondaryIncome}
+                            secondaryIncome={secondaryIncome}
+                            setSecondaryIncome={setSecondaryIncome}
+                        />
+
                     )}
                 </View>
             </View>
-            <CheckBox
-                checked={hasKiwiSaver}
-                onChange={nextChecked => setHasKiwiSaver(nextChecked)}
-            >
-                KiwiSaver
-            </CheckBox>
-            {hasKiwiSaver && (
-                <KiwiSaverForm
-                    option={kiwiSaverOption}
-                    setKiwiSaverOption={onKiwiSaverChange}
-                    isCustom={isKiwiSaverCustom}
-                    setIsCustom={setIsKiwiSaverCustom}
-                />
-            )}
-            <CheckBox
-                checked={hasStudentLoan}
-                onChange={nextChecked => setHasStudentLoan(nextChecked)}
-            >
-                Student Loan
-            </CheckBox>
-            {hasStudentLoan && (
-                <StudentLoanForm
-                    rate={studentLoanRate}
-                    threshold={studentLoanThreshold}
-                    setRate={(rate: number) => onStudentLoanChange(rate, null)}
-                    setThreshold={(threshold: number) => onStudentLoanChange(null, threshold)}
-                />
-            )}
-            <CheckBox
-                checked={hasSecondaryIncome}
-                onChange={nextChecked => setHasSecondaryIncome(nextChecked)}
-            >
-                Secondary Income
-            </CheckBox>
-            {hasSecondaryIncome && (
-                <SecondaryIncomeForm
-                    income={secondaryIncome}
-                    setIncome={setSecondaryIncome}
-                />
-            )}
             <Button onPress={onCalculate} disabled={primaryIncome === 0}>
                 Calculate
             </Button>
