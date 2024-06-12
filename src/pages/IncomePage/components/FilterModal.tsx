@@ -55,8 +55,7 @@ const FilterModal = ({
                 <KiwiSaverForm
                     option={kiwiSaverOption}
                     setKiwiSaverOption={onKiwiSaverChange}
-                    isCustom={isKiwiSaverCustom}
-                    setIsCustom={setIsKiwiSaverCustom}
+                    isEditable={hasKiwiSaver}
                 />
             </View>
             <View>
@@ -71,6 +70,7 @@ const FilterModal = ({
                     threshold={studentLoanThreshold}
                     setRate={(rate: number) => onStudentLoanChange(rate, null)}
                     setThreshold={(threshold: number) => onStudentLoanChange(null, threshold)}
+                    isEditable={hasStudentLoan}
                 />
             </View>
             <View style={{ flexDirection: "row" }}>
@@ -83,6 +83,7 @@ const FilterModal = ({
                 <SecondaryIncomeForm
                     income={secondaryIncome}
                     setIncome={setSecondaryIncome}
+                    isEditable={hasSecondaryIncome}
                 />
             </View>
         </CustomModal>

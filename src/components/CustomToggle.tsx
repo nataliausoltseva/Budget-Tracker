@@ -30,7 +30,6 @@ const CustomToggle = ({ isChecked = false, onChange, label }: Props) => {
             easing: Easing.ease,
             useNativeDriver: false
         }).start()
-
     };
 
     const onPress = () => {

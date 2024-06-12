@@ -4,4 +4,12 @@ const componentToHex = () => {
     return hex.length == 1 ? "0" + hex : hex;
 }
 
-export const randomHex = () => "#" + componentToHex() + componentToHex() + componentToHex() + "99"
+export const randomHex = () => "#" + componentToHex() + componentToHex() + componentToHex() + "99";
+
+export const getMainColour = (isDarkMode: boolean, isSelected: boolean) => {
+    if (isDarkMode) {
+        return isSelected ? "#A78DFF" : "white";
+    }
+
+    return isSelected ? "#01B0E6" : "black"
+}

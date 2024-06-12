@@ -1,11 +1,8 @@
 import React, { memo, useContext, useRef, useState } from 'react';
-import { Modal, NativeSyntheticEvent, ScrollView, StyleSheet, TextInputChangeEventData, View } from 'react-native';
-import { Button, CheckBox, IndexPath, Input, Layout, Select, SelectItem, Text } from '@ui-kitten/components';
+import { Animated, Easing, NativeSyntheticEvent, ScrollView, StyleSheet, TextInputChangeEventData, View } from 'react-native';
+import { Button, IndexPath, Input, Layout, Select, SelectItem, Text } from '@ui-kitten/components';
 
 import { CURRENCIES, incomePeriods } from '../../constants';
-import KiwiSaverForm from './components/KiwiSaverForm';
-import StudentLoanForm from './components/StudentLoanForm';
-import SecondaryIncomeForm from './components/SecondaryIncomeForm';
 import useIncome, { COLORS } from './hooks/useIncome';
 import useTable from './hooks/useTable';
 import { AppContext } from '../../context/AppContext';
@@ -14,8 +11,8 @@ import CustomToggle from '../../components/CustomToggle';
 import FilterIcon from '../../components/FilterIcon';
 import IncomeTable from './components/IncomeTable';
 import IncomePieChart from './components/IncomePieChart';
-import CustomModal from '../../components/CustomModal';
 import FilterModal from './components/FilterModal';
+import { getMainColour } from '../../hooks/color';
 
 type Props = {
     isHidden: boolean,
@@ -130,7 +127,31 @@ const IncomePage = ({ isHidden = false }: Props) => {
         setIsSimpleTable(prevState => !prevState);
         setRows(rows);
         setRandom(Math.random());
+    }
 
+    const rotateValue = useRef(new Animated.Value(0)).current;
+    const positionInterPol = rotateValue.interpolate({ inputRange: [0, 1], outputRange: ["0deg", "90deg"] });
+
+    const onShowFilter = () => {
+        Animated.timing(rotateValue, {
+            toValue: 1,
+            duration: 150,
+            easing: Easing.ease,
+            useNativeDriver: true,
+        }).start();
+        setShowFilter(true)
+    }
+
+    const onCloseFilter = () => {
+        if (!hasKiwiSaver && !hasSecondaryIncome && !hasStudentLoan) {
+            Animated.timing(rotateValue, {
+                toValue: 0,
+                duration: 150,
+                easing: Easing.ease,
+                useNativeDriver: true,
+            }).start();
+        }
+        setShowFilter(false)
     }
 
     const selectedCurrency = selectedCurrencyIndex instanceof IndexPath ? CURRENCIES[selectedCurrencyIndex.row] : CURRENCIES[0];
@@ -171,10 +192,15 @@ const IncomePage = ({ isHidden = false }: Props) => {
                     </Select>
                 </Layout>
                 <View>
-                    <FilterIcon onPress={() => setShowFilter(true)} />
+                    <Animated.View style={{ transform: [{ rotate: positionInterPol }] }}>
+                        <FilterIcon
+                            onPress={onShowFilter}
+                            color={getMainColour(appState.isDarkMode, hasKiwiSaver || hasSecondaryIncome || hasSecondaryIncome)}
+                        />
+                    </Animated.View>
                     {showFilter && (
                         <FilterModal
-                            onClose={() => setShowFilter(false)}
+                            onClose={onCloseFilter}
                             hasKiwiSaver={hasKiwiSaver}
                             setHasKiwiSaver={setHasKiwiSaver}
                             kiwiSaverOption={kiwiSaverOption}
