@@ -47,7 +47,6 @@ const useIncome = () => {
     const isIncomePeriodAuto = useRef(true)
 
     const [kiwiSaverOption, setKiwiSaverOption] = useState(3);
-    const [isKiwiSaverCustom, setIsKiwiSaverCustom] = useState(false);
 
     const [studentLoanRate, setStudentLoanRate] = useState(12)
     const [studentLoanThreshold, setStudentLoanThreshold] = useState(24128);
@@ -191,7 +190,6 @@ const useIncome = () => {
         studentLoanRate,
         studentLoanThreshold,
         secondaryIncome,
-        isKiwiSaverCustom,
         onPrimaryIncomeChange,
         onIncomePeriodChange,
         onKiwiSaverChange,
@@ -201,7 +199,6 @@ const useIncome = () => {
         setHasSecondaryIncome,
         setKiwiSaverOption,
         setSecondaryIncome,
-        setIsKiwiSaverCustom,
         calculateYearlyValues,
     }
 }

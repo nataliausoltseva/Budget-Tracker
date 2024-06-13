@@ -28,7 +28,7 @@ const CustomInput = ({ placeholder = "", value, onChange, isNumeric = false, isE
                     backgroundColor: appState.isDarkMode ? '#443472' : "white",
                     color: appState.isDarkMode ? "white" : "black",
                     outlineStyle: 'none',
-                    padding: 2,
+                    padding: 0,
                     opacity: isEditable ? 1 : 0.3
                 }
             ]}

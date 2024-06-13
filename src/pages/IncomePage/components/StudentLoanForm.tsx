@@ -27,7 +27,6 @@ const StudentLoanForm = ({ rate, threshold, setRate, setThreshold, isEditable = 
                 <CustomText style={{ opacity: isEditable ? 1 : 0.3 }}>Rate:</CustomText>
                 <CustomInput
                     style={styles.input}
-                    placeholder={"Student loan rate"}
                     value={rate.toString()}
                     onChange={onRateChange}
                     isEditable={isEditable}
@@ -38,7 +37,6 @@ const StudentLoanForm = ({ rate, threshold, setRate, setThreshold, isEditable = 
                 <CustomText style={{ opacity: isEditable ? 1 : 0.3 }}>Threshold:</CustomText>
                 <CustomInput
                     style={styles.input}
-                    placeholder={"Student loan threshold"}
                     value={threshold.toString()}
                     onChange={onThresholdChange}
                     isEditable={isEditable}
@@ -61,6 +59,6 @@ const styles = StyleSheet.create({
     },
     input: {
         marginLeft: 10,
-        maxWidth: 100
+        width: 70
     }
 });

@@ -26,10 +26,12 @@ const SecondaryIncomeForm = ({ income, setIncome, isEditable = true }: Props) =>
         <SafeAreaView>
             <View style={styles.view}>
                 <CustomInput
-                    placeholder={"Secondaty income"}
                     value={secondaryIncomeHolder.current}
                     onChange={onIncomeChange}
                     isEditable={isEditable}
+                    style={{
+                        width: 80
+                    }}
                     isNumeric
                 />
             </View>

@@ -1,6 +1,6 @@
 import React, { memo, useContext, useRef, useState } from 'react';
 import { Animated, Easing, NativeSyntheticEvent, ScrollView, StyleSheet, TextInputChangeEventData, View } from 'react-native';
-import { Button, IndexPath, Input, Layout, Select, SelectItem, Text } from '@ui-kitten/components';
+import { Button, IndexPath, Layout, Select, SelectItem, Text } from '@ui-kitten/components';
 
 import { CURRENCIES, incomePeriods } from '../../constants';
 import useIncome, { COLORS } from './hooks/useIncome';
@@ -13,6 +13,8 @@ import IncomeTable from './components/IncomeTable';
 import IncomePieChart from './components/IncomePieChart';
 import FilterModal from './components/FilterModal';
 import { getMainColour } from '../../hooks/color';
+import CustomInput from '../../components/CustomInput';
+import Dropdown from '../../components/Dropdown';
 
 type Props = {
     isHidden: boolean,
@@ -20,7 +22,6 @@ type Props = {
 
 const IncomePage = ({ isHidden = false }: Props) => {
     const appState = useContext(AppContext);
-    const [selectedIndex, setSelectedIndex] = useState<IndexPath | IndexPath[]>(new IndexPath(0));
     const [selectedCurrencyIndex, setSelectedCurrencyIndex] = useState<IndexPath | IndexPath[]>(new IndexPath(0));
     const [showFilter, setShowFilter] = useState(false);
 
@@ -36,7 +37,6 @@ const IncomePage = ({ isHidden = false }: Props) => {
         hasSecondaryIncome,
         hasStudentLoan,
         kiwiSaverOption,
-        isKiwiSaverCustom,
         studentLoanRate,
         studentLoanThreshold,
         secondaryIncome,
@@ -47,7 +47,6 @@ const IncomePage = ({ isHidden = false }: Props) => {
         setHasSecondaryIncome,
         setHasStudentLoan,
         setHasKiwiSaver,
-        setIsKiwiSaverCustom,
         setSecondaryIncome,
         calculateYearlyValues,
     } = useIncome();
@@ -76,8 +75,6 @@ const IncomePage = ({ isHidden = false }: Props) => {
     }
 
     const onPreiodSelect = (index: IndexPath | IndexPath[]) => {
-        setSelectedIndex(index);
-
         if (index instanceof IndexPath) {
             onIncomePeriodChange(incomePeriods[index.row]);
         }
@@ -158,21 +155,16 @@ const IncomePage = ({ isHidden = false }: Props) => {
 
     return (
         <ScrollView style={{ display: isHidden ? "none" : "flex" }}>
-            <Text>Your Income</Text>
             <View style={styles.incomeView}>
-                <Layout style={styles.currencyContainer} level='1'>
-                    <Select
-                        selectedIndex={selectedCurrencyIndex}
-                        onSelect={setSelectedCurrencyIndex}
-                        value={selectedCurrency}
-                    >
-                        {CURRENCIES.map((currency: string) => (
-                            <SelectItem title={currency} key={currency} />
-                        ))}
-                    </Select>
-                </Layout>
-                <Input
-                    placeholder={"Income amount"}
+                <Dropdown
+                    onSelect={setSelectedCurrencyIndex}
+                    value={selectedCurrency}
+                    list={CURRENCIES}
+                    style={{
+                        width: 110
+                    }}
+                />
+                <CustomInput
                     value={primaryIncomeHolder.current}
                     onChange={onIncomeAmountChange}
                     style={styles.input}
@@ -180,17 +172,14 @@ const IncomePage = ({ isHidden = false }: Props) => {
                         keyboardType: "numeric"
                     }}
                 />
-                <Layout style={styles.container} level='1'>
-                    <Select
-                        selectedIndex={selectedIndex}
-                        onSelect={onPreiodSelect}
-                        value={incomePeriod.label}
-                    >
-                        {incomePeriods.map((period: IncomePeriod) => (
-                            <SelectItem title={period.label} key={period.value} />
-                        ))}
-                    </Select>
-                </Layout>
+                <Dropdown
+                    onSelect={onPreiodSelect}
+                    value={incomePeriod.label}
+                    list={incomePeriods}
+                    style={{
+                        width: 150
+                    }}
+                />
                 <View>
                     <Animated.View style={{ transform: [{ rotate: positionInterPol }] }}>
                         <FilterIcon
@@ -205,8 +194,6 @@ const IncomePage = ({ isHidden = false }: Props) => {
                             setHasKiwiSaver={setHasKiwiSaver}
                             kiwiSaverOption={kiwiSaverOption}
                             onKiwiSaverChange={onKiwiSaverChange}
-                            isKiwiSaverCustom={isKiwiSaverCustom}
-                            setIsKiwiSaverCustom={setIsKiwiSaverCustom}
                             hasStudentLoan={hasStudentLoan}
                             setHasStudentLoan={setHasStudentLoan}
                             studentLoanRate={studentLoanRate}
@@ -221,9 +208,11 @@ const IncomePage = ({ isHidden = false }: Props) => {
                     )}
                 </View>
             </View>
-            <Button onPress={onCalculate} disabled={primaryIncome === 0}>
-                Calculate
-            </Button>
+            <View style={{ flexDirection: "row", justifyContent: "center" }}>
+                <Button onPress={onCalculate} disabled={primaryIncome === 0} style={{ width: 150 }}>
+                    Calculate
+                </Button>
+            </View>
             <IncomeTable rows={rows} />
             <CustomToggle label={"Simple table"} isChecked={isSimpleTable} onChange={updateTableRows} />
             <IncomePieChart pieData={pieData} yearGrossPay={yearGrossPay} />
@@ -235,20 +224,12 @@ const styles = StyleSheet.create({
     incomeView: {
         display: "flex",
         flexDirection: 'row',
-        position: "relative"
-    },
-    container: {
-        minWidth: 150
-    },
-    currencyContainer: {
-        minWidth: 110
+        position: "relative",
+        justifyContent: "space-between"
     },
     input: {
-        flexGrow: 1
+        width: 100
     },
-    row: {
-        color: "red",
-    }
 });
 
 export default memo(IncomePage);

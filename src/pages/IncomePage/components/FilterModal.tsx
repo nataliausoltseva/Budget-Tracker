@@ -12,8 +12,6 @@ type Props = {
     setHasKiwiSaver: (value: boolean) => void,
     kiwiSaverOption: number,
     onKiwiSaverChange: (option: number) => void,
-    isKiwiSaverCustom: boolean,
-    setIsKiwiSaverCustom: (value: boolean) => void,
     hasStudentLoan: boolean,
     setHasStudentLoan: (value: boolean) => void,
     studentLoanRate: number,
@@ -31,8 +29,6 @@ const FilterModal = ({
     setHasKiwiSaver,
     kiwiSaverOption,
     onKiwiSaverChange,
-    isKiwiSaverCustom,
-    setIsKiwiSaverCustom,
     hasStudentLoan,
     setHasStudentLoan,
     studentLoanRate,
@@ -44,7 +40,7 @@ const FilterModal = ({
     setSecondaryIncome,
 }: Props) => {
     return (
-        <CustomModal onClose={onClose} isVisible={true} style={{ maxWidth: "90%" }} >
+        <CustomModal onClose={onClose} isVisible={true}>
             <View style={{ flexDirection: "row" }}>
                 <CheckBox
                     checked={hasKiwiSaver}
