@@ -168,9 +168,7 @@ const IncomePage = ({ isHidden = false }: Props) => {
                     value={primaryIncomeHolder.current}
                     onChange={onIncomeAmountChange}
                     style={styles.input}
-                    {...{
-                        keyboardType: "numeric"
-                    }}
+                    isNumeric
                 />
                 <Dropdown
                     onSelect={onPreiodSelect}

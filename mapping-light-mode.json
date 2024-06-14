@@ -34,6 +34,22 @@
                     }
                 }
             }
+        },
+        "Button": {
+            "meta": {},
+            "appearances": {
+                "filled": {
+                    "mapping": {},
+                    "variantGroups": {
+                        "status": {
+                            "primary": {
+                                "backgroundColor": "#01B0E6",
+                                "borderColor": "#01B0E6"
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }
