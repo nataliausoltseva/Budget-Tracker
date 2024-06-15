@@ -1,10 +1,10 @@
 import React, { memo, useContext, useRef, useState } from 'react';
 import { Animated, Easing, NativeSyntheticEvent, ScrollView, StyleSheet, TextInputChangeEventData, View } from 'react-native';
-import { Button, IndexPath, Layout, Select, SelectItem, Text } from '@ui-kitten/components';
+import { Button, CheckBox, IndexPath, Layout, Select, SelectItem, Text } from '@ui-kitten/components';
 
 import { CURRENCIES, incomePeriods } from '../../constants';
 import useIncome, { COLORS } from './hooks/useIncome';
-import useTable from './hooks/useTable';
+import useTable, { HEADERS } from './hooks/useTable';
 import { AppContext } from '../../context/AppContext';
 import usePieChart from './hooks/usePieChart';
 import CustomToggle from '../../components/CustomToggle';
@@ -24,6 +24,9 @@ const IncomePage = ({ isHidden = false }: Props) => {
     const appState = useContext(AppContext);
     const [selectedCurrencyIndex, setSelectedCurrencyIndex] = useState<IndexPath | IndexPath[]>(new IndexPath(0));
     const [showFilter, setShowFilter] = useState(false);
+    const [tableSelectionIndex, setTableSelectionIndex] = useState<IndexPath | IndexPath[]>(new IndexPath(0));
+
+    const selectedHeader = tableSelectionIndex instanceof IndexPath ? HEADERS[tableSelectionIndex.row].label : HEADERS[1].label;
 
     // The list (table) only updates if we pass something new to the extraData prop.
     const [, setRandom] = useState(Math.random());
@@ -57,7 +60,7 @@ const IncomePage = ({ isHidden = false }: Props) => {
         setRows,
         isSimpleTable,
         setIsSimpleTable,
-    } = useTable();
+    } = useTable({ selectedHeader });
 
     const {
         pieData,
@@ -122,7 +125,7 @@ const IncomePage = ({ isHidden = false }: Props) => {
             }
         })
         setIsSimpleTable(prevState => !prevState);
-        setRows(rows);
+        setRows(newRows);
         setRandom(Math.random());
     }
 
@@ -204,7 +207,6 @@ const IncomePage = ({ isHidden = false }: Props) => {
                             secondaryIncome={secondaryIncome}
                             setSecondaryIncome={setSecondaryIncome}
                         />
-
                     )}
                 </View>
             </View>
@@ -213,8 +215,23 @@ const IncomePage = ({ isHidden = false }: Props) => {
                     Calculate
                 </Button>
             </View>
+            <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+                <CheckBox
+                    checked={isSimpleTable}
+                    onChange={updateTableRows}
+                >
+                    Simple table
+                </CheckBox>
+                <Dropdown
+                    onSelect={setTableSelectionIndex}
+                    value={selectedHeader}
+                    list={HEADERS}
+                    style={{
+                        width: 150
+                    }}
+                />
+            </View>
             <IncomeTable rows={rows} />
-            <CustomToggle label={"Simple table"} isChecked={isSimpleTable} onChange={updateTableRows} />
             <IncomePieChart pieData={pieData} yearGrossPay={yearGrossPay} />
         </ScrollView>
     )

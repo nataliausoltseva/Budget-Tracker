@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { incomePeriods } from "../../../constants";
 
 type PopulateRowsProps = {
     yearGrossPay: number,
@@ -11,7 +10,31 @@ type PopulateRowsProps = {
     yearStudentLoan: number
 };
 
-export const HEADERS = ["", "Hour", "Week", "Fortnight", "Month", "Year"];
+export const HEADERS = [
+    {
+        label: "",
+        calcToYear: 0,
+    },
+    {
+        label: "Hour",
+        calcToYear: (40 * 52)
+    },
+    {
+        label: "Week",
+        calcToYear: 52
+    },
+    {
+        label: "Fortnight",
+    },
+    {
+        label: "Month",
+        calcToYear: 12
+    },
+    {
+        label: "Year",
+        calcToYear: 1,
+    }
+];
 
 export const DEFAULT_ROWS: RowIndicator[] = [
     {
@@ -80,7 +103,7 @@ export const DEFAULT_ROWS: RowIndicator[] = [
     }
 ];
 
-const useTable = () => {
+const useTable = ({ selectedHeader }: { selectedHeader: Record<string, number> }) => {
     const [rows, setRows] = useState<RowIndicator[]>(DEFAULT_ROWS);
     const [isSimpleTable, setIsSimpleTable] = useState(false);
 
@@ -89,88 +112,32 @@ const useTable = () => {
     );
 
     const calculateValues = ({ yearGrossPay, yearPaye, yearAcc, yearKiwiSaver, yearStudentLoan, yearSecGrossPay, yearSecPaye }: PopulateRowsProps) => {
+        let newRows: RowIndicator[] = [...rows];
         if (yearGrossPay > 0) {
-            let grossPay = 0;
-            let secGrossPay = 0;
-            let paye = 0;
-            let secPaye = 0;
-            let acc = 0;
-            let kiwiSaver = 0;
-            let studentLoan = 0;
-            incomePeriods.filter((period: IncomePeriod) => period.value !== 'auto').forEach((period: IncomePeriod, index: number) => {
-                switch (period.value) {
-                    case "hour":
-                        grossPay = roundToTwoDecimals(yearGrossPay / 40 / 52);
-                        secGrossPay = roundToTwoDecimals(yearSecGrossPay / 40 / 52);
-                        paye = roundToTwoDecimals(yearPaye / 40 / 52);
-                        secPaye = roundToTwoDecimals(yearSecPaye / 40 / 52);
-                        acc = roundToTwoDecimals(yearAcc / 40 / 52);
-                        kiwiSaver = roundToTwoDecimals(yearKiwiSaver === 0 ? 0 : yearKiwiSaver / 40 / 52);
-                        studentLoan = roundToTwoDecimals(yearStudentLoan === 0 ? 0 : yearStudentLoan / 40 / 52);
-                        break;
-                    case "week":
-                        grossPay = roundToTwoDecimals(yearGrossPay / 52);
-                        secGrossPay = roundToTwoDecimals(yearSecGrossPay / 52);
-                        paye = roundToTwoDecimals(yearPaye / 52);
-                        secPaye = roundToTwoDecimals(yearSecPaye / 52);
-                        acc = roundToTwoDecimals(yearAcc / 52);
-                        kiwiSaver = roundToTwoDecimals(yearKiwiSaver === 0 ? 0 : yearKiwiSaver / 52);
-                        studentLoan = roundToTwoDecimals(yearStudentLoan === 0 ? 0 : yearStudentLoan / 52);
-                        break;
-                    case "fortnight":
-                        grossPay = roundToTwoDecimals(yearGrossPay / 26);
-                        secGrossPay = roundToTwoDecimals(yearSecGrossPay / 26);
-                        paye = roundToTwoDecimals(yearPaye / 26);
-                        secPaye = roundToTwoDecimals(yearSecPaye / 26);
-                        acc = roundToTwoDecimals(yearAcc / 26);
-                        kiwiSaver = roundToTwoDecimals(yearKiwiSaver === 0 ? 0 : yearKiwiSaver / 26);
-                        studentLoan = roundToTwoDecimals(yearStudentLoan === 0 ? 0 : yearStudentLoan / 26);
-                        break;
-                    case "month":
-                        grossPay = roundToTwoDecimals(yearGrossPay / 12);
-                        secGrossPay = roundToTwoDecimals(yearSecGrossPay / 12);
-                        paye = roundToTwoDecimals(yearPaye / 12);
-                        secPaye = roundToTwoDecimals(yearSecPaye / 12);
-                        acc = roundToTwoDecimals(yearAcc / 12);
-                        kiwiSaver = yearKiwiSaver === 0 ? 0 : roundToTwoDecimals(yearKiwiSaver / 12);
-                        studentLoan = yearStudentLoan === 0 ? 0 : roundToTwoDecimals(yearStudentLoan / 12);
-                        break;
-                    default:
-                        grossPay = yearGrossPay;
-                        secGrossPay = yearSecGrossPay;
-                        paye = yearPaye;
-                        secPaye = yearSecPaye;
-                        acc = yearAcc;
-                        kiwiSaver = yearKiwiSaver;
-                        yearStudentLoan = yearStudentLoan;
-                        break;
-                }
-                if (index === 0) {
-                    rows[0].values = [];
-                    rows[1].values = [];
-                    rows[2].values = [];
-                    rows[3].values = [];
-                    rows[4].values = [];
-                    rows[5].values = [];
-                    rows[6].values = [];
-                    rows[7].values = [];
-                }
-                rows[0].values.push(grossPay);
-                rows[1].values.push(secGrossPay);
-                rows[2].values.push(paye);
-                rows[3].values.push(secPaye);
-                rows[4].values.push(acc);
-                rows[5].values.push(kiwiSaver);
-                rows[6].values.push(studentLoan);
-                rows[7].values.push(roundToTwoDecimals(grossPay + secGrossPay - paye - acc - kiwiSaver - studentLoan - secPaye));
-            });
-        }
-        rows[1].isHidden = yearSecGrossPay === 0;
-        rows[3].isHidden = yearSecGrossPay === 0;
-        rows[5].isHidden = yearKiwiSaver === 0;
-        rows[6].isHidden = yearStudentLoan === 0;
+            newRows = DEFAULT_ROWS;
+            const grossPay = roundToTwoDecimals(yearGrossPay / selectedHeader.calcToYear);
+            const secGrossPay = roundToTwoDecimals(yearSecGrossPay / selectedHeader.calcToYear);
+            const paye = roundToTwoDecimals(yearPaye / selectedHeader.calcToYear);
+            const secPaye = roundToTwoDecimals(yearSecPaye / selectedHeader.calcToYear);
+            const acc = roundToTwoDecimals(yearAcc / selectedHeader.calcToYear);
+            const kiwiSaver = roundToTwoDecimals(yearKiwiSaver === 0 ? 0 : yearKiwiSaver / selectedHeader.calcToYear);
+            const studentLoan = roundToTwoDecimals(yearStudentLoan === 0 ? 0 : yearStudentLoan / selectedHeader.calcToYear);
 
-        return rows;
+            newRows[0].values.push(grossPay);
+            newRows[1].values.push(secGrossPay);
+            newRows[2].values.push(paye);
+            newRows[3].values.push(secPaye);
+            newRows[4].values.push(acc);
+            newRows[5].values.push(kiwiSaver);
+            newRows[6].values.push(studentLoan);
+            newRows[7].values.push(roundToTwoDecimals(grossPay + secGrossPay - paye - acc - kiwiSaver - studentLoan - secPaye));
+        }
+        newRows[1].isHidden = yearSecGrossPay === 0;
+        newRows[3].isHidden = yearSecGrossPay === 0;
+        newRows[5].isHidden = yearKiwiSaver === 0;
+        newRows[6].isHidden = yearStudentLoan === 0;
+
+        return newRows;
     }
 
     const populateTableRows = ({ yearGrossPay, yearPaye, yearAcc, yearKiwiSaver, yearStudentLoan, yearSecGrossPay, yearSecPaye }: PopulateRowsProps) => {
