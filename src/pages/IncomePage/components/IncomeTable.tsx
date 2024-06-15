@@ -1,7 +1,8 @@
 import React from 'react';
-import { View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { ListItem } from '@ui-kitten/components';
 import { COLORS } from '../hooks/useIncome';
+import CustomText from '../../../components/CustomText';
 
 type Props = {
     rows: RowIndicator[]
@@ -10,18 +11,15 @@ type Props = {
 const IncomeTable = ({ rows }: Props) => {
     return (
         <View style={{ flexGrow: 1, width: "100%" }}>
-            {new Array(rows.length + 1).fill(0).map((_, index) => (
-                <View key={index} style={{ position: "relative", display: "flex", flexDirection: "row" }}>
-                    {!rows[index]?.isHidden && (
-                        <>
-                            <View style={{ position: "absolute", left: 5, top: "45%", width: 5, height: 5, backgroundColor: COLORS[index], zIndex: 1, borderRadius: 50 }} />
-                            <ListItem title={rows[index].label} style={{ flexGrow: 1 }} key={rows[index].label} />
-                            {rows[index].values.map((value: number, valuIndex: number) => (
-                                <ListItem title={value || "0"} style={{ flexGrow: 1 }} key={`${rows[index].label}-${valuIndex}`} />
-                            ))}
-                        </>
-                    )}
-                </View>
+            {rows.filter((row: RowIndicator) => !row.isHidden).map((row, index) => (
+                <React.Fragment key={index}>
+                    <View style={{ position: "relative", display: "flex", flexDirection: "row", alignItems: "center", height: 50 }}>
+                        <View style={{ width: 15, height: 15, marginLeft: 5, backgroundColor: COLORS[index], zIndex: 1, transform: [{ rotate: "45deg" }] }} />
+                        <CustomText style={{ marginLeft: 15 }}>{row.label}</CustomText>
+                        <CustomText style={{ flexGrow: 1, textAlign: "right" }}>{row.value.toString()}</CustomText>
+                    </View>
+                    <View style={{ height: 1, backgroundColor: '#707070' }} />
+                </React.Fragment>
             ))}
         </View>
     )

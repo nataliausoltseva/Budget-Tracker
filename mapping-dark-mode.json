@@ -8,25 +8,25 @@
                     "variantGroups": {
                         "status": {
                             "basic": {
-                                "iconTintColor": "black",
-                                "textColor": "black",
-                                "backgroundColor": "white",
-                                "borderColor": "white",
-                                "labelColor": "black",
-                                "placeholderColor": "black",
-                                "captionColor": "black",
+                                "iconTintColor": "#443472",
+                                "textColor": "white",
+                                "backgroundColor": "#443472",
+                                "borderColor": "#443472",
+                                "labelColor": "white",
+                                "placeholderColor": "white",
+                                "captionColor": "white",
                                 "state": {
                                     "focused": {
-                                        "borderColor": "white"
+                                        "borderColor": "#443472"
                                     },
                                     "hover": {
-                                        "borderColor": "white"
+                                        "borderColor": "#443472"
                                     },
                                     "active": {
-                                        "borderColor": "white"
+                                        "borderColor": "#443472"
                                     },
                                     "disabled": {
-                                        "borderColor": "white"
+                                        "borderColor": "#443472"
                                     }
                                 }
                             }
@@ -43,8 +43,8 @@
                     "variantGroups": {
                         "status": {
                             "primary": {
-                                "backgroundColor": "#01B0E6",
-                                "borderColor": "#01B0E6"
+                                "backgroundColor": "#A78DFF",
+                                "borderColor": "#A78DFF"
                             }
                         }
                     }

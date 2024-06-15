@@ -10,24 +10,26 @@ type Props = {
 
 const IncomePieChart = ({ pieData, yearGrossPay }: Props) => {
     return (
-        <PieChart
-            data={pieData}
-            labelsPosition='outward'
-            textColor='white'
-            fontWeight='bold'
-            innerRadius={60}
-            innerCircleColor={'#232B5D'}
-            showText
-            centerLabelComponent={() => (
-                <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-                    <CustomText
-                        style={{ fontSize: 16, color: 'white', fontWeight: 'bold' }}>
-                        ${Number(yearGrossPay).toFixed(2)}
-                    </CustomText>
-                    <CustomText style={{ fontSize: 14, color: 'white' }}>Gross Pay</CustomText>
-                </View>
-            )}
-        />
+        <View style={{ alignItems: 'center', marginTop: 80 }}>
+            <PieChart
+                data={pieData}
+                labelsPosition='outward'
+                textColor='white'
+                fontWeight='bold'
+                innerRadius={60}
+                innerCircleColor={'#232B5D'}
+                showText
+                centerLabelComponent={() => (
+                    <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                        <CustomText
+                            style={{ fontSize: 16, color: 'white', fontWeight: 'bold' }}>
+                            ${Number(yearGrossPay).toFixed(2)}
+                        </CustomText>
+                        <CustomText style={{ fontSize: 14, color: 'white' }}>Gross Pay</CustomText>
+                    </View>
+                )}
+            />
+        </View>
     )
 }
 

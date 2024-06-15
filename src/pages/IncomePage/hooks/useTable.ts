@@ -10,7 +10,7 @@ type PopulateRowsProps = {
     yearStudentLoan: number
 };
 
-export const HEADERS = [
+export const HEADERS: IncomeTableHeader[] = [
     {
         label: "",
         calcToYear: 0,
@@ -25,6 +25,7 @@ export const HEADERS = [
     },
     {
         label: "Fortnight",
+        calcToYear: 26,
     },
     {
         label: "Month",
@@ -40,7 +41,7 @@ export const DEFAULT_ROWS: RowIndicator[] = [
     {
         label: "Gross",
         key: 'gross',
-        values: [0, 0, 0, 0, 0],
+        value: 0,
         isHidden: false,
         isSimple: true,
         hideWhenEmpty: false,
@@ -48,7 +49,7 @@ export const DEFAULT_ROWS: RowIndicator[] = [
     {
         label: "Sec Gross",
         key: 'secGross',
-        values: [0, 0, 0, 0, 0],
+        value: 0,
         isHidden: true,
         isSimple: false,
         hideWhenEmpty: true,
@@ -56,7 +57,7 @@ export const DEFAULT_ROWS: RowIndicator[] = [
     {
         label: "PAYE",
         key: 'paye',
-        values: [0, 0, 0, 0, 0],
+        value: 0,
         isHidden: false,
         isSimple: false,
         hideWhenEmpty: false,
@@ -64,7 +65,7 @@ export const DEFAULT_ROWS: RowIndicator[] = [
     {
         label: "Sec PAYE",
         key: 'secPaye',
-        values: [0, 0, 0, 0, 0],
+        value: 0,
         isHidden: true,
         isSimple: false,
         hideWhenEmpty: true,
@@ -72,7 +73,7 @@ export const DEFAULT_ROWS: RowIndicator[] = [
     {
         label: "AСС",
         key: 'acc',
-        values: [0, 0, 0, 0, 0],
+        value: 0,
         isHidden: false,
         isSimple: false,
         hideWhenEmpty: false,
@@ -80,7 +81,7 @@ export const DEFAULT_ROWS: RowIndicator[] = [
     {
         label: "Saver",
         key: 'kiwiSaver',
-        values: [0, 0, 0, 0, 0],
+        value: 0,
         isHidden: true,
         isSimple: false,
         hideWhenEmpty: true,
@@ -88,7 +89,7 @@ export const DEFAULT_ROWS: RowIndicator[] = [
     {
         label: "Stu. Loan",
         key: 'studentLoan',
-        values: [0, 0, 0, 0, 0],
+        value: 0,
         isHidden: true,
         isSimple: false,
         hideWhenEmpty: true,
@@ -96,14 +97,14 @@ export const DEFAULT_ROWS: RowIndicator[] = [
     {
         label: "NET",
         key: 'takeHome',
-        values: [0, 0, 0, 0, 0],
+        value: 0,
         isHidden: false,
         isSimple: true,
         hideWhenEmpty: false,
     }
 ];
 
-const useTable = ({ selectedHeader }: { selectedHeader: Record<string, number> }) => {
+const useTable = ({ selectedHeader }: { selectedHeader: IncomeTableHeader }) => {
     const [rows, setRows] = useState<RowIndicator[]>(DEFAULT_ROWS);
     const [isSimpleTable, setIsSimpleTable] = useState(false);
 
@@ -123,20 +124,31 @@ const useTable = ({ selectedHeader }: { selectedHeader: Record<string, number> }
             const kiwiSaver = roundToTwoDecimals(yearKiwiSaver === 0 ? 0 : yearKiwiSaver / selectedHeader.calcToYear);
             const studentLoan = roundToTwoDecimals(yearStudentLoan === 0 ? 0 : yearStudentLoan / selectedHeader.calcToYear);
 
-            newRows[0].values.push(grossPay);
-            newRows[1].values.push(secGrossPay);
-            newRows[2].values.push(paye);
-            newRows[3].values.push(secPaye);
-            newRows[4].values.push(acc);
-            newRows[5].values.push(kiwiSaver);
-            newRows[6].values.push(studentLoan);
-            newRows[7].values.push(roundToTwoDecimals(grossPay + secGrossPay - paye - acc - kiwiSaver - studentLoan - secPaye));
+            newRows[0].value = grossPay;
+            newRows[1].value = secGrossPay;
+            newRows[2].value = paye;
+            newRows[3].value = secPaye;
+            newRows[4].value = acc;
+            newRows[5].value = kiwiSaver;
+            newRows[6].value = studentLoan;
+            newRows[7].value = roundToTwoDecimals(grossPay + secGrossPay - paye - acc - kiwiSaver - studentLoan - secPaye);
         }
         newRows[1].isHidden = yearSecGrossPay === 0;
         newRows[3].isHidden = yearSecGrossPay === 0;
         newRows[5].isHidden = yearKiwiSaver === 0;
         newRows[6].isHidden = yearStudentLoan === 0;
 
+        newRows = hideSimpleRows(newRows);
+        return newRows;
+    }
+
+    const hideSimpleRows = (newRows: RowIndicator[]) => {
+        newRows.forEach((row: RowIndicator) => {
+            if (!row.isSimple) {
+                // Only hide all other rows if simple toggle is selected OR the rows are empty and should be hidden by default.
+                row.isHidden = isSimpleTable || (row.hideWhenEmpty && row.value === 0);
+            }
+        })
         return newRows;
     }
 

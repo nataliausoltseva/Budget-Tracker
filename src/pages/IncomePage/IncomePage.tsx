@@ -26,7 +26,7 @@ const IncomePage = ({ isHidden = false }: Props) => {
     const [showFilter, setShowFilter] = useState(false);
     const [tableSelectionIndex, setTableSelectionIndex] = useState<IndexPath | IndexPath[]>(new IndexPath(0));
 
-    const selectedHeader = tableSelectionIndex instanceof IndexPath ? HEADERS[tableSelectionIndex.row].label : HEADERS[1].label;
+    const selectedHeader: IncomeTableHeader = tableSelectionIndex instanceof IndexPath ? HEADERS[tableSelectionIndex.row || HEADERS.length - 1] : HEADERS[1];
 
     // The list (table) only updates if we pass something new to the extraData prop.
     const [, setRandom] = useState(Math.random());
@@ -120,8 +120,8 @@ const IncomePage = ({ isHidden = false }: Props) => {
         const newValue = !isSimpleTable;
         newRows.forEach((row: RowIndicator) => {
             if (!row.isSimple) {
-                // Only hide all other rows if simple toggle is selectec OR the rows are empty and should be hidden by default.
-                row.isHidden = newValue || (row.hideWhenEmpty && row.values.every(v => v === 0));
+                // Only hide all other rows if simple toggle is selected OR the rows are empty and should be hidden by default.
+                row.isHidden = newValue || (row.hideWhenEmpty && row.value === 0);
             }
         })
         setIsSimpleTable(prevState => !prevState);
@@ -171,9 +171,7 @@ const IncomePage = ({ isHidden = false }: Props) => {
                     value={primaryIncomeHolder.current}
                     onChange={onIncomeAmountChange}
                     style={styles.input}
-                    {...{
-                        keyboardType: "numeric"
-                    }}
+                    isNumeric
                 />
                 <Dropdown
                     onSelect={onPreiodSelect}
@@ -210,12 +208,12 @@ const IncomePage = ({ isHidden = false }: Props) => {
                     )}
                 </View>
             </View>
-            <View style={{ flexDirection: "row", justifyContent: "center" }}>
+            <View style={{ flexDirection: "row", justifyContent: "center", marginTop: 35, marginBottom: 35 }}>
                 <Button onPress={onCalculate} disabled={primaryIncome === 0} style={{ width: 150 }}>
                     Calculate
                 </Button>
             </View>
-            <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+            <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: 35 }}>
                 <CheckBox
                     checked={isSimpleTable}
                     onChange={updateTableRows}
@@ -224,7 +222,7 @@ const IncomePage = ({ isHidden = false }: Props) => {
                 </CheckBox>
                 <Dropdown
                     onSelect={setTableSelectionIndex}
-                    value={selectedHeader}
+                    value={selectedHeader.label}
                     list={HEADERS}
                     style={{
                         width: 150
