@@ -154,6 +154,7 @@ const IncomePage = ({ isHidden = false }: Props) => {
         setShowFilter(false)
     }
 
+
     const selectedCurrency = selectedCurrencyIndex instanceof IndexPath ? CURRENCIES[selectedCurrencyIndex.row] : CURRENCIES[0];
 
     return (
@@ -163,7 +164,11 @@ const IncomePage = ({ isHidden = false }: Props) => {
                     onSelect={setSelectedCurrencyIndex}
                     value={selectedCurrency}
                     list={CURRENCIES}
-                    style={{
+                    listStyle={{
+                        width: 110,
+                        left: 20
+                    }}
+                    containerStyle={{
                         width: 110
                     }}
                 />
@@ -173,14 +178,14 @@ const IncomePage = ({ isHidden = false }: Props) => {
                     style={styles.input}
                     isNumeric
                 />
-                <Dropdown
+                {/* <Dropdown
                     onSelect={onPreiodSelect}
                     value={incomePeriod.label}
                     list={incomePeriods}
                     style={{
                         width: 150
                     }}
-                />
+                /> */}
                 <View>
                     <Animated.View style={{ transform: [{ rotate: positionInterPol }] }}>
                         <FilterIcon
@@ -220,14 +225,14 @@ const IncomePage = ({ isHidden = false }: Props) => {
                 >
                     Simple table
                 </CheckBox>
-                <Dropdown
+                {/* <Dropdown
                     onSelect={setTableSelectionIndex}
                     value={selectedHeader.label}
                     list={HEADERS}
                     style={{
                         width: 150
                     }}
-                />
+                /> */}
             </View>
             <IncomeTable rows={rows} />
             <IncomePieChart pieData={pieData} yearGrossPay={yearGrossPay} />

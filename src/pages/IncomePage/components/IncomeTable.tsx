@@ -16,7 +16,7 @@ const IncomeTable = ({ rows }: Props) => {
                     <View style={{ position: "relative", display: "flex", flexDirection: "row", alignItems: "center", height: 50 }}>
                         <View style={{ width: 15, height: 15, marginLeft: 5, backgroundColor: COLORS[index], zIndex: 1, transform: [{ rotate: "45deg" }] }} />
                         <CustomText style={{ marginLeft: 15 }}>{row.label}</CustomText>
-                        <CustomText style={{ flexGrow: 1, textAlign: "right" }}>{row.value.toString()}</CustomText>
+                        <CustomText style={{ flexGrow: 1, textAlign: "right", marginRight: 10 }}>{row.value.toString()}</CustomText>
                     </View>
                     <View style={{ height: 1, backgroundColor: '#707070' }} />
                 </React.Fragment>
