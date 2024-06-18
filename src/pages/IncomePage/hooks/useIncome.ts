@@ -29,6 +29,8 @@ export const TAX_THRESHOLDS: TaxThreshold[] = [
     }
 ];
 
+export const COLORS: string[] = ["#f6abb6", "#b3cde0", "#851e3e", "#3da4ab", "#4b86b4", "#fec8c1", "#83d0c9", " #e0a899", "#8b9dc3"];
+
 export const ACC = {
     levy: 1.60,
     incomeCap: 142283,
@@ -45,7 +47,6 @@ const useIncome = () => {
     const isIncomePeriodAuto = useRef(true)
 
     const [kiwiSaverOption, setKiwiSaverOption] = useState(3);
-    const [isKiwiSaverCustom, setIsKiwiSaverCustom] = useState(false);
 
     const [studentLoanRate, setStudentLoanRate] = useState(12)
     const [studentLoanThreshold, setStudentLoanThreshold] = useState(24128);
@@ -189,7 +190,6 @@ const useIncome = () => {
         studentLoanRate,
         studentLoanThreshold,
         secondaryIncome,
-        isKiwiSaverCustom,
         onPrimaryIncomeChange,
         onIncomePeriodChange,
         onKiwiSaverChange,
@@ -199,7 +199,6 @@ const useIncome = () => {
         setHasSecondaryIncome,
         setKiwiSaverOption,
         setSecondaryIncome,
-        setIsKiwiSaverCustom,
         calculateYearlyValues,
     }
 }

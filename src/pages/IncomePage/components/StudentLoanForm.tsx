@@ -1,15 +1,18 @@
 import { Input } from '@ui-kitten/components';
 import React, { useState } from 'react';
 import { NativeSyntheticEvent, SafeAreaView, StyleSheet, Text, TextInputChangeEventData, View } from 'react-native';
+import CustomText from '../../../components/CustomText';
+import CustomInput from '../../../components/CustomInput';
 
 type Props = {
     rate: number,
     threshold: number,
     setRate: (rate: number) => void,
     setThreshold: (threshold: number) => void,
+    isEditable: boolean,
 }
 
-const StudentLoanForm = ({ rate, threshold, setRate, setThreshold }: Props) => {
+const StudentLoanForm = ({ rate, threshold, setRate, setThreshold, isEditable = true, }: Props) => {
     const onRateChange = (e: NativeSyntheticEvent<TextInputChangeEventData>) => {
         setRate(parseFloat(e.nativeEvent.text));
     }
@@ -19,29 +22,25 @@ const StudentLoanForm = ({ rate, threshold, setRate, setThreshold }: Props) => {
     }
 
     return (
-        <SafeAreaView>
+        <SafeAreaView style={{ flexDirection: "row" }}>
             <View style={styles.view}>
-                <Text>Student loan rate</Text>
-                <Input
+                <CustomText style={{ opacity: isEditable ? 1 : 0.3 }}>Rate:</CustomText>
+                <CustomInput
                     style={styles.input}
-                    placeholder={"Student loan rate"}
                     value={rate.toString()}
                     onChange={onRateChange}
-                    {...{
-                        keyboardType: "numeric"
-                    }}
+                    isEditable={isEditable}
+                    isNumeric
                 />
             </View>
-            <View style={styles.view}>
-                <Text>Student oan threshold</Text>
-                <Input
+            <View style={[styles.view, { marginLeft: 10 }]}>
+                <CustomText style={{ opacity: isEditable ? 1 : 0.3 }}>Threshold:</CustomText>
+                <CustomInput
                     style={styles.input}
-                    placeholder={"Student loan threshold"}
                     value={threshold.toString()}
                     onChange={onThresholdChange}
-                    {...{
-                        keyboardType: "numeric"
-                    }}
+                    isEditable={isEditable}
+                    isNumeric
                 />
             </View>
         </SafeAreaView>
@@ -59,7 +58,7 @@ const styles = StyleSheet.create({
         justifyContent: "space-between",
     },
     input: {
-        flexGrow: 1,
-        marginLeft: 10
+        marginLeft: 10,
+        width: 70
     }
 });

@@ -1,0 +1,55 @@
+{
+    "components": {
+        "Select": {
+            "meta": {},
+            "appearances": {
+                "default": {
+                    "mapping": {},
+                    "variantGroups": {
+                        "status": {
+                            "basic": {
+                                "iconTintColor": "black",
+                                "textColor": "black",
+                                "backgroundColor": "white",
+                                "borderColor": "white",
+                                "labelColor": "black",
+                                "placeholderColor": "black",
+                                "captionColor": "black",
+                                "state": {
+                                    "focused": {
+                                        "borderColor": "white"
+                                    },
+                                    "hover": {
+                                        "borderColor": "white"
+                                    },
+                                    "active": {
+                                        "borderColor": "white"
+                                    },
+                                    "disabled": {
+                                        "borderColor": "white"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "Button": {
+            "meta": {},
+            "appearances": {
+                "filled": {
+                    "mapping": {},
+                    "variantGroups": {
+                        "status": {
+                            "primary": {
+                                "backgroundColor": "#01B0E6",
+                                "borderColor": "#01B0E6"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

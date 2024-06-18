@@ -1,5 +1,5 @@
 import { Button, Text } from '@ui-kitten/components';
-import React, { useState } from 'react';
+import React, { memo, useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import GoalModal from './components/GoalModal';
 import Goal from './components/Goal';
@@ -65,7 +65,7 @@ const SavingGoalsPage = ({ isHidden = false }: Props) => {
     );
 }
 
-export default SavingGoalsPage;
+export default memo(SavingGoalsPage);
 
 const containerStyles = (isHidden: boolean) => StyleSheet.create({
     container: {

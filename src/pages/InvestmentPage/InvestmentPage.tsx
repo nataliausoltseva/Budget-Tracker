@@ -1,6 +1,6 @@
 import { ScrollView, StyleSheet, View } from "react-native"
 import { Button, Text } from "@ui-kitten/components"
-import { useState } from "react"
+import { memo, useState } from "react"
 import InvestmentItem from "./components/InvestmentItem"
 import InvestmentModal from "./components/InvestmentModal"
 
@@ -66,7 +66,7 @@ const InvestmentPage = ({ isHidden = false }: Props) => {
     )
 }
 
-export default InvestmentPage;
+export default memo(InvestmentPage);
 
 const containerStyles = (isHidden: boolean) => StyleSheet.create({
     container: {

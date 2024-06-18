@@ -1,13 +1,15 @@
 import { Input } from '@ui-kitten/components';
 import React, { useRef, useState } from 'react';
 import { NativeSyntheticEvent, SafeAreaView, StyleSheet, Text, TextInputChangeEventData, View } from 'react-native';
+import CustomInput from '../../../components/CustomInput';
 
 type Props = {
     income: number,
     setIncome: (income: number) => void,
+    isEditable: boolean,
 }
 
-const SecondaryIncomeForm = ({ income, setIncome }: Props) => {
+const SecondaryIncomeForm = ({ income, setIncome, isEditable = true }: Props) => {
     const secondaryIncomeHolder = useRef("");
 
     const onIncomeChange = (e: NativeSyntheticEvent<TextInputChangeEventData>) => {
@@ -23,15 +25,14 @@ const SecondaryIncomeForm = ({ income, setIncome }: Props) => {
     return (
         <SafeAreaView>
             <View style={styles.view}>
-                <Text>Total annual income from other sources</Text>
-                <Input
-                    style={styles.input}
-                    placeholder={"Secondaty income"}
+                <CustomInput
                     value={secondaryIncomeHolder.current}
                     onChange={onIncomeChange}
-                    {...{
-                        keyboardType: "numeric"
+                    isEditable={isEditable}
+                    style={{
+                        width: 80
                     }}
+                    isNumeric
                 />
             </View>
         </SafeAreaView>
@@ -48,8 +49,4 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "space-between",
     },
-    input: {
-        flexGrow: 1,
-        marginLeft: 10
-    }
 });

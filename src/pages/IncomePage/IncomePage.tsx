@@ -1,27 +1,30 @@
-import React, { useContext, useRef, useState } from 'react';
-import { NativeSyntheticEvent, ScrollView, StyleSheet, Text, TextInputChangeEventData, View } from 'react-native';
-import { Button, CheckBox, IndexPath, Input, Layout, ListItem, Select, SelectItem, Toggle } from '@ui-kitten/components';
+import React, { memo, useContext, useRef, useState } from 'react';
+import { Animated, Easing, NativeSyntheticEvent, ScrollView, StyleSheet, TextInputChangeEventData, View } from 'react-native';
+import { Button, CheckBox, IndexPath, Layout, Select, SelectItem, Text } from '@ui-kitten/components';
 
 import { CURRENCIES, incomePeriods } from '../../constants';
-import KiwiSaverForm from './components/KiwiSaverForm';
-import StudentLoanForm from './components/StudentLoanForm';
-import SecondaryIncomeForm from './components/SecondaryIncomeForm';
-import useIncome from './hooks/useIncome';
-import useTable, { HEADERS, RowIndicator } from './hooks/useTable';
+import useIncome, { COLORS } from './hooks/useIncome';
+import useTable, { HEADERS } from './hooks/useTable';
 import { AppContext } from '../../context/AppContext';
-import { PieChart } from 'react-native-gifted-charts';
 import usePieChart from './hooks/usePieChart';
+import CustomToggle from '../../components/CustomToggle';
+import FilterIcon from '../../components/FilterIcon';
+import IncomeTable from './components/IncomeTable';
+import IncomePieChart from './components/IncomePieChart';
+import FilterModal from './components/FilterModal';
+import { getMainColour } from '../../hooks/color';
+import CustomInput from '../../components/CustomInput';
+import Dropdown from '../../components/Dropdown';
 
 type Props = {
     isHidden: boolean,
 }
 
-const COLORS: string[] = ["#f6abb6", "#b3cde0", "#851e3e", "#3da4ab", "#4b86b4", "#fec8c1", "#83d0c9", " #e0a899", "#8b9dc3"];
-
 const IncomePage = ({ isHidden = false }: Props) => {
     const appState = useContext(AppContext);
-    const [selectedIndex, setSelectedIndex] = useState<IndexPath | IndexPath[]>(new IndexPath(0));
-    const [selectedCurrencyIndex, setSelectedCurrencyIndex] = useState<IndexPath | IndexPath[]>(new IndexPath(0));
+    const [selectedCurrency, setSelecctedCurrency] = useState<string>(CURRENCIES[0]);
+    const [showFilter, setShowFilter] = useState(false);
+    const [tableHeader, setTableHeader] = useState<IncomeTableHeader>(HEADERS[1]);
 
     // The list (table) only updates if we pass something new to the extraData prop.
     const [, setRandom] = useState(Math.random());
@@ -35,7 +38,6 @@ const IncomePage = ({ isHidden = false }: Props) => {
         hasSecondaryIncome,
         hasStudentLoan,
         kiwiSaverOption,
-        isKiwiSaverCustom,
         studentLoanRate,
         studentLoanThreshold,
         secondaryIncome,
@@ -46,7 +48,6 @@ const IncomePage = ({ isHidden = false }: Props) => {
         setHasSecondaryIncome,
         setHasStudentLoan,
         setHasKiwiSaver,
-        setIsKiwiSaverCustom,
         setSecondaryIncome,
         calculateYearlyValues,
     } = useIncome();
@@ -57,7 +58,7 @@ const IncomePage = ({ isHidden = false }: Props) => {
         setRows,
         isSimpleTable,
         setIsSimpleTable,
-    } = useTable();
+    } = useTable({ tableHeader });
 
     const {
         pieData,
@@ -74,12 +75,8 @@ const IncomePage = ({ isHidden = false }: Props) => {
         }
     }
 
-    const onPreiodSelect = (index: IndexPath | IndexPath[]) => {
-        setSelectedIndex(index);
-
-        if (index instanceof IndexPath) {
-            onIncomePeriodChange(incomePeriods[index.row]);
-        }
+    const onPreiodSelect = (index: number) => {
+        onIncomePeriodChange(incomePeriods[index]);
     }
 
     const {
@@ -114,147 +111,135 @@ const IncomePage = ({ isHidden = false }: Props) => {
         });
     }
 
-    const updateTableRows = (isChecked: boolean) => {
+    const updateTableRows = () => {
         const newRows = [...rows];
+        const newValue = !isSimpleTable;
         newRows.forEach((row: RowIndicator) => {
             if (!row.isSimple) {
-                // Only hide all other rows if simple toggle is selectec OR the rows are empty and should be hidden by default.
-                row.isHidden = isChecked || (row.hideWhenEmpty && row.values.every(v => v === 0));
+                // Only hide all other rows if simple toggle is selected OR the rows are empty and should be hidden by default.
+                row.isHidden = newValue || (row.hideWhenEmpty && row.value === 0);
             }
         })
-
-        setRows(rows);
+        setIsSimpleTable(prevState => !prevState);
+        setRows(newRows);
         setRandom(Math.random());
-        setIsSimpleTable(isChecked);
     }
 
-    const selectedCurrency = selectedCurrencyIndex instanceof IndexPath ? CURRENCIES[selectedCurrencyIndex.row] : CURRENCIES[0];
+    const rotateValue = useRef(new Animated.Value(0)).current;
+    const positionInterPol = rotateValue.interpolate({ inputRange: [0, 1], outputRange: ["0deg", "90deg"] });
+
+    const onShowFilter = () => {
+        Animated.timing(rotateValue, {
+            toValue: 1,
+            duration: 150,
+            easing: Easing.ease,
+            useNativeDriver: true,
+        }).start();
+        setShowFilter(true)
+    }
+
+    const onCloseFilter = () => {
+        if (!hasKiwiSaver && !hasSecondaryIncome && !hasStudentLoan) {
+            Animated.timing(rotateValue, {
+                toValue: 0,
+                duration: 150,
+                easing: Easing.ease,
+                useNativeDriver: true,
+            }).start();
+        }
+        setShowFilter(false)
+    }
 
     return (
         <ScrollView style={{ display: isHidden ? "none" : "flex" }}>
-            <Text>Your Income</Text>
             <View style={styles.incomeView}>
-                <Layout style={styles.currencyContainer} level='1'>
-                    <Select
-                        selectedIndex={selectedCurrencyIndex}
-                        onSelect={setSelectedCurrencyIndex}
-                        value={selectedCurrency}
-                    >
-                        {CURRENCIES.map((currency: string) => (
-                            <SelectItem title={currency} key={currency} />
-                        ))}
-                    </Select>
-                </Layout>
-                <Input
-                    placeholder={"Income amount"}
+                <Dropdown
+                    onSelect={(index: number) => setSelecctedCurrency(CURRENCIES[index])}
+                    value={selectedCurrency}
+                    list={CURRENCIES}
+                    listStyle={{
+                        width: 110,
+                        left: 20,
+                        top: 112,
+                    }}
+                    containerStyle={{
+                        width: 110
+                    }}
+                />
+                <CustomInput
                     value={primaryIncomeHolder.current}
                     onChange={onIncomeAmountChange}
                     style={styles.input}
-                    {...{
-                        keyboardType: "numeric"
+                    isNumeric
+                />
+                <Dropdown
+                    onSelect={onPreiodSelect}
+                    value={incomePeriod.label}
+                    list={incomePeriods.map(p => (p.label))}
+                    listStyle={{
+                        width: 150,
+                        left: 245,
+                        top: 112,
+                    }}
+                    containerStyle={{
+                        width: 150
                     }}
                 />
-                <Layout style={styles.container} level='1'>
-                    <Select
-                        selectedIndex={selectedIndex}
-                        onSelect={onPreiodSelect}
-                        value={incomePeriod.label}
-                    >
-                        {incomePeriods.map((period: IncomePeriod) => (
-                            <SelectItem title={period.label} key={period.value} />
-                        ))}
-                    </Select>
-                </Layout>
+                <View>
+                    <Animated.View style={{ transform: [{ rotate: positionInterPol }] }}>
+                        <FilterIcon
+                            onPress={onShowFilter}
+                            color={getMainColour(appState.isDarkMode, hasKiwiSaver || hasSecondaryIncome || hasSecondaryIncome)}
+                        />
+                    </Animated.View>
+                    {showFilter && (
+                        <FilterModal
+                            onClose={onCloseFilter}
+                            hasKiwiSaver={hasKiwiSaver}
+                            setHasKiwiSaver={setHasKiwiSaver}
+                            kiwiSaverOption={kiwiSaverOption}
+                            onKiwiSaverChange={onKiwiSaverChange}
+                            hasStudentLoan={hasStudentLoan}
+                            setHasStudentLoan={setHasStudentLoan}
+                            studentLoanRate={studentLoanRate}
+                            studentLoanThreshold={studentLoanThreshold}
+                            onStudentLoanChange={onStudentLoanChange}
+                            hasSecondaryIncome={hasSecondaryIncome}
+                            setHasSecondaryIncome={setHasSecondaryIncome}
+                            secondaryIncome={secondaryIncome}
+                            setSecondaryIncome={setSecondaryIncome}
+                        />
+                    )}
+                </View>
             </View>
-            <CheckBox
-                checked={hasKiwiSaver}
-                onChange={nextChecked => setHasKiwiSaver(nextChecked)}
-            >
-                KiwiSaver
-            </CheckBox>
-            {hasKiwiSaver && (
-                <KiwiSaverForm
-                    option={kiwiSaverOption}
-                    setKiwiSaverOption={onKiwiSaverChange}
-                    isCustom={isKiwiSaverCustom}
-                    setIsCustom={setIsKiwiSaverCustom}
-                />
-            )}
-            <CheckBox
-                checked={hasStudentLoan}
-                onChange={nextChecked => setHasStudentLoan(nextChecked)}
-            >
-                Student Loan
-            </CheckBox>
-            {hasStudentLoan && (
-                <StudentLoanForm
-                    rate={studentLoanRate}
-                    threshold={studentLoanThreshold}
-                    setRate={(rate: number) => onStudentLoanChange(rate, null)}
-                    setThreshold={(threshold: number) => onStudentLoanChange(null, threshold)}
-                />
-            )}
-            <CheckBox
-                checked={hasSecondaryIncome}
-                onChange={nextChecked => setHasSecondaryIncome(nextChecked)}
-            >
-                Secondary Income
-            </CheckBox>
-            {hasSecondaryIncome && (
-                <SecondaryIncomeForm
-                    income={secondaryIncome}
-                    setIncome={setSecondaryIncome}
-                />
-            )}
-            <Button onPress={onCalculate} disabled={primaryIncome === 0}>
-                Calculate
-            </Button>
-            <View style={{ flexGrow: 1, width: "100%" }}>
-                {new Array(rows.length + 1).fill(0).map((_, index) => (
-                    <View key={index} style={{ position: "relative", display: "flex", flexDirection: "row" }}>
-                        {index === 0 ? (
-                            HEADERS.map((header: string) => (
-                                <ListItem title={header} style={{ flexGrow: 1 }} key={header || 'header-0'} />
-                            ))
-                        ) : (
-                            !rows[index - 1].isHidden && (
-                                <>
-                                    <View style={{ position: "absolute", left: 5, top: "45%", width: 5, height: 5, backgroundColor: COLORS[index - 1], zIndex: 1, borderRadius: 50 }} />
-                                    <ListItem title={rows[index - 1].label} style={{ flexGrow: 1 }} key={rows[index - 1].label} />
-                                    {rows[index - 1].values.map((value: number, valuIndex: number) => (
-                                        <ListItem title={value || "0"} style={{ flexGrow: 1 }} key={`${rows[index - 1].label}-${valuIndex}`} />
-                                    ))}
-
-                                </>
-                            )
-                        )}
-                    </View>
-                ))}
+            <View style={{ flexDirection: "row", justifyContent: "center", marginTop: 35, marginBottom: 35 }}>
+                <Button onPress={onCalculate} disabled={primaryIncome === 0} style={{ width: 150 }}>
+                    Calculate
+                </Button>
             </View>
-            <Toggle
-                checked={isSimpleTable}
-                onChange={updateTableRows}
-            >
-                Simple table
-            </Toggle>
-            <PieChart
-                data={pieData}
-                labelsPosition='outward'
-                textColor='white'
-                fontWeight='bold'
-                innerRadius={60}
-                innerCircleColor={'#232B5D'}
-                showText
-                centerLabelComponent={() => (
-                    <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-                        <Text
-                            style={{ fontSize: 16, color: 'white', fontWeight: 'bold' }}>
-                            ${Number(yearGrossPay).toFixed(2)}
-                        </Text>
-                        <Text style={{ fontSize: 14, color: 'white' }}>Gross Pay</Text>
-                    </View>
-                )}
-            />
+            <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: 35 }}>
+                <CheckBox
+                    checked={isSimpleTable}
+                    onChange={updateTableRows}
+                >
+                    Simple table
+                </CheckBox>
+                <Dropdown
+                    onSelect={(index: number) => setTableHeader(HEADERS[index])}
+                    value={tableHeader.label}
+                    list={HEADERS.filter(h => !!h.label).map(h => h.label)}
+                    listStyle={{
+                        width: 150,
+                        left: 278,
+                        top: 267,
+                    }}
+                    containerStyle={{
+                        width: 150
+                    }}
+                />
+            </View>
+            <IncomeTable rows={rows} />
+            <IncomePieChart pieData={pieData} yearGrossPay={yearGrossPay} />
         </ScrollView>
     )
 };
@@ -263,20 +248,12 @@ const styles = StyleSheet.create({
     incomeView: {
         display: "flex",
         flexDirection: 'row',
-        position: "relative"
-    },
-    container: {
-        minWidth: 150
-    },
-    currencyContainer: {
-        minWidth: 110
+        position: "relative",
+        justifyContent: "space-between"
     },
     input: {
-        flexGrow: 1
+        width: 100
     },
-    row: {
-        color: "red",
-    }
 });
 
-export default IncomePage;
+export default memo(IncomePage);

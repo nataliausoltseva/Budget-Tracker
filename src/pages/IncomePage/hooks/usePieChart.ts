@@ -9,12 +9,6 @@ type PopulateDataType = {
     colors: string[],
 };
 
-type PieChartItem = {
-    value: number,
-    color: string,
-    text: string,
-}
-
 const usePieChart = () => {
     const [data, setData] = useState<PieChartItem[]>([]);
 
