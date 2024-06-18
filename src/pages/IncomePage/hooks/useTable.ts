@@ -104,7 +104,7 @@ export const DEFAULT_ROWS: RowIndicator[] = [
     }
 ];
 
-const useTable = ({ selectedHeader }: { selectedHeader: IncomeTableHeader }) => {
+const useTable = ({ tableHeader }: { tableHeader: IncomeTableHeader }) => {
     const [rows, setRows] = useState<RowIndicator[]>(DEFAULT_ROWS);
     const [isSimpleTable, setIsSimpleTable] = useState(false);
 
@@ -116,13 +116,13 @@ const useTable = ({ selectedHeader }: { selectedHeader: IncomeTableHeader }) => 
         let newRows: RowIndicator[] = [...rows];
         if (yearGrossPay > 0) {
             newRows = DEFAULT_ROWS;
-            const grossPay = roundToTwoDecimals(yearGrossPay / selectedHeader.calcToYear);
-            const secGrossPay = roundToTwoDecimals(yearSecGrossPay / selectedHeader.calcToYear);
-            const paye = roundToTwoDecimals(yearPaye / selectedHeader.calcToYear);
-            const secPaye = roundToTwoDecimals(yearSecPaye / selectedHeader.calcToYear);
-            const acc = roundToTwoDecimals(yearAcc / selectedHeader.calcToYear);
-            const kiwiSaver = roundToTwoDecimals(yearKiwiSaver === 0 ? 0 : yearKiwiSaver / selectedHeader.calcToYear);
-            const studentLoan = roundToTwoDecimals(yearStudentLoan === 0 ? 0 : yearStudentLoan / selectedHeader.calcToYear);
+            const grossPay = roundToTwoDecimals(yearGrossPay / tableHeader.calcToYear);
+            const secGrossPay = roundToTwoDecimals(yearSecGrossPay / tableHeader.calcToYear);
+            const paye = roundToTwoDecimals(yearPaye / tableHeader.calcToYear);
+            const secPaye = roundToTwoDecimals(yearSecPaye / tableHeader.calcToYear);
+            const acc = roundToTwoDecimals(yearAcc / tableHeader.calcToYear);
+            const kiwiSaver = roundToTwoDecimals(yearKiwiSaver === 0 ? 0 : yearKiwiSaver / tableHeader.calcToYear);
+            const studentLoan = roundToTwoDecimals(yearStudentLoan === 0 ? 0 : yearStudentLoan / tableHeader.calcToYear);
 
             newRows[0].value = grossPay;
             newRows[1].value = secGrossPay;

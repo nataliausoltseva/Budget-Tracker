@@ -22,11 +22,9 @@ type Props = {
 
 const IncomePage = ({ isHidden = false }: Props) => {
     const appState = useContext(AppContext);
-    const [selectedCurrencyIndex, setSelectedCurrencyIndex] = useState<IndexPath | IndexPath[]>(new IndexPath(0));
+    const [selectedCurrency, setSelecctedCurrency] = useState<string>(CURRENCIES[0]);
     const [showFilter, setShowFilter] = useState(false);
-    const [tableSelectionIndex, setTableSelectionIndex] = useState<IndexPath | IndexPath[]>(new IndexPath(0));
-
-    const selectedHeader: IncomeTableHeader = tableSelectionIndex instanceof IndexPath ? HEADERS[tableSelectionIndex.row || HEADERS.length - 1] : HEADERS[1];
+    const [tableHeader, setTableHeader] = useState<IncomeTableHeader>(HEADERS[1]);
 
     // The list (table) only updates if we pass something new to the extraData prop.
     const [, setRandom] = useState(Math.random());
@@ -60,7 +58,7 @@ const IncomePage = ({ isHidden = false }: Props) => {
         setRows,
         isSimpleTable,
         setIsSimpleTable,
-    } = useTable({ selectedHeader });
+    } = useTable({ tableHeader });
 
     const {
         pieData,
@@ -77,10 +75,8 @@ const IncomePage = ({ isHidden = false }: Props) => {
         }
     }
 
-    const onPreiodSelect = (index: IndexPath | IndexPath[]) => {
-        if (index instanceof IndexPath) {
-            onIncomePeriodChange(incomePeriods[index.row]);
-        }
+    const onPreiodSelect = (index: number) => {
+        onIncomePeriodChange(incomePeriods[index]);
     }
 
     const {
@@ -154,19 +150,17 @@ const IncomePage = ({ isHidden = false }: Props) => {
         setShowFilter(false)
     }
 
-
-    const selectedCurrency = selectedCurrencyIndex instanceof IndexPath ? CURRENCIES[selectedCurrencyIndex.row] : CURRENCIES[0];
-
     return (
         <ScrollView style={{ display: isHidden ? "none" : "flex" }}>
             <View style={styles.incomeView}>
                 <Dropdown
-                    onSelect={setSelectedCurrencyIndex}
+                    onSelect={(index: number) => setSelecctedCurrency(CURRENCIES[index])}
                     value={selectedCurrency}
                     list={CURRENCIES}
                     listStyle={{
                         width: 110,
-                        left: 20
+                        left: 20,
+                        top: 112,
                     }}
                     containerStyle={{
                         width: 110
@@ -178,14 +172,19 @@ const IncomePage = ({ isHidden = false }: Props) => {
                     style={styles.input}
                     isNumeric
                 />
-                {/* <Dropdown
+                <Dropdown
                     onSelect={onPreiodSelect}
                     value={incomePeriod.label}
-                    list={incomePeriods}
-                    style={{
+                    list={incomePeriods.map(p => (p.label))}
+                    listStyle={{
+                        width: 150,
+                        left: 245,
+                        top: 112,
+                    }}
+                    containerStyle={{
                         width: 150
                     }}
-                /> */}
+                />
                 <View>
                     <Animated.View style={{ transform: [{ rotate: positionInterPol }] }}>
                         <FilterIcon
@@ -225,14 +224,19 @@ const IncomePage = ({ isHidden = false }: Props) => {
                 >
                     Simple table
                 </CheckBox>
-                {/* <Dropdown
-                    onSelect={setTableSelectionIndex}
-                    value={selectedHeader.label}
-                    list={HEADERS}
-                    style={{
+                <Dropdown
+                    onSelect={(index: number) => setTableHeader(HEADERS[index])}
+                    value={tableHeader.label}
+                    list={HEADERS.filter(h => !!h.label).map(h => h.label)}
+                    listStyle={{
+                        width: 150,
+                        left: 278,
+                        top: 267,
+                    }}
+                    containerStyle={{
                         width: 150
                     }}
-                /> */}
+                />
             </View>
             <IncomeTable rows={rows} />
             <IncomePieChart pieData={pieData} yearGrossPay={yearGrossPay} />
