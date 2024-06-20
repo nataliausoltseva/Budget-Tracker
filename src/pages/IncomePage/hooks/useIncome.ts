@@ -29,7 +29,7 @@ export const TAX_THRESHOLDS: TaxThreshold[] = [
     }
 ];
 
-export const COLORS: string[] = ["#f6abb6", "#b3cde0", "#851e3e", "#3da4ab", "#4b86b4", "#fec8c1", "#83d0c9", " #e0a899", "#8b9dc3"];
+export const COLORS: string[] = ["#f6abb6", "#B2A185", "#6FA5E9", "#7BD5E9", "#B2675F", "#75B35F", "#B26BB1", "#B1A5E9", "#AEB26F"];
 
 export const ACC = {
     levy: 1.60,
