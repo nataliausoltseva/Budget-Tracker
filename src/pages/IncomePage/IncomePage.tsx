@@ -1,13 +1,12 @@
 import React, { memo, useContext, useRef, useState } from 'react';
-import { Animated, Easing, NativeSyntheticEvent, ScrollView, StyleSheet, TextInputChangeEventData, View } from 'react-native';
-import { Button, CheckBox, IndexPath, Layout, Select, SelectItem, Text } from '@ui-kitten/components';
+import { Animated, Button, Easing, NativeSyntheticEvent, ScrollView, StyleSheet, Text, TextInputChangeEventData, View } from 'react-native';
+import { CheckBox } from '@ui-kitten/components';
 
 import { CURRENCIES, incomePeriods } from '../../constants';
 import useIncome, { COLORS } from './hooks/useIncome';
 import useTable, { HEADERS } from './hooks/useTable';
 import { AppContext } from '../../context/AppContext';
 import usePieChart from './hooks/usePieChart';
-import CustomToggle from '../../components/CustomToggle';
 import FilterIcon from '../../components/FilterIcon';
 import IncomeTable from './components/IncomeTable';
 import IncomePieChart from './components/IncomePieChart';
@@ -213,9 +212,12 @@ const IncomePage = ({ isHidden = false }: Props) => {
                 </View>
             </View>
             <View style={{ flexDirection: "row", justifyContent: "center", marginTop: 35, marginBottom: 35 }}>
-                <Button onPress={onCalculate} disabled={primaryIncome === 0} style={{ width: 150 }}>
-                    Calculate
-                </Button>
+                <Button
+                    title='Calculate'
+                    onPress={onCalculate}
+                    disabled={primaryIncome === 0}
+                    color={appState.isDarkMode ? "#A78DFF" : "#01B0E6"}
+                />
             </View>
             <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: 35 }}>
                 <CheckBox
