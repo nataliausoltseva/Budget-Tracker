@@ -7,7 +7,8 @@ type PopulateRowsProps = {
     yearSecPaye: number,
     yearAcc: number,
     yearKiwiSaver: number,
-    yearStudentLoan: number
+    yearStudentLoan: number,
+    tableHeader: IncomeTableHeader
 };
 
 export const HEADERS: IncomeTableHeader[] = [
@@ -104,7 +105,7 @@ export const DEFAULT_ROWS: RowIndicator[] = [
     }
 ];
 
-const useTable = ({ tableHeader }: { tableHeader: IncomeTableHeader }) => {
+const useTable = () => {
     const [rows, setRows] = useState<RowIndicator[]>(DEFAULT_ROWS);
     const [isSimpleTable, setIsSimpleTable] = useState(false);
 
@@ -112,7 +113,7 @@ const useTable = ({ tableHeader }: { tableHeader: IncomeTableHeader }) => {
         Math.round(value * 100) / 100
     );
 
-    const calculateValues = ({ yearGrossPay, yearPaye, yearAcc, yearKiwiSaver, yearStudentLoan, yearSecGrossPay, yearSecPaye }: PopulateRowsProps) => {
+    const calculateValues = ({ yearGrossPay, yearPaye, yearAcc, yearKiwiSaver, yearStudentLoan, yearSecGrossPay, yearSecPaye, tableHeader }: PopulateRowsProps) => {
         let newRows: RowIndicator[] = [...rows];
         if (yearGrossPay > 0) {
             newRows = DEFAULT_ROWS;
@@ -152,8 +153,8 @@ const useTable = ({ tableHeader }: { tableHeader: IncomeTableHeader }) => {
         return newRows;
     }
 
-    const populateTableRows = ({ yearGrossPay, yearPaye, yearAcc, yearKiwiSaver, yearStudentLoan, yearSecGrossPay, yearSecPaye }: PopulateRowsProps) => {
-        setRows(calculateValues({ yearGrossPay, yearPaye, yearAcc, yearKiwiSaver, yearStudentLoan, yearSecGrossPay, yearSecPaye }));
+    const populateTableRows = ({ yearGrossPay, yearPaye, yearAcc, yearKiwiSaver, yearStudentLoan, yearSecGrossPay, yearSecPaye, tableHeader }: PopulateRowsProps) => {
+        setRows(calculateValues({ yearGrossPay, yearPaye, yearAcc, yearKiwiSaver, yearStudentLoan, yearSecGrossPay, yearSecPaye, tableHeader }));
     }
 
     return {

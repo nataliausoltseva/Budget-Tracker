@@ -1,5 +1,5 @@
 import React, { memo, useContext, useRef, useState } from 'react';
-import { Animated, Button, Easing, NativeSyntheticEvent, ScrollView, StyleSheet, Text, TextInputChangeEventData, View } from 'react-native';
+import { Animated, Button, Easing, NativeSyntheticEvent, ScrollView, StyleSheet, TextInputChangeEventData, View } from 'react-native';
 import { CheckBox } from '@ui-kitten/components';
 
 import { CURRENCIES, incomePeriods } from '../../constants';
@@ -57,7 +57,7 @@ const IncomePage = ({ isHidden = false }: Props) => {
         setRows,
         isSimpleTable,
         setIsSimpleTable,
-    } = useTable({ tableHeader });
+    } = useTable();
 
     const {
         pieData,
@@ -88,7 +88,7 @@ const IncomePage = ({ isHidden = false }: Props) => {
         yearSecPaye,
     } = calculateYearlyValues();
 
-    const onCalculate = () => {
+    const onCalculate = (tableHeader: IncomeTableHeader) => {
         appState?.setTotalIncome(yearGrossPay + yearSecGrossPay - yearPaye - yearAcc - (hasKiwiSaver ? yearKiwiSaver : 0) - (hasStudentLoan ? yearStudentLoan : 0) - yearSecPaye);
         populateTableRows({
             yearGrossPay,
@@ -97,7 +97,8 @@ const IncomePage = ({ isHidden = false }: Props) => {
             yearKiwiSaver: hasKiwiSaver ? yearKiwiSaver : 0,
             yearStudentLoan: hasStudentLoan ? yearStudentLoan : 0,
             yearSecGrossPay: hasSecondaryIncome ? yearSecGrossPay : 0,
-            yearSecPaye: hasSecondaryIncome ? yearSecPaye : 0
+            yearSecPaye: hasSecondaryIncome ? yearSecPaye : 0,
+            tableHeader,
         })
         setRandom(Math.random());
         populateData({
@@ -147,6 +148,11 @@ const IncomePage = ({ isHidden = false }: Props) => {
             }).start();
         }
         setShowFilter(false)
+    }
+
+    const onTableHeaderChange = (index: number) => {
+        setTableHeader(HEADERS[index + 1]);
+        onCalculate(HEADERS[index + 1]);
     }
 
     return (
@@ -214,7 +220,7 @@ const IncomePage = ({ isHidden = false }: Props) => {
             <View style={{ flexDirection: "row", justifyContent: "center", marginTop: 35, marginBottom: 35 }}>
                 <Button
                     title='Calculate'
-                    onPress={onCalculate}
+                    onPress={() => onCalculate(tableHeader)}
                     disabled={primaryIncome === 0}
                     color={appState.isDarkMode ? "#A78DFF" : "#01B0E6"}
                 />
@@ -227,7 +233,7 @@ const IncomePage = ({ isHidden = false }: Props) => {
                     Simple table
                 </CheckBox>
                 <Dropdown
-                    onSelect={(index: number) => setTableHeader(HEADERS[index])}
+                    onSelect={onTableHeaderChange}
                     value={tableHeader.label}
                     list={HEADERS.filter(h => !!h.label).map(h => h.label)}
                     listStyle={{
