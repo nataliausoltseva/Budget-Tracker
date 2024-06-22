@@ -1,13 +1,15 @@
-import React, { useState } from 'react';
-import { SafeAreaView, View } from 'react-native';
+import React, { useContext, useState } from 'react';
+import { Button, SafeAreaView, View } from 'react-native';
 import { PieChart } from 'react-native-gifted-charts';
-import { Button, IndexPath, Layout, Select, SelectItem, Text } from '@ui-kitten/components';
 import usePieChart from '../hooks/usePieChart';
 import { ExpenseItem } from '../BudgetPage';
+import Dropdown from '../../../components/Dropdown';
+import CustomText from '../../../components/CustomText';
+import { AppContext } from '../../../context/AppContext';
 
 type Props = {
     expenses: ExpenseItem[],
-    onAddToSavings: (amount: number, selectedIndex: IndexPath | IndexPath[]) => void
+    onAddToSavings: (amount: number, frequency: FrequencyItem) => void
 }
 
 const CHART_FREQUENCY: FrequencyItem[] = [
@@ -34,12 +36,16 @@ const CHART_FREQUENCY: FrequencyItem[] = [
 ];
 
 const PieChartWithSelection = ({ expenses, onAddToSavings }: Props) => {
-    const [selectedIndex, setSelectedIndex] = useState<IndexPath | IndexPath[]>(new IndexPath(0));
-    const frequency: FrequencyItem = CHART_FREQUENCY[selectedIndex.row];
+    const appState = useContext(AppContext);
+    const [frequency, setFrequency] = useState(CHART_FREQUENCY[0]);
     const {
         pieData,
         leftOver
     } = usePieChart({ expenses, frequency });
+
+    const onFrequencySelect = (index: number) => {
+        setFrequency(CHART_FREQUENCY[index]);
+    }
 
     return (
         <View style={{ flexDirection: 'row' }}>
@@ -47,17 +53,17 @@ const PieChartWithSelection = ({ expenses, onAddToSavings }: Props) => {
                 <PieChart
                     data={pieData}
                     labelsPosition='outward'
-                    textColor='white'
+                    textColor={appState.isDarkMode ? "white" : "black"}
                     fontWeight='bold'
                     innerRadius={60}
-                    innerCircleColor={'#232B5D'}
+                    innerCircleColor={appState.isDarkMode ? "#443472" : 'white'}
                     centerLabelComponent={() => (
                         <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-                            <Text
-                                style={{ fontSize: 16, color: 'white', fontWeight: 'bold' }}>
+                            <CustomText
+                                style={{ fontSize: 16, fontWeight: 'bold' }}>
                                 ${Number(leftOver).toFixed(2)}
-                            </Text>
-                            <Text style={{ fontSize: 14, color: 'white' }}>Left from income</Text>
+                            </CustomText>
+                            <CustomText style={{ fontSize: 14 }}>Left from income</CustomText>
                         </View>
                     )}
                 />
@@ -65,24 +71,31 @@ const PieChartWithSelection = ({ expenses, onAddToSavings }: Props) => {
                     {pieData.map((item: ExpenseItem, index: number) => (
                         <SafeAreaView style={{ flexDirection: 'row', alignItems: 'center' }} key={item.id + "-" + index}>
                             <View style={{ backgroundColor: item.color, width: 12, height: 12, borderRadius: 50, marginRight: 10, borderColor: 'white', borderWidth: 1 }} />
-                            <Text key={item.id} style={{ flexWrap: "wrap", maxWidth: 200 }}>{item.name}: ${Number(item.value).toFixed(2)}</Text>
+                            <CustomText key={item.id} style={{ flexWrap: "wrap", maxWidth: 200 }}>{item.name}: ${Number(item.value).toFixed(2)}</CustomText>
                         </SafeAreaView>
                     ))}
                 </View>
             </View>
             <View style={{ flexGrow: 1, flexDirection: "column", justifyContent: "space-between" }}>
-                <Layout level='1'>
-                    <Select
-                        selectedIndex={selectedIndex}
-                        onSelect={setSelectedIndex}
-                        value={CHART_FREQUENCY[selectedIndex.row].name}
-                    >
-                        {CHART_FREQUENCY.map((item: FrequencyItem) => (
-                            <SelectItem title={item.name} key={item.name} />
-                        ))}
-                    </Select>
-                </Layout>
-                <Button onPress={() => onAddToSavings(leftOver, new IndexPath(selectedIndex.row + 1))} disabled={leftOver <= 0} status="success">Add to savings</Button>
+                <Dropdown
+                    onSelect={onFrequencySelect}
+                    value={frequency.name}
+                    list={CHART_FREQUENCY.map(value => value.name)}
+                    listStyle={{
+                        width: 150,
+                        left: 260,
+                        top: 112,
+                    }}
+                    containerStyle={{
+                        width: 150
+                    }}
+                />
+                <Button
+                    onPress={() => onAddToSavings(leftOver, frequency)}
+                    disabled={leftOver <= 0}
+                    title={"Add to savings"}
+                    color={"#59AE59"}
+                />
             </View>
         </View>
     )

@@ -6,13 +6,14 @@ type Props = {
     children: React.ReactNode,
     style?: StyleProp<TextStyle> | undefined,
     onPress?: () => void,
+    color?: string,
 }
 
-const CustomText = ({ children, style, onPress }: Props) => {
+const CustomText = ({ children, style, onPress, color = '' }: Props) => {
     const appState = useContext(AppContext);
     const styles = StyleSheet.create({
         text: {
-            color: appState.isDarkMode ? "white" : "black"
+            color: color || (appState.isDarkMode ? "white" : "black")
         }
     })
     return (

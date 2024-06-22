@@ -17,6 +17,7 @@ const CustomInput = ({ placeholder = "", value, onChange, isNumeric = false, isE
     return (
         <TextInput
             placeholder={placeholder}
+            placeholderTextColor={appState.isDarkMode ? "#ffffff80" : "#00000080"}
             value={value}
             onChange={onChange}
             editable={isEditable}
