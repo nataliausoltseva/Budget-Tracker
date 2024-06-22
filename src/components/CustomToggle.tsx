@@ -43,10 +43,10 @@ const CustomToggle = ({ isChecked = false, onChange, label }: Props) => {
 
     return (
         <View>
-            <CustomText>{label}</CustomText>
+            <CustomText color={appState.isDarkMode ? "#EAB1FD" : "black"}>{label}</CustomText>
             <TouchableOpacity style={{ height: 30, width: 60 }} activeOpacity={0.9} onPress={onPress} >
                 <Animated.View style={[styles.mainStyles, { backgroundColor: appState.isDarkMode ? "#443472" : "white", borderColor: appState.isDarkMode ? "#A78DFF" : "#707070", borderWidth: 1 }]} >
-                    <Animated.View style={[styles.basicStyle, { transform: [{ translateX: positionInterPol }], backgroundColor: appState.isDarkMode ? "white" : "#01B0E6" }]} />
+                    <Animated.View style={[styles.basicStyle, { transform: [{ translateX: positionInterPol }], backgroundColor: appState.isDarkMode ? "#EAB1FD" : "#01B0E6" }]} />
                 </Animated.View>
             </TouchableOpacity>
         </View>

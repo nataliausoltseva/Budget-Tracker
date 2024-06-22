@@ -1,10 +1,11 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Button, NativeSyntheticEvent, TextInputChangeEventData, View } from 'react-native';
-import { ExpenseItem, FREQUENCES } from '../BudgetPage';
+import { ExpenseItem } from '../BudgetPage';
 import CustomModal from '../../../components/CustomModal';
 import Dropdown from '../../../components/Dropdown';
 import CustomInput from '../../../components/CustomInput';
 import CustomText from '../../../components/CustomText';
+import { FREQUENCES } from '../../../constants';
 
 type Props = {
     onSave: (item: ExpenseItem) => void,
@@ -14,13 +15,25 @@ type Props = {
 
 const DEFAULT_STATE = {
     name: "",
-    frequenceIndex: 0,
+    frequency: FREQUENCES[0],
     amount: "0"
 }
 
-const BudgetItem = ({ onSave, onClose, expense = null }: Props) => {
+const BudgetItemModal = ({ onSave, onClose, expense = null }: Props) => {
     const [item, setItem] = useState(DEFAULT_STATE);
     const amountInputHolder = useRef("0");
+
+    useEffect(() => {
+        if (expense) {
+            const newItem = {
+                name: expense.name,
+                frequency: expense.frequency,
+                amount: expense.value.toString()
+            };
+            setItem(newItem);
+            amountInputHolder.current = expense.value.toString()
+        }
+    }, [expense]);
 
     const _onAmountChange = (e: NativeSyntheticEvent<TextInputChangeEventData>) => {
         amountInputHolder.current = e.nativeEvent.text || "";
@@ -50,27 +63,27 @@ const BudgetItem = ({ onSave, onClose, expense = null }: Props) => {
         });
     }
 
-    const onFrequencySelect = (frequenceIndex: number) => {
+    const onFrequencySelect = (index: number) => {
         setItem({
             ...item,
-            frequenceIndex,
+            frequency: FREQUENCES[index],
         });
     }
 
     const _onSave = () => {
         onSave({
-            ...item,
+            name: item.name,
             value: isNaN(parseFloat(item.amount)) ? 0 : parseFloat(item.amount),
-            frequencyIndex: item.frequenceIndex
+            frequency: item.frequency,
         });
         _onClose();
     }
 
     return (
         <CustomModal isVisible={true} onClose={_onClose} style={{ width: 300 }} >
-            <CustomText style={{ textAlign: "center" }}>New expense</CustomText>
+            <CustomText style={{ textAlign: "center" }}>{expense !== null ? "Your" : "New"} expense</CustomText>
             <CustomInput
-                placeholder='Enter expense name'
+                placeholder='Expense name'
                 value={item.name}
                 onChange={onNameChange}
             />
@@ -78,11 +91,12 @@ const BudgetItem = ({ onSave, onClose, expense = null }: Props) => {
                 <CustomInput
                     value={amountInputHolder.current}
                     onChange={_onAmountChange}
+                    style={{ flexGrow: 1, marginRight: 10 }}
                     isNumeric
                 />
                 <Dropdown
                     onSelect={onFrequencySelect}
-                    value={FREQUENCES[item.frequenceIndex].name}
+                    value={item.frequency.name}
                     list={FREQUENCES.map(value => value.name)}
                     listStyle={{
                         width: 150,
@@ -99,6 +113,7 @@ const BudgetItem = ({ onSave, onClose, expense = null }: Props) => {
                     <Button
                         title='Save'
                         onPress={_onSave}
+                        disabled={item.amount === "0" || item.amount === ""}
                     />
                 </View>
             </View>
@@ -106,4 +121,4 @@ const BudgetItem = ({ onSave, onClose, expense = null }: Props) => {
     );
 }
 
-export default BudgetItem;
+export default BudgetItemModal;

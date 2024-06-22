@@ -1,7 +1,8 @@
 import { useContext, useMemo } from "react";
 import { pieDataItem } from "react-native-gifted-charts";
-import { ExpenseItem, FREQUENCES } from "../BudgetPage"
+import { ExpenseItem } from "../BudgetPage"
 import { AppContext } from "../../../context/AppContext";
+import { FREQUENCES } from "../../../constants";
 
 type Props = {
     expenses: ExpenseItem[],
@@ -17,12 +18,12 @@ const usePieChart = ({ expenses, frequency = FREQUENCES[0] }: Props) => {
         const yearly: ExpenseItem[] = [];
         const oneOff: ExpenseItem[] = [];
         expenses.map((item: ExpenseItem) => {
-            if (FREQUENCES[item.frequencyIndex.row].key === 'oneOff') {
+            if (item.frequency.key === 'oneOff') {
                 oneOff.push(item);
             } else {
                 yearly.push({
                     ...item,
-                    value: item.value * FREQUENCES[item.frequencyIndex.row].calcToYear
+                    value: item.value * item.frequency.calcToYear
                 })
             }
         })

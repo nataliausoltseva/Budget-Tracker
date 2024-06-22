@@ -1,10 +1,12 @@
-import { Text } from '@ui-kitten/components';
 import React, { memo, useContext, useState } from 'react';
 import { Button, ScrollView, StyleSheet, View } from 'react-native';
 import BudgetItemModal from './components/BudgetItemModal';
 import PieChartWithSelection from './components/PieChartWithSelection';
 import { AppContext } from '../../context/AppContext';
 import { randomHex } from '../../hooks/color';
+import { FREQUENCES } from '../../constants';
+import CustomText from '../../components/CustomText';
+import BudgetItem from './components/BudgetItem';
 
 type Props = {
     isHidden: boolean
@@ -14,40 +16,10 @@ export type ExpenseItem = {
     key?: string,
     name: string,
     value: number,
-    frequencyIndex: number,
+    frequency: FrequencyItem,
     id?: number,
     color?: string,
 }
-
-export const FREQUENCES: FrequencyItem[] = [
-    {
-        name: "One-off",
-        key: "oneOff",
-        calcToYear: 1
-    },
-    {
-        name: "Week",
-        key: "week",
-        calcToYear: 52
-    },
-    {
-        name: "Fortnight",
-        key: "fortnight",
-        calcToYear: 26
-    },
-    {
-        name: "Month",
-        key: "month",
-        calcToYear: 13
-    },
-    {
-        name: "Year",
-        key: "year",
-        calcToYear: 1
-    },
-];
-
-
 
 const BudgetPage = ({ isHidden = false }: Props) => {
     const appState = useContext(AppContext);
@@ -56,27 +28,10 @@ const BudgetPage = ({ isHidden = false }: Props) => {
     const [random, setRandom] = useState(Math.random());
     const [showMoal, setShowModal] = useState(false);
 
-    const onChangeExpense = (id: number, key: string, value: number) => {
+    const onChangeExpense = (index: number, item: ExpenseItem) => {
         setExpenses((prevState: ExpenseItem[]) => {
             const newExpenses: ExpenseItem[] = [...prevState];
-            const expenseKey: keyof ExpenseItem = key as keyof ExpenseItem;
-            const currentItem = newExpenses.find((item: ExpenseItem) => item.id === id);
-            if (currentItem) {
-                switch (expenseKey) {
-                    case "name":
-                        currentItem.name = typeof value === 'string' ? value : '';
-                        break;
-                    case "value":
-                        currentItem.value = typeof value === 'string' ? isNaN(parseFloat(value)) ? 0 : parseFloat(value) : 0;
-                        break;
-                    case "frequencyIndex":
-                        currentItem.frequencyIndex = value;
-                        break;
-                }
-                const currentItemIndex = newExpenses.indexOf(currentItem);
-                newExpenses[currentItemIndex] = currentItem;
-            }
-
+            newExpenses[index] = item;
             return newExpenses;
         });
     }
@@ -96,16 +51,15 @@ const BudgetPage = ({ isHidden = false }: Props) => {
         setRandom(Math.random());
     }
 
-    const onItemDelete = (item: ExpenseItem) => {
+    const onItemDelete = (index: number) => {
         setExpenses((prevState: ExpenseItem[]) => {
             const newExpenses: ExpenseItem[] = [...prevState];
-            const itemIndex = newExpenses.indexOf(item);
-            newExpenses.splice(itemIndex, 1);
+            newExpenses.splice(index, 1);
             return newExpenses;
         });
     }
 
-    const onAddToSavings = (leftOver: number, frequencyIndex: number) => {
+    const onAddToSavings = (leftOver: number, frequency: FrequencyItem) => {
         setExpenses((prevState: ExpenseItem[]) => {
             const value = Math.round(leftOver * 100) / 100;
             const newExpenses: ExpenseItem[] = [...prevState];
@@ -116,7 +70,7 @@ const BudgetPage = ({ isHidden = false }: Props) => {
                     key: 'savings',
                     value,
                     name: "Savings",
-                    frequencyIndex,
+                    frequency: frequency,
                     id: newExpenses.length,
                     color: randomHex()
                 });
@@ -148,7 +102,7 @@ const BudgetPage = ({ isHidden = false }: Props) => {
     }
 
     return (
-        <View style={{ display: isHidden ? "none" : "flex" }}>
+        <View style={{ display: isHidden ? "none" : "flex", flexGrow: 1 }}>
             {showMoal && (
                 <BudgetItemModal
                     onSave={onSave}
@@ -157,27 +111,23 @@ const BudgetPage = ({ isHidden = false }: Props) => {
             )}
             {expenses.length ? (
                 <ScrollView >
+                    <PieChartWithSelection expenses={expenses} onAddToSavings={onAddToSavings} />
                     <View style={styles.spacer} />
-                    {/* {expenses.map((item: ExpenseItem, index: number) => (
-                        <BudgetItemModal
-                            key={`e-${index}-${random}`}
-                        // name={item.name}
-                        // amount={item.value.toString()}
-                        // fruquencyIndex={item.frequencyIndex}
-                        // onNameChange={(e) => onChangeExpense(item.id, "name", e.nativeEvent.text)}
-                        // onAmountChange={(amount: string) => onChangeExpense(item.id, "value", amount)}
-                        // onFrequenceChange={(selectedIndex) => onChangeExpense(item.id, "frequencyIndex", selectedIndex)}
-                        // onDelete={() => onItemDelete(item)}
-                        // hasDeleteButton
+                    {expenses.map((item: ExpenseItem, index: number) => (
+                        <BudgetItem
+                            key={index}
+                            item={item}
+                            onDelete={() => onItemDelete(index)}
+                            onSave={(item: ExpenseItem) => onChangeExpense(index, item)}
                         />
-                    ))} */}
-                    {/* {!!expenses.length && (
-                        <PieChartWithSelection expenses={expenses} onAddToSavings={onAddToSavings} />
-                    )} */}
+                    ))}
+                    <View style={{ alignItems: "flex-end", marginTop: 20 }}>
+                        {renderButton()}
+                    </View>
                 </ScrollView>
             ) : (
                 <View style={{ justifyContent: "center", flexGrow: 1, alignItems: "center" }}>
-                    <Text style={{ marginBottom: 20 }}>Add you first expense</Text>
+                    <CustomText style={{ marginBottom: 20 }}>Add you first expense</CustomText>
                     {renderButton()}
                 </View>
             )}
@@ -188,25 +138,7 @@ const BudgetPage = ({ isHidden = false }: Props) => {
 export default memo(BudgetPage);
 
 const styles = StyleSheet.create({
-    incomeView: {
-        display: "flex",
-        flexDirection: 'row',
-        position: "relative"
-    },
-    container: {
-        minWidth: 150
-    },
-    input: {
-        flexGrow: 1
-    },
-    dollarSign: {
-        position: "absolute",
-        zIndex: 5,
-        color: "red",
-        top: "28%",
-        left: "2%",
-    },
     spacer: {
         marginBottom: 20
-    }
+    },
 });
