@@ -1,8 +1,8 @@
-import { ScrollView, StyleSheet, View } from "react-native"
-import { Button, Text } from "@ui-kitten/components"
+import { Button, ScrollView, StyleSheet, View } from "react-native"
 import { memo, useState } from "react"
 import InvestmentItem from "./components/InvestmentItem"
 import InvestmentModal from "./components/InvestmentModal"
+import CustomText from "../../components/CustomText"
 
 type Props = {
     isHidden: boolean
@@ -41,12 +41,10 @@ const InvestmentPage = ({ isHidden = false }: Props) => {
     return (
         <ScrollView style={containerStyles(isHidden).container}>
             <View style={styles.buttonContainer}>
-                <Button onPress={() => setIsModalVisible(true)} style={styles.button}>
-                    Add
-                </Button>
+                <Button title="Add" onPress={() => setIsModalVisible(true)} />
             </View>
             {!!investments.length && (
-                <Text>Your investments:</Text>
+                <CustomText>Your investments:</CustomText>
             )}
             {investments.map((item: InvestmentItem, index: number) => (
                 <InvestmentItem

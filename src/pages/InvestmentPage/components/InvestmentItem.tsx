@@ -1,10 +1,13 @@
-import { Button, Icon, Text } from "@ui-kitten/components";
 import { useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { formatDate } from "../../../hooks/date";
 import InvestmentModal from "./InvestmentModal";
 import InvestmentChart from "./InvestmentChart";
 import InvestmentList from "./InvestmentList";
+import CustomText from "../../../components/CustomText";
+import TrashIcon from "../../../components/TrashIcon";
+import PenIcon from "../../../components/PenIcon";
+import ChevronIcon from "../../../components/ChevronIcon";
 
 type Props = {
     item: InvestmentItem,
@@ -23,38 +26,21 @@ const InvestmentItem = ({ item, onItemChange, onDelete }: Props) => {
         <View>
             <View style={styles.goalContainer}>
                 <View style={{ flexDirection: "row", alignItems: "center" }}>
-                    <Button
-                        accessoryLeft={<Icon name={'arrow-ios-downward'} />}
-                        onPress={onToggleExpand}
-                        appearance='ghost'
-                        style={buttonStyle(isExpanded).icon}
-                    />
-                    <Text>Name: {item.name}</Text>
+                    <ChevronIcon onPress={onToggleExpand} style={buttonStyle(isExpanded).icon} />
+                    <CustomText>Name: {item.name}</CustomText>
                 </View>
                 <View style={styles.actionContainer}>
-                    <Button
-                        accessoryLeft={<Icon name='trash' />}
-                        appearance='ghost'
-                        status='danger'
-                        style={styles.button}
-                        onPress={onDelete}
-                    />
-                    <Button
-                        accessoryLeft={<Icon name='edit' />}
-                        appearance='ghost'
-                        status='primary'
-                        style={styles.button}
-                        onPress={onToggleModal}
-                    />
+                    <TrashIcon onPress={onDelete} />
+                    <PenIcon onPress={onToggleModal} />
                 </View>
             </View>
             {isExpanded && (
                 <View style={{ alignItems: "flex-start", marginLeft: 35 }}>
-                    <Text>Amount: {item.amount.toString()}</Text>
-                    <Text>Rate: {item.rate.toString()}</Text>
-                    <Text>Term: {item.term.toString()} {item.term > 1 ? `${item.termPeriod.name}s` : item.termPeriod.name} </Text>
-                    <Text>Tax Rate: {item.taxRate.toString()}</Text>
-                    <Text>Date: {formatDate(item.startDate)}</Text>
+                    <CustomText>Amount: {item.amount.toString()}</CustomText>
+                    <CustomText>Rate: {item.rate.toString()}</CustomText>
+                    <CustomText>Term: {item.term.toString()} {item.term > 1 ? `${item.termPeriod.name}s` : item.termPeriod.name} </CustomText>
+                    <CustomText>Tax Rate: {item.taxRate.toString()}</CustomText>
+                    <CustomText>Date: {formatDate(item.startDate)}</CustomText>
                     <InvestmentChart item={item} />
                     <InvestmentList item={item} />
                 </View>

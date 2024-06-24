@@ -1,6 +1,5 @@
-import { Button, Text } from '@ui-kitten/components';
 import React, { memo, useState } from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { Button, ScrollView, StyleSheet, View } from 'react-native';
 import GoalModal from './components/GoalModal';
 import Goal from './components/Goal';
 
@@ -40,9 +39,7 @@ const SavingGoalsPage = ({ isHidden = false }: Props) => {
     return (
         <ScrollView style={containerStyles(isHidden).container}>
             <View style={styles.buttonContainer}>
-                <Button onPress={() => setVisible(true)} style={styles.button}>
-                    Add
-                </Button>
+                <Button title="Add" onPress={() => setVisible(true)} />
             </View>
             {!!goals.length && (
                 <View>

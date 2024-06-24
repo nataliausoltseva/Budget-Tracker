@@ -1,6 +1,5 @@
-import { Input } from '@ui-kitten/components';
-import React, { useState } from 'react';
-import { NativeSyntheticEvent, SafeAreaView, StyleSheet, Text, TextInputChangeEventData, View } from 'react-native';
+import React from 'react';
+import { NativeSyntheticEvent, SafeAreaView, StyleSheet, TextInputChangeEventData, View } from 'react-native';
 import CustomText from '../../../components/CustomText';
 import CustomInput from '../../../components/CustomInput';
 

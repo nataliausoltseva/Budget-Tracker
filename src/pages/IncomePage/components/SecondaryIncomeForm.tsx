@@ -1,6 +1,5 @@
-import { Input } from '@ui-kitten/components';
-import React, { useRef, useState } from 'react';
-import { NativeSyntheticEvent, SafeAreaView, StyleSheet, Text, TextInputChangeEventData, View } from 'react-native';
+import React, { useRef } from 'react';
+import { NativeSyntheticEvent, SafeAreaView, StyleSheet, TextInputChangeEventData, View } from 'react-native';
 import CustomInput from '../../../components/CustomInput';
 
 type Props = {

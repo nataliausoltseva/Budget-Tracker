@@ -1,7 +1,8 @@
-import { Button, Datepicker, IndexPath, Input, Layout, Select, SelectItem, Text } from "@ui-kitten/components"
+import { Datepicker, IndexPath, Input, Layout, Select, SelectItem } from "@ui-kitten/components"
 import { useEffect, useState } from "react";
-import { NativeSyntheticEvent, StyleSheet, TextInputChangeEventData, View } from "react-native"
+import { Button, NativeSyntheticEvent, StyleSheet, TextInputChangeEventData, View } from "react-native"
 import CustomModal from "../../../components/CustomModal";
+import CustomText from "../../../components/CustomText";
 
 type Props = {
     onClose: () => void,
@@ -119,9 +120,7 @@ const InvestmentModal = ({ onSave, onClose, investment = null }: Props) => {
     return (
         <View style={styles.container}>
             <CustomModal isVisible={true} onClose={_onClose} >
-                <Text>
-                    Your new instment
-                </Text>
+                <CustomText>Your new instment</CustomText>
                 <Input
                     label={"Name:"}
                     placeholder='Enter expense name'
@@ -137,7 +136,6 @@ const InvestmentModal = ({ onSave, onClose, investment = null }: Props) => {
                             keyboardType: "numeric"
                         }}
                     />
-                    <Text style={styles.dollarSign}>$</Text>
                 </View>
                 <Input
                     label={"Interest Rate:"}
@@ -182,9 +180,7 @@ const InvestmentModal = ({ onSave, onClose, investment = null }: Props) => {
                     date={item.startDate}
                     onSelect={_onStartDateChange}
                 />
-                <Button onPress={_onSave} disabled={!item.name || !item.amount || item.amount === "0"}>
-                    Save
-                </Button>
+                <Button title="Save" onPress={_onSave} disabled={!item.name || !item.amount || item.amount === "0"} />
             </CustomModal>
         </View>
     )
@@ -193,13 +189,6 @@ const InvestmentModal = ({ onSave, onClose, investment = null }: Props) => {
 export default InvestmentModal;
 
 const styles = StyleSheet.create({
-    dollarSign: {
-        position: "absolute",
-        zIndex: 5,
-        color: "red",
-        top: "50%",
-        left: "2%",
-    },
     container: {
         minHeight: 192,
     },

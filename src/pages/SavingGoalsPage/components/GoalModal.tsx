@@ -1,7 +1,7 @@
-import { Button, Card, Datepicker, Input, Modal, Text } from "@ui-kitten/components";
-import moment from "moment";
+import { Button, Card, Datepicker, Input, Modal } from "@ui-kitten/components";
 import { useEffect, useState } from "react";
 import { NativeSyntheticEvent, StyleSheet, TextInputChangeEventData, View } from "react-native";
+import CustomText from "../../../components/CustomText";
 
 type Props = {
     onSave: (goal: SavingGoalItem) => void,
@@ -71,9 +71,9 @@ const GoalModal = ({ onSave, isVisible = false, onClose, goal = null }: Props) =
                 onBackdropPress={_onClose}
             >
                 <Card disabled={true}>
-                    <Text>
+                    <CustomText>
                         Your new goal
-                    </Text>
+                    </CustomText>
                     <Input
                         label={"Name"}
                         placeholder='Enter your goal name'

@@ -1,8 +1,10 @@
-import { Button, Icon, Text } from "@ui-kitten/components";
-import { RootTagContext, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { formatDate } from "../../../hooks/date";
 import { useState } from "react";
 import TransactionModal from "./TransactionModal";
+import CustomText from "../../../components/CustomText";
+import TrashIcon from "../../../components/TrashIcon";
+import PenIcon from "../../../components/PenIcon";
 
 type Props = {
     item: TransactionItem,
@@ -16,12 +18,12 @@ const TransactionItem = ({ item, onDelete, onEdit }: Props) => {
     return (
         <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
             <View>
-                <Text>Amount: {item.amount.toString()}</Text>
-                <Text>Date: {formatDate(item.date)}</Text>
+                <CustomText>Amount: {item.amount.toString()}</CustomText>
+                <CustomText>Date: {formatDate(item.date)}</CustomText>
             </View>
             <View style={{ flexDirection: "row" }}>
-                <Button accessoryLeft={<Icon name='trash' />} onPress={onDelete} appearance='ghost' status='danger' style={styles.button} />
-                <Button accessoryLeft={<Icon name='edit' />} onPress={() => setEditVisible(true)} appearance='ghost' status='primary' style={styles.button} />
+                <TrashIcon onPress={onDelete} />
+                <PenIcon onPress={() => setEditVisible(true)} />
             </View>
             {editVisible && (
                 <TransactionModal

@@ -1,6 +1,7 @@
-import { TabBar, Text } from '@ui-kitten/components';
+import { TabBar } from '@ui-kitten/components';
 import React, { useContext } from 'react';
 import { AppContext } from '../context/AppContext';
+import CustomText from './CustomText';
 
 type Props = {
     tabs: PanelTab[],
@@ -18,12 +19,13 @@ const TopNavigationBar = ({ tabs, onSelect, selectedIndex }: Props) => {
             indicatorStyle={{ backgroundColor: getTabColor(appState.isDarkMode, true) }}
         >
             {tabs.map((tab: PanelTab, index: number) => (
-                <Text
-                    style={{ color: getTabColor(appState.isDarkMode, selectedIndex === index), height: 40, paddingTop: 10, textAlign: "center" }}
+                <CustomText
+                    style={{ height: 40, paddingTop: 10, textAlign: "center" }}
                     onPress={() => onSelect(index)}
+                    color={getTabColor(appState.isDarkMode, selectedIndex === index)}
                 >
                     {tab.label}
-                </Text>
+                </CustomText>
             ))}
         </TabBar>
     )

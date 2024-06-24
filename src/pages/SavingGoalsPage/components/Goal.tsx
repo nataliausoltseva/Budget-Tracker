@@ -1,4 +1,4 @@
-import { Button, CircularProgressBar, Icon, Text } from "@ui-kitten/components"
+import { Button, Icon } from "@ui-kitten/components"
 import { StyleSheet, View, useWindowDimensions } from "react-native"
 import { formatDate, getDateDiffSeconds } from "../../../hooks/date";
 import React, { useState } from "react";
@@ -7,6 +7,10 @@ import GoalModal from "./GoalModal";
 import TransactionModal from "./TransactionModal";
 import TransactionItem from "./TransactionItem";
 import { LineChart } from "react-native-gifted-charts";
+import CustomText from "../../../components/CustomText";
+import TrashIcon from "../../../components/TrashIcon";
+import PenIcon from "../../../components/PenIcon";
+import ChevronIcon from "../../../components/ChevronIcon";
 
 type Props = {
     goal: SavingGoalItem,
@@ -59,19 +63,19 @@ const Goal = ({ goal, onDelete, onEdit }: Props) => {
         <View style={styles.container}>
             <View style={styles.goalContainer}>
                 <View style={{ flexDirection: "row", alignItems: "center" }}>
-                    <Button accessoryLeft={<Icon name={'arrow-ios-downward'} />} onPress={onGoalToggle} appearance='ghost' style={buttonStyle(isGoalExpanded).icon} />
-                    <Text>Name: {goal.name}</Text>
+                    <ChevronIcon onPress={onGoalToggle} style={buttonStyle(isGoalExpanded).icon} />
+                    <CustomText>Name: {goal.name}</CustomText>
                 </View>
                 <View style={styles.actionContainer}>
-                    <Button accessoryLeft={<Icon name='trash' />} onPress={onDelete} appearance='ghost' status='danger' style={styles.button} />
-                    <Button accessoryLeft={<Icon name='edit' />} onPress={() => setEditVisible(true)} appearance='ghost' status='primary' style={styles.button} />
+                    <TrashIcon onPress={onDelete} />
+                    <PenIcon onPress={() => setEditVisible(true)} />
                 </View>
             </View>
             {isGoalExpanded && (
                 <View style={{ alignItems: "flex-start", marginLeft: 35 }}>
-                    <Text>Amount: {goal.amount.toString()}</Text>
-                    <Text>Saved Amount: {goal.savedAmount.toString()}</Text>
-                    <Text>Date: {formatDate(goal.date)}</Text>
+                    <CustomText>Amount: {goal.amount.toString()}</CustomText>
+                    <CustomText>Saved Amount: {goal.savedAmount.toString()}</CustomText>
+                    <CustomText>Date: {formatDate(goal.date)}</CustomText>
                     <CountDown
                         until={seconds || 0}
                         size={20}
@@ -79,7 +83,7 @@ const Goal = ({ goal, onDelete, onEdit }: Props) => {
                         digitStyle={styles.time}
                     />
                     <View style={{ flexDirection: "row", alignItems: "center" }}>
-                        <Text>Transactions:</Text>
+                        <CustomText>Transactions:</CustomText>
                         <Button accessoryLeft={<Icon name='plus' />} onPress={() => setTransactionVisible(true)} appearance='ghost' status='primary' style={styles.button} />
                     </View>
                     {goal.transactions.length > 0 && (
@@ -95,7 +99,7 @@ const Goal = ({ goal, onDelete, onEdit }: Props) => {
                                 ))}
                             </View>
                             <View>
-                                <Text>Your saving progress:</Text>
+                                <CustomText>Your saving progress:</CustomText>
                                 <LineChart
                                     data={graphData}
                                     data2={graphData.map(_ => ({ value: goal.amount }))}

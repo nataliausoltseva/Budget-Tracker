@@ -1,7 +1,8 @@
-import { Button, Datepicker, Input, Text } from "@ui-kitten/components";
+import { Datepicker, Input } from "@ui-kitten/components";
 import { useEffect, useState } from "react";
-import { NativeSyntheticEvent, StyleSheet, TextInputChangeEventData, View } from "react-native";
+import { Button, NativeSyntheticEvent, StyleSheet, TextInputChangeEventData, View } from "react-native";
 import CustomModal from "../../../components/CustomModal";
+import CustomText from "../../../components/CustomText";
 
 type Props = {
     isVisible: boolean,
@@ -49,9 +50,9 @@ const TransactionModal = ({ goalTotalSaved = 0, transaction, isVisible = false, 
                 isVisible={true}
                 onClose={_onClose}
             >
-                <Text>
+                <CustomText>
                     Add transaction to your goal
-                </Text>
+                </CustomText>
                 <Input
                     label={"Amount"}
                     placeholder='Transaction amount'
@@ -66,9 +67,7 @@ const TransactionModal = ({ goalTotalSaved = 0, transaction, isVisible = false, 
                     date={date}
                     onSelect={nextDate => setDate(nextDate)}
                 />
-                <Button onPress={_onSave} disabled={amount === ''}>
-                    Save
-                </Button>
+                <Button title={"Save"} onPress={_onSave} disabled={amount === ''} />
             </CustomModal>
         </View>
     )
