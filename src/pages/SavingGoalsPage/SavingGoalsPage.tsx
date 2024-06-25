@@ -1,13 +1,16 @@
-import React, { memo, useState } from 'react';
+import React, { memo, useContext, useState } from 'react';
 import { Button, ScrollView, StyleSheet, View } from 'react-native';
 import GoalModal from './components/GoalModal';
 import Goal from './components/Goal';
+import CustomText from '../../components/CustomText';
+import { AppContext } from '../../context/AppContext';
 
 type Props = {
     isHidden: boolean
 }
 
 const SavingGoalsPage = ({ isHidden = false }: Props) => {
+    const appState = useContext(AppContext);
     const [visible, setVisible] = useState(false);
     const [goals, setGoals] = useState<SavingGoalItem[]>([]);
 
@@ -36,13 +39,16 @@ const SavingGoalsPage = ({ isHidden = false }: Props) => {
         });
     }
 
+    const renderButton = () => (
+        <View style={styles.buttonContainer}>
+            <Button title="Add" onPress={() => setVisible(true)} color={appState.isDarkMode ? "#A78DFF" : "#01B0E6"} />
+        </View>
+    )
+
     return (
-        <ScrollView style={containerStyles(isHidden).container}>
-            <View style={styles.buttonContainer}>
-                <Button title="Add" onPress={() => setVisible(true)} />
-            </View>
-            {!!goals.length && (
-                <View>
+        <View style={containerStyles(isHidden).container}>
+            {goals.length ? (
+                <ScrollView>
                     {goals.map((goal: SavingGoalItem, index: number) => (
                         <Goal
                             key={index}
@@ -51,6 +57,11 @@ const SavingGoalsPage = ({ isHidden = false }: Props) => {
                             onEdit={(g: SavingGoalItem) => onEdit(g, index)}
                         />
                     ))}
+                </ScrollView>
+            ) : (
+                <View style={{ justifyContent: "center", flexGrow: 1, alignItems: "center" }}>
+                    <CustomText style={{ marginBottom: 20 }}>Add you first goal</CustomText>
+                    {renderButton()}
                 </View>
             )}
             <GoalModal
@@ -58,7 +69,7 @@ const SavingGoalsPage = ({ isHidden = false }: Props) => {
                 isVisible={visible}
                 onClose={() => setVisible(false)}
             />
-        </ScrollView>
+        </View>
     );
 }
 
@@ -67,6 +78,7 @@ export default memo(SavingGoalsPage);
 const containerStyles = (isHidden: boolean) => StyleSheet.create({
     container: {
         display: isHidden ? "none" : "flex",
+        flexGrow: 1
     },
 });
 

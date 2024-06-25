@@ -1,7 +1,9 @@
-import { Button, Card, Datepicker, Input, Modal } from "@ui-kitten/components";
+import { Datepicker } from "@ui-kitten/components";
 import { useEffect, useState } from "react";
-import { NativeSyntheticEvent, StyleSheet, TextInputChangeEventData, View } from "react-native";
+import { Button, NativeSyntheticEvent, StyleSheet, TextInputChangeEventData, View } from "react-native";
 import CustomText from "../../../components/CustomText";
+import CustomInput from "../../../components/CustomInput";
+import CustomModal from "../../../components/CustomModal";
 
 type Props = {
     onSave: (goal: SavingGoalItem) => void,
@@ -65,48 +67,49 @@ const GoalModal = ({ onSave, isVisible = false, onClose, goal = null }: Props) =
 
     return (
         <View style={styles.container}>
-            <Modal
-                visible={isVisible}
-                backdropStyle={styles.backdrop}
-                onBackdropPress={_onClose}
-            >
-                <Card disabled={true}>
-                    <CustomText>
-                        Your new goal
-                    </CustomText>
-                    <Input
-                        label={"Name"}
-                        placeholder='Enter your goal name'
-                        value={name}
-                        onChange={onNameChange}
-                    />
-                    <Input
+            <CustomModal isVisible={true} onClose={_onClose} style={{ width: 300 }}>
+                <CustomText style={{ textAlign: "center", marginBottom: 25 }}>
+                    {goal === null ? "New" : "Your"} goal
+                </CustomText>
+                <CustomInput
+                    label={"Name"}
+                    placeholder='Enter your goal name'
+                    value={name}
+                    onChange={onNameChange}
+                />
+                <View style={{ flexDirection: "row", flexGrow: 1, justifyContent: "space-between", marginTop: 20 }}>
+                    <CustomInput
                         label={"Goal amount"}
                         value={amount}
                         onChange={onAmountChange}
-                        {...{
-                            keyboardType: "numeric"
-                        }}
+                        style={{ width: 110 }}
+                        isNumeric
                     />
-                    <Input
+                    <CustomInput
                         label={"Saved amount"}
                         value={savedAmount}
                         onChange={onSavedAmountChange}
-                        {...{
-                            keyboardType: "numeric"
-                        }}
+                        style={{ width: 110 }}
+                        isNumeric
                     />
-                    <Datepicker
-                        label={"Date by"}
-                        date={date}
-                        onSelect={nextDate => setDate(nextDate)}
-                        min={tomorrow}
-                    />
-                    <Button onPress={_onSave} disabled={!name || !amount || amount === "0" || !date}>
-                        Save
-                    </Button>
-                </Card>
-            </Modal>
+                </View>
+                <Datepicker
+                    label={"Date by"}
+                    date={date}
+                    onSelect={nextDate => setDate(nextDate)}
+                    min={tomorrow}
+                    style={{ marginTop: 20 }}
+                />
+                <View style={{ alignItems: "center", marginTop: 30 }}>
+                    <View style={{ width: 150 }}>
+                        <Button
+                            title="Save"
+                            onPress={_onSave}
+                            disabled={!name || !amount || amount === "0" || !date}
+                        />
+                    </View>
+                </View>
+            </CustomModal>
         </View>
     )
 }
