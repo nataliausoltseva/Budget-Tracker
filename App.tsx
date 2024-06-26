@@ -35,7 +35,7 @@ const TABS: PanelTab[] = [
 ];
 
 function App(): React.JSX.Element {
-  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [selectedIndex, setSelectedIndex] = useState(2);
   const [isDarkMode, setIsDarkMode] = useState(false);
 
   return (

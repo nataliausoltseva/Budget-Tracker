@@ -64,11 +64,13 @@ const SavingGoalsPage = ({ isHidden = false }: Props) => {
                     {renderButton()}
                 </View>
             )}
-            <GoalModal
-                onSave={onAddGoal}
-                isVisible={visible}
-                onClose={() => setVisible(false)}
-            />
+            {visible && (
+                <GoalModal
+                    onSave={onAddGoal}
+                    isVisible={visible}
+                    onClose={() => setVisible(false)}
+                />
+            )}
         </View>
     );
 }
