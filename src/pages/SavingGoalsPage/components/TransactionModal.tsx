@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Button, NativeSyntheticEvent, StyleSheet, TextInputChangeEventData, View } from "react-native";
 import CustomModal from "../../../components/CustomModal";
 import CustomText from "../../../components/CustomText";
+import CustomInput from "../../../components/CustomInput";
 
 type Props = {
     isVisible: boolean,
@@ -49,25 +50,28 @@ const TransactionModal = ({ goalTotalSaved = 0, transaction, isVisible = false, 
             <CustomModal
                 isVisible={true}
                 onClose={_onClose}
+                style={{ width: 250 }}
             >
-                <CustomText>
-                    Add transaction to your goal
+                <CustomText style={{ textAlign: "center", marginBottom: 20 }}>
+                    {transaction === null ? "New" : "Your"} transaction
                 </CustomText>
-                <Input
+                <CustomInput
                     label={"Amount"}
                     placeholder='Transaction amount'
                     value={amount}
                     onChange={onAmountChange}
-                    {...{
-                        keyboardType: "numeric"
-                    }}
+                    isNumeric
                 />
                 <Datepicker
                     label={"Date by"}
                     date={date}
                     onSelect={nextDate => setDate(nextDate)}
                 />
-                <Button title={"Save"} onPress={_onSave} disabled={amount === ''} />
+                <View style={{ alignItems: "center", marginTop: 20 }}>
+                    <View style={{ width: 100 }}>
+                        <Button title={"Save"} onPress={_onSave} disabled={amount === '' || amount === '0'} />
+                    </View>
+                </View>
             </CustomModal>
         </View>
     )
