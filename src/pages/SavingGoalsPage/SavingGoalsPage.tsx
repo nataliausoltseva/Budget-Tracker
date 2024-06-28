@@ -57,6 +57,7 @@ const SavingGoalsPage = ({ isHidden = false }: Props) => {
                             onEdit={(g: SavingGoalItem) => onEdit(g, index)}
                         />
                     ))}
+                    {renderButton()}
                 </ScrollView>
             ) : (
                 <View style={{ justifyContent: "center", flexGrow: 1, alignItems: "center" }}>
