@@ -30,7 +30,7 @@ const CustomInput = ({ placeholder = "", value, onChange, isNumeric = false, isE
                     {
                         borderBottomColor: appState.isDarkMode ? "white" : "black",
                         borderBottomWidth: 1,
-                        backgroundColor: appState.isDarkMode ? '#443472' : "white",
+                        backgroundColor: appState.isDarkMode ? '#33294e' : "white",
                         color: appState.isDarkMode ? "white" : "black",
                         outlineStyle: 'none',
                         padding: 0,

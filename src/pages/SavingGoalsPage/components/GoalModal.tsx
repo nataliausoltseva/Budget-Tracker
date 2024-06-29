@@ -1,9 +1,10 @@
 import { Datepicker } from "@ui-kitten/components";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Button, NativeSyntheticEvent, StyleSheet, TextInputChangeEventData, View } from "react-native";
 import CustomText from "../../../components/CustomText";
 import CustomInput from "../../../components/CustomInput";
 import CustomModal from "../../../components/CustomModal";
+import { AppContext } from "../../../context/AppContext";
 
 type Props = {
     onSave: (goal: SavingGoalItem) => void,
@@ -17,6 +18,7 @@ type Props = {
 }
 
 const GoalModal = ({ onSave, isVisible = false, onClose, goal = null }: Props) => {
+    const appState = useContext(AppContext);
     const now = new Date();
     const tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
     const [name, setName] = useState(goal?.name || "");
@@ -96,9 +98,14 @@ const GoalModal = ({ onSave, isVisible = false, onClose, goal = null }: Props) =
                 <Datepicker
                     label={"Date by"}
                     date={date}
-                    onSelect={nextDate => setDate(nextDate)}
+                    onSelect={setDate}
                     min={tomorrow}
                     style={{ marginTop: 20 }}
+                    status="primary"
+                    controlStyle={{
+                        backgroundColor: appState.isDarkMode ? "#33294e" : "white",
+                        borderColor: appState.isDarkMode ? "white" : "black",
+                    }}
                 />
                 <View style={{ alignItems: "center", marginTop: 30 }}>
                     <View style={{ width: 150 }}>

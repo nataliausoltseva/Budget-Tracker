@@ -1,9 +1,10 @@
 import { Datepicker, Input } from "@ui-kitten/components";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Button, NativeSyntheticEvent, StyleSheet, TextInputChangeEventData, View } from "react-native";
 import CustomModal from "../../../components/CustomModal";
 import CustomText from "../../../components/CustomText";
 import CustomInput from "../../../components/CustomInput";
+import { AppContext } from "../../../context/AppContext";
 
 type Props = {
     isVisible: boolean,
@@ -14,6 +15,7 @@ type Props = {
 }
 
 const TransactionModal = ({ goalTotalSaved = 0, transaction, isVisible = false, onSave, onClose }: Props) => {
+    const appState = useContext(AppContext);
     const now = new Date();
 
     const [amount, setAmount] = useState("0");
@@ -65,7 +67,12 @@ const TransactionModal = ({ goalTotalSaved = 0, transaction, isVisible = false, 
                 <Datepicker
                     label={"Date by"}
                     date={date}
+                    status="primary"
                     onSelect={nextDate => setDate(nextDate)}
+                    controlStyle={{
+                        backgroundColor: appState.isDarkMode ? "#33294e" : "white",
+                        borderColor: appState.isDarkMode ? "white" : "black",
+                    }}
                 />
                 <View style={{ alignItems: "center", marginTop: 20 }}>
                     <View style={{ width: 100 }}>

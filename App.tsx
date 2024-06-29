@@ -11,8 +11,6 @@ import TopNavigationBar from './src/components/TopNavigationBar';
 import { AppContextProvider } from './src/context/AppContext';
 import InvestmentPage from './src/pages/InvestmentPage/InvestmentPage';
 import DarkModeToggle from './src/components/DarkModeToggle';
-import { default as mappingLightMode } from './mapping-light-mode.json';
-import { default as mappingDarkMode } from './mapping-dark-mode.json';
 
 
 const TABS: PanelTab[] = [
@@ -41,7 +39,7 @@ function App(): React.JSX.Element {
   return (
     <SafeAreaView>
       <IconRegistry icons={EvaIconsPack} />
-      <ApplicationProvider {...eva} theme={isDarkMode ? eva.dark : eva.light} customMapping={{ ...eva.mapping, ...mappingLightMode }}>
+      <ApplicationProvider {...eva} theme={isDarkMode ? eva.dark : eva.light}>
         <AppContextProvider>
           <SafeAreaView style={{ backgroundColor: isDarkMode ? '#443472' : "white", height: "100%" }}>
             <TopNavigationBar tabs={TABS} onSelect={setSelectedIndex} selectedIndex={selectedIndex} />
