@@ -1,7 +1,6 @@
-import { Button, Icon } from "@ui-kitten/components"
 import { StyleSheet, View, useWindowDimensions } from "react-native"
 import { formatDate, getDateDiffSeconds } from "../../../hooks/date";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import CountDown from 'react-native-countdown-fixed';
 import GoalModal from "./GoalModal";
 import TransactionModal from "./TransactionModal";
@@ -11,6 +10,9 @@ import CustomText from "../../../components/CustomText";
 import TrashIcon from "../../../components/TrashIcon";
 import PenIcon from "../../../components/PenIcon";
 import ChevronIcon from "../../../components/ChevronIcon";
+import { AppContext } from "../../../context/AppContext";
+import PlusIcon from "../../../components/PlusIcon";
+import { Colors } from "react-native/Libraries/NewAppScreen";
 
 type Props = {
     goal: SavingGoalItem,
@@ -19,6 +21,7 @@ type Props = {
 }
 
 const Goal = ({ goal, onDelete, onEdit }: Props) => {
+    const appState = useContext(AppContext);
     const [editVisible, setEditVisible] = useState(false);
     const [transactionVisible, setTransactionVisible] = useState(false);
     const [isGoalExpanded, setIsGoalExpanded] = useState(false);
@@ -59,120 +62,140 @@ const Goal = ({ goal, onDelete, onEdit }: Props) => {
         ...goal.transactions.map((t: TransactionItem) => ({ value: t.totalSaved }))
     ] : [];
 
-    return (
-        <View style={styles.container}>
-            <View style={styles.goalContainer}>
-                <View style={{ flexDirection: "row", alignItems: "center" }}>
-                    <ChevronIcon onPress={onGoalToggle} style={buttonStyle(isGoalExpanded).icon} />
-                    <CustomText>Name: {goal.name}</CustomText>
-                </View>
-                <View style={styles.actionContainer}>
-                    <TrashIcon onPress={onDelete} />
-                    <PenIcon onPress={() => setEditVisible(true)} />
-                </View>
-            </View>
-            {isGoalExpanded && (
-                <View style={{ alignItems: "flex-start", marginLeft: 35 }}>
-                    <CustomText>Amount: {goal.amount.toString()}</CustomText>
-                    <CustomText>Saved Amount: {goal.savedAmount.toString()}</CustomText>
-                    <CustomText>Date: {formatDate(goal.date)}</CustomText>
-                    <CountDown
-                        until={seconds || 0}
-                        size={20}
-                        timeLabelStyle={styles.timeLabel}
-                        digitStyle={styles.time}
-                    />
-                    <View style={{ flexDirection: "row", alignItems: "center" }}>
-                        <CustomText>Transactions:</CustomText>
-                        <Button accessoryLeft={<Icon name='plus' />} onPress={() => setTransactionVisible(true)} appearance='ghost' status='primary' style={styles.button} />
-                    </View>
-                    {goal.transactions.length > 0 && (
-                        <View>
-                            <View style={styles.transactionsContainer}>
-                                {goal.transactions.map((item: TransactionItem, i: number) => (
-                                    <TransactionItem
-                                        key={i}
-                                        item={item}
-                                        onDelete={() => onTransactionDelete(i)}
-                                        onEdit={(t: TransactionItem) => onTransactionEdit(i, t)}
-                                    />
-                                ))}
-                            </View>
-                            <View>
-                                <CustomText>Your saving progress:</CustomText>
-                                <LineChart
-                                    data={graphData}
-                                    data2={graphData.map(_ => ({ value: goal.amount }))}
-                                    height={250}
-                                    width={windowDimensions.width - 100}
-                                    initialSpacing={0}
-                                    color1="skyblue"
-                                    color2="orange"
-                                    textColor1="green"
-                                    dataPointsColor1="blue"
-                                    dataPointsColor2="red"
-                                    textShiftY={-2}
-                                    textFontSize={13}
-                                    showVerticalLines
-                                />
-                            </View>
-                        </View>
-                    )}
+    const styles = StyleSheet.create({
+        container: {
+            flexDirection: "column",
+            marginBottom: 20,
+        },
+        goalContainer: {
+            flexDirection: 'row',
+            justifyContent: "space-between",
+            alignItems: "center",
+        },
+        button: {
+            width: 20
+        },
+        dueDateContainer: {
+            flexDirection: "row"
+        },
+        timeLabel: {
+            color: appState.isDarkMode ? "white" : "black",
+            textTransform: "lowercase"
+        },
+        time: {
+            backgroundColor: appState.isDarkMode ? '#443472' : "white",
+            borderColor: appState.isDarkMode ? "#A78DFF" : "#01B0E6",
+            borderWidth: 1,
+        },
+        actionContainer: {
+            flexDirection: "row"
+        },
+        transactionsContainer: {
+            marginLeft: 20
+        }
+    });
 
+    const graphColor = appState.isDarkMode ? "white" : "black";
+
+    return (
+        <>
+            <View style={styles.container}>
+                <View style={styles.goalContainer}>
+                    <View style={{ flexDirection: "row", alignItems: "center" }}>
+                        <ChevronIcon onPress={onGoalToggle} style={buttonStyle(isGoalExpanded).icon} />
+                        <CustomText style={{ marginLeft: 15 }}>{goal.name}</CustomText>
+                    </View>
+                    <View style={{ marginTop: 15 }}>
+                        <CountDown
+                            until={seconds || 0}
+                            size={15}
+                            timeLabelStyle={styles.timeLabel}
+                            digitStyle={styles.time}
+                            digitTxtStyle={{ color: appState.isDarkMode ? "white" : "black" }}
+                        />
+                    </View>
+                    <View style={styles.actionContainer}>
+                        <TrashIcon onPress={onDelete} />
+                        <PenIcon onPress={() => setEditVisible(true)} />
+                    </View>
                 </View>
-            )}
-            {editVisible && (
-                <GoalModal
-                    onSave={onEdit}
-                    isVisible={true}
-                    onClose={() => setEditVisible(false)}
-                    goal={goal}
-                />
-            )}
-            {transactionVisible && (
-                <TransactionModal
-                    goalTotalSaved={goal.savedAmount}
-                    onSave={onTransactionAdd}
-                    isVisible={true}
-                    onClose={() => setTransactionVisible(false)}
-                />
-            )}
-        </View>
+                {isGoalExpanded && (
+                    <View style={{ alignItems: "flex-start", marginLeft: 35 }}>
+                        <View style={{ flexDirection: "row", justifyContent: "space-between", width: "100%" }}>
+                            <CustomText>Amount:</CustomText>
+                            <CustomText>{goal.amount.toString()}</CustomText>
+                        </View>
+                        <View style={{ flexDirection: "row", justifyContent: "space-between", width: "100%" }}>
+                            <CustomText>Saved amount:</CustomText>
+                            <CustomText>{goal.savedAmount.toString()}</CustomText>
+                        </View>
+                        <View style={{ flexDirection: "row", justifyContent: "space-between", width: "100%" }}>
+                            <CustomText>Date by:</CustomText>
+                            <CustomText>{formatDate(goal.date)}</CustomText>
+                        </View>
+                        <View style={{ flexDirection: "row", alignItems: "center" }}>
+                            <CustomText>Transactions:</CustomText>
+                            <PlusIcon onPress={() => setTransactionVisible(true)} style={{ marginLeft: 10 }} />
+                        </View>
+                        {goal.transactions.length > 0 && (
+                            <View>
+                                <View style={styles.transactionsContainer}>
+                                    {goal.transactions.map((item: TransactionItem, i: number) => (
+                                        <TransactionItem
+                                            key={i}
+                                            item={item}
+                                            onDelete={() => onTransactionDelete(i)}
+                                            onEdit={(t: TransactionItem) => onTransactionEdit(i, t)}
+                                        />
+                                    ))}
+                                </View>
+                                <View>
+                                    <LineChart
+                                        data={graphData}
+                                        data2={graphData.map(_ => ({ value: goal.amount }))}
+                                        height={250}
+                                        width={windowDimensions.width - 100}
+                                        initialSpacing={0}
+                                        color1={graphColor}
+                                        color2={appState.isDarkMode ? "#A78DFF" : "#01B0E6"}
+                                        dataPointsColor1={graphColor}
+                                        dataPointsColor2={graphColor}
+                                        textShiftY={-2}
+                                        textFontSize={13}
+                                        yAxisColor={graphColor}
+                                        xAxisColor={graphColor}
+                                        yAxisTextStyle={{
+                                            color: appState.isDarkMode ? "white" : "black"
+                                        }}
+                                        showVerticalLines
+                                    />
+                                </View>
+                            </View>
+                        )}
+                    </View>
+                )}
+                {editVisible && (
+                    <GoalModal
+                        onSave={onEdit}
+                        isVisible={true}
+                        onClose={() => setEditVisible(false)}
+                        goal={goal}
+                    />
+                )}
+                {transactionVisible && (
+                    <TransactionModal
+                        goalTotalSaved={goal.savedAmount}
+                        onSave={onTransactionAdd}
+                        isVisible={true}
+                        onClose={() => setTransactionVisible(false)}
+                    />
+                )}
+            </View>
+            <View style={{ height: 1, backgroundColor: appState.isDarkMode ? "white" : '#707070', marginBottom: 20 }} /></>
     );
 }
 
 export default Goal;
-
-const styles = StyleSheet.create({
-    container: {
-        flexDirection: "column",
-        marginBottom: 20,
-    },
-    goalContainer: {
-        flexDirection: 'row',
-        justifyContent: "space-between",
-        alignItems: "center",
-        height: 30,
-    },
-    button: {
-        width: 20
-    },
-    dueDateContainer: {
-        flexDirection: "row"
-    },
-    timeLabel: {
-        color: "white"
-    },
-    time: {
-        backgroundColor: "#a3c2e3",
-    },
-    actionContainer: {
-        flexDirection: "row"
-    },
-    transactionsContainer: {
-        marginLeft: 20
-    }
-});
 
 const buttonStyle = (isExpanded: boolean) => StyleSheet.create({
     icon: {

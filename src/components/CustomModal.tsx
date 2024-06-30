@@ -1,6 +1,7 @@
 import { Card, Modal } from '@ui-kitten/components';
-import React from 'react';
+import React, { useContext } from 'react';
 import { StyleProp, StyleSheet, ViewStyle } from 'react-native';
+import { AppContext } from '../context/AppContext';
 
 type Props = {
     children: React.ReactNode,
@@ -11,6 +12,7 @@ type Props = {
 }
 
 const CustomModal = ({ children, isVisible = false, onClose, hasOverlay = true, style }: Props) => {
+    const appState = useContext(AppContext);
     return (
         <Modal
             visible={isVisible}
@@ -20,7 +22,7 @@ const CustomModal = ({ children, isVisible = false, onClose, hasOverlay = true, 
             style={style}
             onBackdropPress={onClose}
         >
-            <Card disabled={true}>
+            <Card disabled={true} style={{ backgroundColor: appState.isDarkMode ? "#33294e" : "white" }}>
                 {children}
             </Card>
         </Modal>

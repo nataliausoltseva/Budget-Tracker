@@ -1,8 +1,10 @@
 import { Datepicker, Input } from "@ui-kitten/components";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Button, NativeSyntheticEvent, StyleSheet, TextInputChangeEventData, View } from "react-native";
 import CustomModal from "../../../components/CustomModal";
 import CustomText from "../../../components/CustomText";
+import CustomInput from "../../../components/CustomInput";
+import { AppContext } from "../../../context/AppContext";
 
 type Props = {
     isVisible: boolean,
@@ -13,6 +15,7 @@ type Props = {
 }
 
 const TransactionModal = ({ goalTotalSaved = 0, transaction, isVisible = false, onSave, onClose }: Props) => {
+    const appState = useContext(AppContext);
     const now = new Date();
 
     const [amount, setAmount] = useState("0");
@@ -49,25 +52,41 @@ const TransactionModal = ({ goalTotalSaved = 0, transaction, isVisible = false, 
             <CustomModal
                 isVisible={true}
                 onClose={_onClose}
+                style={{ width: 250 }}
             >
-                <CustomText>
-                    Add transaction to your goal
+                <CustomText style={{ textAlign: "center", marginBottom: 20 }}>
+                    {transaction === null ? "New" : "Your"} transaction
                 </CustomText>
-                <Input
+                <CustomInput
                     label={"Amount"}
                     placeholder='Transaction amount'
                     value={amount}
                     onChange={onAmountChange}
-                    {...{
-                        keyboardType: "numeric"
-                    }}
+                    isNumeric
                 />
-                <Datepicker
-                    label={"Date by"}
-                    date={date}
-                    onSelect={nextDate => setDate(nextDate)}
-                />
-                <Button title={"Save"} onPress={_onSave} disabled={amount === ''} />
+                <View style={{ marginTop: 20 }}>
+                    <CustomText style={{ marginBottom: 10, fontSize: 12 }}>Date by</CustomText>
+                    <Datepicker
+                        date={date}
+                        status="primary"
+                        onSelect={nextDate => setDate(nextDate)}
+                        controlStyle={{
+                            backgroundColor: appState.isDarkMode ? "#33294e" : "white",
+                            borderColor: appState.isDarkMode ? "white" : "black",
+
+                        }}
+                    />
+                </View>
+                <View style={{ alignItems: "center", marginTop: 20 }}>
+                    <View style={{ width: 100 }}>
+                        <Button
+                            title={"Save"}
+                            onPress={_onSave}
+                            disabled={amount === '' || amount === '0'}
+                            color={appState.isDarkMode ? "#A78DFF" : "#01B0E6"}
+                        />
+                    </View>
+                </View>
             </CustomModal>
         </View>
     )

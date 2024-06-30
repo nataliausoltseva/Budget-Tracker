@@ -16,12 +16,18 @@ const TransactionItem = ({ item, onDelete, onEdit }: Props) => {
     const [editVisible, setEditVisible] = useState(false);
 
     return (
-        <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-            <View>
-                <CustomText>Amount: {item.amount.toString()}</CustomText>
-                <CustomText>Date: {formatDate(item.date)}</CustomText>
+        <View style={{ flexDirection: "row", marginBottom: 15 }}>
+            <View style={{ justifyContent: "space-between", flexGrow: 1 }}>
+                <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+                    <CustomText>Amount:</CustomText>
+                    <CustomText>{item.amount.toString()}</CustomText>
+                </View>
+                <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+                    <CustomText>Date:</CustomText>
+                    <CustomText>{formatDate(item.date)}</CustomText>
+                </View>
             </View>
-            <View style={{ flexDirection: "row" }}>
+            <View style={{ flexDirection: "row", marginTop: 7, marginLeft: 10 }}>
                 <TrashIcon onPress={onDelete} />
                 <PenIcon onPress={() => setEditVisible(true)} />
             </View>

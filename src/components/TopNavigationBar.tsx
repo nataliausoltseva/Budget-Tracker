@@ -20,6 +20,7 @@ const TopNavigationBar = ({ tabs, onSelect, selectedIndex }: Props) => {
         >
             {tabs.map((tab: PanelTab, index: number) => (
                 <CustomText
+                    key={index}
                     style={{ height: 40, paddingTop: 10, textAlign: "center" }}
                     onPress={() => onSelect(index)}
                     color={getTabColor(appState.isDarkMode, selectedIndex === index)}
