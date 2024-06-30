@@ -1,4 +1,3 @@
-import { Button, Icon } from "@ui-kitten/components"
 import { StyleSheet, View, useWindowDimensions } from "react-native"
 import { formatDate, getDateDiffSeconds } from "../../../hooks/date";
 import React, { useContext, useState } from "react";
@@ -12,6 +11,7 @@ import TrashIcon from "../../../components/TrashIcon";
 import PenIcon from "../../../components/PenIcon";
 import ChevronIcon from "../../../components/ChevronIcon";
 import { AppContext } from "../../../context/AppContext";
+import PlusIcon from "../../../components/PlusIcon";
 import { Colors } from "react-native/Libraries/NewAppScreen";
 
 type Props = {
@@ -135,7 +135,7 @@ const Goal = ({ goal, onDelete, onEdit }: Props) => {
                         </View>
                         <View style={{ flexDirection: "row", alignItems: "center" }}>
                             <CustomText>Transactions:</CustomText>
-                            <Button accessoryLeft={<Icon name='plus' />} onPress={() => setTransactionVisible(true)} appearance='ghost' status='primary' style={styles.button} />
+                            <PlusIcon onPress={() => setTransactionVisible(true)} style={{ marginLeft: 10 }} />
                         </View>
                         {goal.transactions.length > 0 && (
                             <View>
@@ -157,19 +157,21 @@ const Goal = ({ goal, onDelete, onEdit }: Props) => {
                                         width={windowDimensions.width - 100}
                                         initialSpacing={0}
                                         color1={graphColor}
-                                        color2="orange"
+                                        color2={appState.isDarkMode ? "#A78DFF" : "#01B0E6"}
                                         dataPointsColor1={graphColor}
                                         dataPointsColor2={graphColor}
                                         textShiftY={-2}
                                         textFontSize={13}
                                         yAxisColor={graphColor}
                                         xAxisColor={graphColor}
+                                        yAxisTextStyle={{
+                                            color: appState.isDarkMode ? "white" : "black"
+                                        }}
                                         showVerticalLines
                                     />
                                 </View>
                             </View>
                         )}
-
                     </View>
                 )}
                 {editVisible && (

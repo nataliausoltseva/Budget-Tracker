@@ -64,19 +64,27 @@ const TransactionModal = ({ goalTotalSaved = 0, transaction, isVisible = false, 
                     onChange={onAmountChange}
                     isNumeric
                 />
-                <Datepicker
-                    label={"Date by"}
-                    date={date}
-                    status="primary"
-                    onSelect={nextDate => setDate(nextDate)}
-                    controlStyle={{
-                        backgroundColor: appState.isDarkMode ? "#33294e" : "white",
-                        borderColor: appState.isDarkMode ? "white" : "black",
-                    }}
-                />
+                <View style={{ marginTop: 20 }}>
+                    <CustomText style={{ marginBottom: 10, fontSize: 12 }}>Date by</CustomText>
+                    <Datepicker
+                        date={date}
+                        status="primary"
+                        onSelect={nextDate => setDate(nextDate)}
+                        controlStyle={{
+                            backgroundColor: appState.isDarkMode ? "#33294e" : "white",
+                            borderColor: appState.isDarkMode ? "white" : "black",
+
+                        }}
+                    />
+                </View>
                 <View style={{ alignItems: "center", marginTop: 20 }}>
                     <View style={{ width: 100 }}>
-                        <Button title={"Save"} onPress={_onSave} disabled={amount === '' || amount === '0'} />
+                        <Button
+                            title={"Save"}
+                            onPress={_onSave}
+                            disabled={amount === '' || amount === '0'}
+                            color={appState.isDarkMode ? "#A78DFF" : "#01B0E6"}
+                        />
                     </View>
                 </View>
             </CustomModal>

@@ -95,18 +95,23 @@ const GoalModal = ({ onSave, isVisible = false, onClose, goal = null }: Props) =
                         isNumeric
                     />
                 </View>
-                <Datepicker
-                    label={"Date by"}
-                    date={date}
-                    onSelect={setDate}
-                    min={tomorrow}
-                    style={{ marginTop: 20 }}
-                    status="primary"
-                    controlStyle={{
-                        backgroundColor: appState.isDarkMode ? "#33294e" : "white",
-                        borderColor: appState.isDarkMode ? "white" : "black",
-                    }}
-                />
+                <View style={{ marginTop: 20 }}>
+                    <CustomText style={{ marginBottom: 10, fontSize: 12 }}>Date by</CustomText>
+                    <Datepicker
+                        date={date}
+                        onSelect={setDate}
+                        min={tomorrow}
+                        status="primary"
+                        controlStyle={{
+                            backgroundColor: appState.isDarkMode ? "#33294e" : "white",
+                            borderColor: appState.isDarkMode ? "white" : "black",
+                            borderTopWidth: 0,
+                            borderRightWidth: 0,
+                            borderLeftWidth: 0,
+                            paddingLeft: 0
+                        }}
+                    />
+                </View>
                 <View style={{ alignItems: "center", marginTop: 30 }}>
                     <View style={{ width: 150 }}>
                         <Button
