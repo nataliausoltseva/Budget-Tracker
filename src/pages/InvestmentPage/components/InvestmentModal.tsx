@@ -1,8 +1,11 @@
-import { Datepicker, IndexPath, Input, Layout, Select, SelectItem } from "@ui-kitten/components"
-import { useEffect, useState } from "react";
+import { Datepicker } from "@ui-kitten/components"
+import { useContext, useEffect, useState } from "react";
 import { Button, NativeSyntheticEvent, StyleSheet, TextInputChangeEventData, View } from "react-native"
 import CustomModal from "../../../components/CustomModal";
 import CustomText from "../../../components/CustomText";
+import CustomInput from "../../../components/CustomInput";
+import Dropdown from "../../../components/Dropdown";
+import { AppContext } from "../../../context/AppContext";
 
 type Props = {
     onClose: () => void,
@@ -32,8 +35,8 @@ const DEFAULT_STATE = {
 };
 
 const InvestmentModal = ({ onSave, onClose, investment = null }: Props) => {
+    const appState = useContext(AppContext);
     const [item, setItem] = useState(DEFAULT_STATE);
-    const [selectedIndex, setSelectedIndex] = useState<IndexPath | IndexPath[]>(new IndexPath(0));
 
     useEffect(() => {
         if (investment) {
@@ -90,15 +93,11 @@ const InvestmentModal = ({ onSave, onClose, investment = null }: Props) => {
         });
     }
 
-    const onTermPeriodChange = (index: IndexPath | IndexPath[]) => {
-        setSelectedIndex(index);
-
-        if (index instanceof IndexPath) {
-            setItem({
-                ...item,
-                termPeriod: PERIODS[index.row],
-            });
-        }
+    const onTermPeriodChange = (index: number) => {
+        setItem({
+            ...item,
+            termPeriod: PERIODS[index],
+        });
     }
 
     const _onSave = () => {
@@ -119,68 +118,89 @@ const InvestmentModal = ({ onSave, onClose, investment = null }: Props) => {
 
     return (
         <View style={styles.container}>
-            <CustomModal isVisible={true} onClose={_onClose} >
-                <CustomText>Your new instment</CustomText>
-                <Input
-                    label={"Name:"}
+            <CustomModal isVisible={true} onClose={_onClose} style={{ width: 300 }}>
+                <CustomText style={{ textAlign: "center", marginBottom: 20 }}>{investment === null ? "New" : "Your"} instment</CustomText>
+                <CustomInput
+                    label={"Name"}
                     placeholder='Enter expense name'
                     value={item.name}
                     onChange={_onNameChange}
                 />
-                <View>
-                    <Input
-                        label={"Amount:"}
+                <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 10 }}>
+                    <CustomInput
+                        label={"Amount"}
                         value={item.amount.toString()}
                         onChange={_onAmountChange}
-                        {...{
-                            keyboardType: "numeric"
-                        }}
+                        style={{ width: 115 }}
+                        isNumeric
+                    />
+                    <CustomInput
+                        label={"Tax rate"}
+                        value={item.taxRate.toString()}
+                        onChange={_onTaxRateChange}
+                        style={{ width: 115 }}
+                        isNumeric
                     />
                 </View>
-                <Input
-                    label={"Interest Rate:"}
-                    value={item.rate.toString()}
-                    onChange={_onRateChange}
-                    {...{
-                        keyboardType: "numeric"
-                    }}
-                />
-                <View style={{ flexDirection: "row", alignItems: "flex-end" }}>
-                    <Input
-                        label={"Term:"}
-                        value={item.term.toString()}
-                        onChange={_onTermChange}
-                        style={{ minWidth: 100 }}
-                        {...{
-                            keyboardType: "numeric"
-                        }}
+                <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 10, marginBottom: 10 }}>
+                    <View style={{ flexDirection: "row" }}>
+                        <CustomInput
+                            label={"Term"}
+                            value={item.term.toString()}
+                            onChange={_onTermChange}
+                            style={{ width: 50 }}
+                            isNumeric
+                        />
+                        <View style={{ marginTop: 5, marginLeft: 10 }}>
+                            <Dropdown
+                                value={item.termPeriod.label}
+                                onSelect={onTermPeriodChange}
+                                list={PERIODS.map(p => p.label)}
+                                listStyle={{
+                                    width: 75,
+                                    left: 159,
+                                    top: 501,
+                                    height: 90
+                                }}
+                                containerStyle={{
+                                    width: 75,
+                                    paddingTop: 13
+                                }}
+                            />
+                        </View>
+                    </View>
+                    <CustomInput
+                        label={"Term Rate"}
+                        value={item.rate.toString()}
+                        onChange={_onRateChange}
+                        style={{ width: 90 }}
+                        isNumeric
                     />
-                    <Layout style={{ minWidth: 150 }} level='1'>
-                        <Select
-                            selectedIndex={selectedIndex}
-                            onSelect={onTermPeriodChange}
-                            value={item.termPeriod.label}
-                        >
-                            {PERIODS.map((period: TermPeriod) => (
-                                <SelectItem title={period.label} key={period.name} />
-                            ))}
-                        </Select>
-                    </Layout>
                 </View>
-                <Input
-                    label={"Tax rate:"}
-                    value={item.taxRate.toString()}
-                    onChange={_onTaxRateChange}
-                    {...{
-                        keyboardType: "numeric"
-                    }}
-                />
+                <CustomText style={{ fontSize: 12 }}>Start date</CustomText>
                 <Datepicker
-                    label={"Start date:"}
                     date={item.startDate}
                     onSelect={_onStartDateChange}
+                    status="primary"
+                    controlStyle={{
+                        backgroundColor: appState.isDarkMode ? "#33294e" : "white",
+                        borderColor: appState.isDarkMode ? "white" : "black",
+                        borderTopWidth: 0,
+                        borderRightWidth: 0,
+                        borderLeftWidth: 0,
+                        paddingLeft: 0,
+                    }}
                 />
-                <Button title="Save" onPress={_onSave} disabled={!item.name || !item.amount || item.amount === "0"} />
+                <View style={{ alignItems: "center", marginTop: 30 }}>
+                    <View style={{ width: 150 }}>
+                        <Button
+                            title="Save"
+                            onPress={_onSave}
+                            disabled={!item.name || !item.amount || item.amount === "0"}
+                            color={appState.isDarkMode ? "#A78DFF" : "#01B0E6"}
+                        />
+                    </View>
+                </View>
             </CustomModal>
         </View>
     )

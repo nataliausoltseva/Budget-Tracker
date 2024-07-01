@@ -1,14 +1,16 @@
 import { Button, ScrollView, StyleSheet, View } from "react-native"
-import { memo, useState } from "react"
+import { memo, useContext, useState } from "react"
 import InvestmentItem from "./components/InvestmentItem"
 import InvestmentModal from "./components/InvestmentModal"
 import CustomText from "../../components/CustomText"
+import { AppContext } from "../../context/AppContext"
 
 type Props = {
     isHidden: boolean
 }
 
 const InvestmentPage = ({ isHidden = false }: Props) => {
+    const appState = useContext(AppContext);
     const [random, setRandom] = useState(Math.random());
     const [investments, setInvestments] = useState<InvestmentItem[]>([]);
     const [isModalVisible, setIsModalVisible] = useState(false);
@@ -38,29 +40,50 @@ const InvestmentPage = ({ isHidden = false }: Props) => {
         });
     }
 
-    return (
-        <ScrollView style={containerStyles(isHidden).container}>
-            <View style={styles.buttonContainer}>
-                <Button title="Add" onPress={() => setIsModalVisible(true)} />
-            </View>
-            {!!investments.length && (
-                <CustomText>Your investments:</CustomText>
-            )}
-            {investments.map((item: InvestmentItem, index: number) => (
-                <InvestmentItem
-                    key={`i-${index}-${random}`}
-                    item={item}
-                    onItemChange={(investment: InvestmentItem) => onItemChange(investment, index)}
-                    onDelete={() => onItemDelete(index)}
+    const renderButton = () => {
+        return (
+            <View style={{ width: 50 }}>
+                <Button
+                    title={"Add"}
+                    onPress={() => setIsModalVisible(true)}
+                    color={appState.isDarkMode ? "#A78DFF" : "#01B0E6"}
                 />
-            ))}
+            </View>
+        )
+    }
+
+    return (
+        <View style={{ display: isHidden ? "none" : "flex", flexGrow: 1 }}>
+            {investments.length ? (
+                <ScrollView style={containerStyles(isHidden).container}>
+                    <View style={styles.buttonContainer}>
+                        <Button title="Add" onPress={() => setIsModalVisible(true)} />
+                    </View>
+                    {investments.map((item: InvestmentItem, index: number) => (
+                        <InvestmentItem
+                            key={`i-${index}-${random}`}
+                            item={item}
+                            onItemChange={(investment: InvestmentItem) => onItemChange(investment, index)}
+                            onDelete={() => onItemDelete(index)}
+                        />
+                    ))}
+                    <View style={{ alignItems: "flex-end", marginTop: 20 }}>
+                        {renderButton()}
+                    </View>
+                </ScrollView>
+            ) : (
+                <View style={{ justifyContent: "center", flexGrow: 1, alignItems: "center" }}>
+                    <CustomText style={{ marginBottom: 20 }}>Add you first investment</CustomText>
+                    {renderButton()}
+                </View>
+            )}
             {isModalVisible && (
                 <InvestmentModal
                     onSave={onSave}
                     onClose={() => setIsModalVisible(false)}
                 />
             )}
-        </ScrollView>
+        </View>
     )
 }
 
