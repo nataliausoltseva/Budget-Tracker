@@ -56,9 +56,6 @@ const InvestmentPage = ({ isHidden = false }: Props) => {
         <View style={{ display: isHidden ? "none" : "flex", flexGrow: 1 }}>
             {investments.length ? (
                 <ScrollView style={containerStyles(isHidden).container}>
-                    <View style={styles.buttonContainer}>
-                        <Button title="Add" onPress={() => setIsModalVisible(true)} />
-                    </View>
                     {investments.map((item: InvestmentItem, index: number) => (
                         <InvestmentItem
                             key={`i-${index}-${random}`}

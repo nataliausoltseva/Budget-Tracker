@@ -18,7 +18,6 @@ const InvestmentChart = ({ item }: Props) => {
                 spacing={item.termPeriod.name === "month" ? 100 : 50}
                 initialSpacing={5}
                 xAxisLabelsHeight={30}
-            // rotateLabel
             />
         </View>
     )
