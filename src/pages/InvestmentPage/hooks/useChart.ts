@@ -1,10 +1,13 @@
+import { useContext } from "react";
 import { stackDataItem } from "react-native-gifted-charts";
+import { AppContext } from "../../../context/AppContext";
 
 type Props = {
     item: InvestmentItem
 }
 
 const useChart = ({ item }: Props) => {
+    const appState = useContext(AppContext);
     const getTotalInvestment = (prevInvestment: number = 0) => {
         const returnAmount = (item.amount + prevInvestment) * item.rate / 100;
         const taxToPay = returnAmount * item.taxRate / 100;
@@ -23,11 +26,14 @@ const useChart = ({ item }: Props) => {
         return dueDate;
     }
 
+    const initialAmountColour = appState.isDarkMode ? "#A78DFF" : "#01B0E6";
+    const returnsAmountColour = appState.isDarkMode ? "#5A9AEF" : "#CD8BFF";
+
     const prepareData = () => {
         let data: stackDataItem[] = [
             {
                 stacks: [
-                    { value: item.amount, color: "blue" },
+                    { value: item.amount, color: initialAmountColour },
                 ],
                 label: item.termPeriod.name === "month" ? item.startDate.toLocaleDateString() : item.startDate.getFullYear().toString()
             },
@@ -35,8 +41,8 @@ const useChart = ({ item }: Props) => {
         if (item.termPeriod.name === "month") {
             data.push({
                 stacks: [
-                    { value: item.amount, color: "blue" },
-                    { value: getTotalInvestment(), color: "orange" }
+                    { value: item.amount, color: initialAmountColour },
+                    { value: getTotalInvestment(), color: returnsAmountColour }
                 ],
                 label: getEndDateMonthly()
             })
@@ -48,8 +54,8 @@ const useChart = ({ item }: Props) => {
                 const newDate = getNextLabel(previousDate)
                 data.push({
                     stacks: [
-                        { value: item.amount, color: "blue" },
-                        { value: returns, color: "orange" }
+                        { value: item.amount, color: initialAmountColour },
+                        { value: returns, color: returnsAmountColour }
                     ],
                     label: newDate.getFullYear().toString()
                 });

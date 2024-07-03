@@ -2,8 +2,6 @@ import React, { useState } from 'react';
 import { SafeAreaView, View } from 'react-native';
 import * as eva from '@eva-design/eva';
 import { ApplicationProvider, IconRegistry } from '@ui-kitten/components';
-import { EvaIconsPack } from '@ui-kitten/eva-icons';
-
 import IncomePage from './src/pages/IncomePage/IncomePage';
 import BudgetPage from './src/pages/BudgetPage/BudgetPage';
 import SavingGoalsPage from './src/pages/SavingGoalsPage/SavingGoalsPage';
@@ -33,12 +31,11 @@ const TABS: PanelTab[] = [
 ];
 
 function App(): React.JSX.Element {
-  const [selectedIndex, setSelectedIndex] = useState(2);
+  const [selectedIndex, setSelectedIndex] = useState(0);
   const [isDarkMode, setIsDarkMode] = useState(false);
 
   return (
     <SafeAreaView>
-      <IconRegistry icons={EvaIconsPack} />
       <ApplicationProvider {...eva} theme={isDarkMode ? eva.dark : eva.light}>
         <AppContextProvider>
           <SafeAreaView style={{ backgroundColor: isDarkMode ? '#443472' : "white", height: "100%" }}>

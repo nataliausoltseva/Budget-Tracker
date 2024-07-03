@@ -12,7 +12,6 @@ import PenIcon from "../../../components/PenIcon";
 import ChevronIcon from "../../../components/ChevronIcon";
 import { AppContext } from "../../../context/AppContext";
 import PlusIcon from "../../../components/PlusIcon";
-import { Colors } from "react-native/Libraries/NewAppScreen";
 
 type Props = {
     goal: SavingGoalItem,
@@ -191,7 +190,8 @@ const Goal = ({ goal, onDelete, onEdit }: Props) => {
                     />
                 )}
             </View>
-            <View style={{ height: 1, backgroundColor: appState.isDarkMode ? "white" : '#707070', marginBottom: 20 }} /></>
+            <View style={{ height: 1, backgroundColor: appState.isDarkMode ? "white" : '#707070', marginBottom: 20 }} />
+        </>
     );
 }
 

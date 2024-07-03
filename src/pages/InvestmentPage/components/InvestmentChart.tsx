@@ -1,14 +1,19 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { View } from 'react-native';
 import { BarChart } from 'react-native-gifted-charts';
 import useChart from '../hooks/useChart';
+import { AppContext } from '../../../context/AppContext';
 
 type Props = {
     item: InvestmentItem
 }
 
 const InvestmentChart = ({ item }: Props) => {
+    const appState = useContext(AppContext);
     const { data } = useChart({ item });
+
+    const graphColor = appState.isDarkMode ? "white" : "black";
+
     return (
         <View style={{ flexGrow: 1 }}>
             <BarChart
@@ -18,7 +23,14 @@ const InvestmentChart = ({ item }: Props) => {
                 spacing={item.termPeriod.name === "month" ? 100 : 50}
                 initialSpacing={5}
                 xAxisLabelsHeight={30}
-            // rotateLabel
+                yAxisColor={graphColor}
+                xAxisColor={graphColor}
+                yAxisTextStyle={{
+                    color: appState.isDarkMode ? "white" : "black"
+                }}
+                xAxisLabelTextStyle={{
+                    color: appState.isDarkMode ? "white" : "black"
+                }}
             />
         </View>
     )
