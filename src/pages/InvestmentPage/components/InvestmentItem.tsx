@@ -75,13 +75,28 @@ const InvestmentItem = ({ item, onItemChange, onDelete }: Props) => {
                 </View>
                 {isExpanded && (
                     <View style={{ alignItems: "flex-start", marginLeft: 35 }}>
-                        <CustomText>Amount: {item.amount.toString()}</CustomText>
-                        <CustomText>Rate: {item.rate.toString()}</CustomText>
-                        <CustomText>Term: {item.term.toString()} {item.term > 1 ? `${item.termPeriod.name}s` : item.termPeriod.name} </CustomText>
-                        <CustomText>Tax Rate: {item.taxRate.toString()}</CustomText>
-                        <CustomText>Date: {formatDate(item.startDate)}</CustomText>
-                        <InvestmentChart item={item} />
-                        <InvestmentList item={item} />
+                        <View style={{ flexDirection: "row", justifyContent: "space-between", width: "100%" }}>
+                            <CustomText>Amount:</CustomText>
+                            <CustomText>{item.amount.toString()}</CustomText>
+                        </View>
+                        <View style={{ flexDirection: "row", justifyContent: "space-between", width: "100%" }}>
+                            <CustomText>Rate:</CustomText>
+                            <CustomText>{item.rate.toString()}%</CustomText>
+                        </View>
+                        <View style={{ flexDirection: "row", justifyContent: "space-between", width: "100%" }}>
+                            <CustomText>Term:</CustomText>
+                            <CustomText>{item.term.toString()} {item.term > 1 ? `${item.termPeriod.name}s` : item.termPeriod.name}</CustomText>
+                        </View>
+                        <View style={{ flexDirection: "row", justifyContent: "space-between", width: "100%" }}>
+                            <CustomText>Tax Rate:</CustomText>
+                            <CustomText>{item.taxRate.toString()}%</CustomText>
+                        </View>
+                        <View style={{ flexDirection: "row", justifyContent: "space-between", width: "100%", marginBottom: 10 }}>
+                            <CustomText>Date:</CustomText>
+                            <CustomText>{formatDate(item.startDate)}</CustomText>
+                        </View>
+                        <InvestmentChart item={item} key={`chart-${random}`} />
+                        <InvestmentList item={item} key={`list-${random}`} />
                     </View>
                 )}
                 {isModalVisible && (
