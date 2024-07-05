@@ -1,6 +1,6 @@
 import { Datepicker } from "@ui-kitten/components"
 import { useContext, useEffect, useState } from "react";
-import { Button, NativeSyntheticEvent, StyleSheet, TextInputChangeEventData, View } from "react-native"
+import { Button, NativeSyntheticEvent, TextInputChangeEventData, View } from "react-native"
 import CustomModal from "../../../components/CustomModal";
 import CustomText from "../../../components/CustomText";
 import CustomInput from "../../../components/CustomInput";
@@ -117,7 +117,7 @@ const InvestmentModal = ({ onSave, onClose, investment = null }: Props) => {
     }
 
     return (
-        <View style={styles.container}>
+        <View>
             <CustomModal isVisible={true} onClose={_onClose} style={{ width: 300 }}>
                 <CustomText style={{ textAlign: "center", marginBottom: 20 }}>{investment === null ? "New" : "Your"} instment</CustomText>
                 <CustomInput
@@ -207,12 +207,3 @@ const InvestmentModal = ({ onSave, onClose, investment = null }: Props) => {
 }
 
 export default InvestmentModal;
-
-const styles = StyleSheet.create({
-    container: {
-        minHeight: 192,
-    },
-    backdrop: {
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    },
-});

@@ -91,7 +91,7 @@ const BudgetItemModal = ({ onSave, onClose, expense = null }: Props) => {
                 <CustomInput
                     value={amountInputHolder.current}
                     onChange={_onAmountChange}
-                    style={{ flexGrow: 1, marginRight: 10 }}
+                    style={{ width: 80, marginRight: 10 }}
                     isNumeric
                 />
                 <Dropdown

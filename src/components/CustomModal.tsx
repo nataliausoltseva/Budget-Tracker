@@ -33,6 +33,6 @@ export default CustomModal;
 
 const styles = StyleSheet.create({
     backdrop: {
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        backgroundColor: 'rgba(130, 130, 130, 0.7)',
     },
 });
