@@ -1,6 +1,6 @@
 import { Datepicker } from "@ui-kitten/components";
 import { useContext, useEffect, useState } from "react";
-import { Button, NativeSyntheticEvent, StyleSheet, TextInputChangeEventData, View } from "react-native";
+import { Button, NativeSyntheticEvent, TextInputChangeEventData, View } from "react-native";
 import CustomText from "../../../components/CustomText";
 import CustomInput from "../../../components/CustomInput";
 import CustomModal from "../../../components/CustomModal";
@@ -68,8 +68,8 @@ const GoalModal = ({ onSave, isVisible = false, onClose, goal = null }: Props) =
     }
 
     return (
-        <View style={styles.container}>
-            <CustomModal isVisible={true} onClose={_onClose} style={{ width: 300 }}>
+        <View>
+            <CustomModal isVisible={isVisible} onClose={_onClose} style={{ width: 300 }}>
                 <CustomText style={{ textAlign: "center", marginBottom: 25 }}>
                     {goal === null ? "New" : "Your"} goal
                 </CustomText>
@@ -127,12 +127,3 @@ const GoalModal = ({ onSave, isVisible = false, onClose, goal = null }: Props) =
 }
 
 export default GoalModal;
-
-const styles = StyleSheet.create({
-    container: {
-        minHeight: 192,
-    },
-    backdrop: {
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    },
-});
