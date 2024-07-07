@@ -155,6 +155,19 @@ const IncomePage = ({ isHidden = false }: Props) => {
         onCalculate(HEADERS[index + 1]);
     }
 
+    const styles = StyleSheet.create({
+        incomeView: {
+            display: "flex",
+            flexDirection: 'row',
+            position: "relative",
+            justifyContent: "space-between"
+        },
+        input: {
+            width: 100,
+            backgroundColor: appState.isDarkMode ? '#443472' : "white"
+        },
+    });
+
     return (
         <ScrollView style={{ display: isHidden ? "none" : "flex" }}>
             <View style={styles.incomeView}>
@@ -251,17 +264,5 @@ const IncomePage = ({ isHidden = false }: Props) => {
         </ScrollView>
     )
 };
-
-const styles = StyleSheet.create({
-    incomeView: {
-        display: "flex",
-        flexDirection: 'row',
-        position: "relative",
-        justifyContent: "space-between"
-    },
-    input: {
-        width: 100
-    },
-});
 
 export default memo(IncomePage);

@@ -26,7 +26,6 @@ const CustomInput = ({ placeholder = "", value, onChange, isNumeric = false, isE
                 onChange={onChange}
                 editable={isEditable}
                 style={[
-                    style,
                     {
                         borderBottomColor: appState.isDarkMode ? "white" : "black",
                         borderBottomWidth: 1,
@@ -35,7 +34,8 @@ const CustomInput = ({ placeholder = "", value, onChange, isNumeric = false, isE
                         outlineStyle: 'none',
                         padding: 0,
                         opacity: isEditable ? 1 : 0.3
-                    }
+                    },
+                    style
                 ]}
                 {...{
                     otherProps,
