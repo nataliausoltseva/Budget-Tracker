@@ -37,3 +37,28 @@ Every expense can be deleted and edited.
 If you entered/calculated income on the previous page, then your amount inside the pie chart might be positive. In this case, the `Add to savings` button is enabled. By clicking on the button, it adds a new row of expenses `Savings`.
 
 <img src="./screenshots\budget-with-data-light-moda.png" style="height: 500px;" alt="Income Landing Page Light Mode"/>
+
+### Saving Goals Page
+The third page is the Budget page. Initially there is only an add button.
+
+<img src="./screenshots\saving-goals-landing-page-light-mode.png" style="height: 500px;" alt="Income Landing Page Light Mode"/>
+
+In the add modal, you can add a new goal by providing a name, goal amount, saved amount and the due date of the goal. The due date has to be in future.
+
+<img src="./screenshots\saving-goals-modal-light-mode.png" style="height: 500px;" alt="Income Landing Page Light Mode"/>
+
+Once goal(s) are added, you can see a list of them. By default they are all collapsed and can be expanded one by one.
+
+Based on the due date value, the countdown is going to show the time to go in days, hours, minutes and seconds. The time is counting down in live time.
+
+Every row has delete and edit button. Delete button does not have confirm modal, so once it is clicked it is DELETED. The edit button takes back to the modal for the goal
+
+<img src="./screenshots\saving-goals-with-data-collapsed-light-mode.png" style="height: 500px;" alt="Income Landing Page Light Mode"/>
+
+Once the goal is expanded, all the goal's fields that you filled in is visible. Apart of them, you can add transactions by clicking on the `+` button. A transaction modal includes amount and the date when the amount was contributed.
+
+ Once a transaction is contributed, you can see the chart of all them. The starting point depdends on what you entered into the goal's saved amount. When you reach the goal's amount, you will see another line across the chart indicating what needs to be reached.
+
+ All transactions can be modified and deleted as the goals. 
+
+<img src="./screenshots\saving-goals-with-data-expanded-light-mode.png" style="height: 500px;" alt="Income Landing Page Light Mode"/>
