@@ -39,7 +39,7 @@ If you entered/calculated income on the previous page, then your amount inside t
 <img src="./screenshots\budget-with-data-light-moda.png" style="height: 500px;" alt="Income Landing Page Light Mode"/>
 
 ### Saving Goals Page
-The third page is the Budget page. Initially there is only an add button.
+The third page is the Saving Goals page. Initially there is only an add button.
 
 <img src="./screenshots\saving-goals-landing-page-light-mode.png" style="height: 500px;" alt="Income Landing Page Light Mode"/>
 
@@ -62,3 +62,25 @@ Once the goal is expanded, all the goal's fields that you filled in is visible. 
  All transactions can be modified and deleted as the goals. 
 
 <img src="./screenshots\saving-goals-with-data-expanded-light-mode.png" style="height: 500px;" alt="Income Landing Page Light Mode"/>
+
+### Investments Page
+The last page is the Investments page. Initially there is only an add button.
+
+<img src="./screenshots\investments-landing-page-light-mode.png" style="height: 500px;" alt="Income Landing Page Light Mode"/>
+
+In the add modal, you can add a new investment by providing a name, amount (that was invested), tax rate (based on your income), term amount, term amount time as a **month** or **year**, term rate and the start date of the investment.
+
+<img src="./screenshots\investments-modal-light-mode.png" style="height: 500px;" alt="Income Landing Page Light Mode"/>
+
+Once investments(s) are added, you can see a list of them. By default they are all collapsed and can be expanded one by one.
+
+Based on the term amount and time you have provided, the countdown is going to show the time to go in days, hours, minutes and seconds. The time is counting down in live time.
+
+Every row has delete and edit button. Delete button does not have confirm modal, so once it is clicked it is DELETED. The edit button takes back to the modal for the inestment.
+
+<img src="./screenshots\investments-with-data-collapsed-light-mode.png" style="height: 500px;" alt="Income Landing Page Light Mode"/>
+
+Once the invesment is expanded, all the investments's fields that you filled in are visible. Apart of them, you can see the chart with bars that is scrollable (based on the amount you have provided). The term rate is yearly so if the amount is in month time then you will only see 2 bars: current and at the end of the investment. The bar chart includes the initial investment and the return amount. Underneath, there is a table that summarises the bar chart. 
+ 
+
+<img src="./screenshots\investments-with-data-expanded-light-mode.png" style="height: 500px;" alt="Income Landing Page Light Mode"/>
