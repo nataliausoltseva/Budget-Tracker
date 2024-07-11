@@ -8,8 +8,7 @@ The app offers dark/light mode.
 ### Income Page
 When the application is loaded, the landing page is the Income page. You can select a currency, amount and frequency of your income.
 
-<img src="./screenshots\income-landing-page-light-mode.png" style="height: 500px;" alt="Income Landing Page Light Mode"/>
-<img src="./screenshots\income-landing-page-dark-mode.png" style="height: 500px;" alt="Income Landing Page Dark Mode"/>
+<img src="./screenshots\income-landing-page-light-mode.png" style="height: 500px;" alt="Income Landing Page Light Mode"/><img src="./screenshots\income-landing-page-dark-mode.png" style="height: 500px;" alt="Income Landing Page Dark Mode"/>
 
 In the burger menu you can select saver (e.g. KiwiSaver) with a custom percent; student loan with a custom rate and threhold; second income with a custom **yearly** payment.
 
