@@ -1,4 +1,4 @@
-import { useContext, useRef } from "react"
+import { useContext, useEffect, useRef } from "react"
 import { Animated, Easing, StyleSheet, TouchableOpacity, View } from "react-native"
 import CustomText from "./CustomText"
 import { AppContext } from "../context/AppContext"
@@ -11,22 +11,30 @@ type Props = {
 
 const CustomToggle = ({ isChecked = false, onChange, label }: Props) => {
     const appState = useContext(AppContext);
-    const positionButton = useRef(new Animated.Value(0)).current;
+    const positionButton = useRef(new Animated.Value(isChecked ? 1 : 0)).current;
     const positionInterPol = positionButton.interpolate({ inputRange: [0, 1], outputRange: [0, 30] });
 
-    const startAnimToOff = () => {
+    useEffect(() => {
+        if (isChecked) {
+            startAnimToOff(0);
+        } else {
+            startAnimToOn(0);
+        }
+    }, [])
+
+    const startAnimToOff = (duration?: number) => {
         Animated.timing(positionButton, {
             toValue: 0,
-            duration: 500,
+            duration: duration,
             easing: Easing.ease,
             useNativeDriver: false
         }).start()
     };
 
-    const startAnimToOn = () => {
+    const startAnimToOn = (duration?: number) => {
         Animated.timing(positionButton, {
             toValue: 1,
-            duration: 500,
+            duration: duration,
             easing: Easing.ease,
             useNativeDriver: false
         }).start()

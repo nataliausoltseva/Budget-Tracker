@@ -1,18 +1,36 @@
-import { useContext } from "react"
-import { AppContext } from "../context/AppContext"
+import { useContext, useEffect } from "react"
 import { View } from "react-native";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+import { AppContext } from "../context/AppContext"
 import CustomToggle from "./CustomToggle";
 
 type Props = {
-    onToggle: () => void
+    onToggle: (value: boolean | null | undefined) => void
 }
 
 const DarkModeToggle = ({ onToggle }: Props) => {
     const appState = useContext(AppContext);
 
-    const _onToggle = () => {
-        appState.setIsDarkMode(prevState => !prevState);
-        onToggle();
+    useEffect(() => {
+        async function getMode() {
+            const darkModeValue: string | null = await AsyncStorage.getItem('isDarkMode');
+            if (darkModeValue !== null) {
+                _onToggle(Boolean(darkModeValue));
+            }
+        }
+
+        getMode();
+    }, []);
+
+    const _onToggle = (isDarkMode?: boolean | null) => {
+        if (isDarkMode && isDarkMode !== null) {
+            appState.setIsDarkMode(isDarkMode);
+        } else {
+            appState.setIsDarkMode(prevState => !prevState);
+        }
+
+        onToggle(isDarkMode);
     }
 
     return (

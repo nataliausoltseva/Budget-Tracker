@@ -1,4 +1,4 @@
-import { Datepicker, Input } from "@ui-kitten/components";
+import { Datepicker } from "@ui-kitten/components";
 import { useContext, useEffect, useState } from "react";
 import { Button, NativeSyntheticEvent, StyleSheet, TextInputChangeEventData, View } from "react-native";
 import CustomModal from "../../../components/CustomModal";

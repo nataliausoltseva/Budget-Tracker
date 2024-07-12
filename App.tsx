@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { SafeAreaView, View } from 'react-native';
 import * as eva from '@eva-design/eva';
-import { ApplicationProvider, IconRegistry } from '@ui-kitten/components';
+import { ApplicationProvider } from '@ui-kitten/components';
+
 import IncomePage from './src/pages/IncomePage/IncomePage';
 import BudgetPage from './src/pages/BudgetPage/BudgetPage';
 import SavingGoalsPage from './src/pages/SavingGoalsPage/SavingGoalsPage';
@@ -9,7 +10,6 @@ import TopNavigationBar from './src/components/TopNavigationBar';
 import { AppContextProvider } from './src/context/AppContext';
 import InvestmentPage from './src/pages/InvestmentPage/InvestmentPage';
 import DarkModeToggle from './src/components/DarkModeToggle';
-
 
 const TABS: PanelTab[] = [
   {
@@ -34,6 +34,14 @@ function App(): React.JSX.Element {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [isDarkMode, setIsDarkMode] = useState(false);
 
+  const onModeChange = (value?: boolean | null) => {
+    if (value && value !== null) {
+      setIsDarkMode(value);
+    } else {
+      setIsDarkMode(prevState => !prevState)
+    }
+  }
+
   return (
     <SafeAreaView>
       <ApplicationProvider {...eva} theme={isDarkMode ? eva.dark : eva.light}>
@@ -46,7 +54,7 @@ function App(): React.JSX.Element {
               <SavingGoalsPage isHidden={TABS[selectedIndex].key !== 'savingGoals'} />
               <InvestmentPage isHidden={TABS[selectedIndex].key !== 'investment'} />
             </View>
-            <DarkModeToggle onToggle={() => setIsDarkMode(prevState => !prevState)} />
+            <DarkModeToggle onToggle={onModeChange} />
           </SafeAreaView>
         </AppContextProvider>
       </ApplicationProvider>

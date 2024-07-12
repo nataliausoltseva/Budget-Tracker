@@ -1,6 +1,5 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
-import { ListItem } from '@ui-kitten/components';
+import { View } from 'react-native';
 import { COLORS } from '../hooks/useIncome';
 import CustomText from '../../../components/CustomText';
 
