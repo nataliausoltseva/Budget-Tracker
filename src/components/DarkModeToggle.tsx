@@ -29,7 +29,6 @@ const DarkModeToggle = ({ onToggle }: Props) => {
         } else {
             appState.setIsDarkMode(prevState => !prevState);
         }
-
         onToggle(isDarkMode);
     }
 

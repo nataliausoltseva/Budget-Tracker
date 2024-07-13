@@ -14,6 +14,8 @@ import FilterModal from './components/FilterModal';
 import { getMainColour } from '../../hooks/color';
 import CustomInput from '../../components/CustomInput';
 import Dropdown from '../../components/Dropdown';
+import CustomModal from '../../components/CustomModal';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type Props = {
     isHidden: boolean,
@@ -24,6 +26,9 @@ const IncomePage = ({ isHidden = false }: Props) => {
     const [selectedCurrency, setSelecctedCurrency] = useState<string>(CURRENCIES[0]);
     const [showFilter, setShowFilter] = useState(false);
     const [tableHeader, setTableHeader] = useState<IncomeTableHeader>(HEADERS[1]);
+    const [hasCalculated, setHasCalculated] = useState(false);
+    const [showSaveModal, setShowSaveModal] = useState(false);
+    const [dataLabel, setDataLabel] = useState(new Date().toLocaleDateString());
 
     // The list (table) only updates if we pass something new to the extraData prop.
     const [, setRandom] = useState(Math.random());
@@ -89,6 +94,7 @@ const IncomePage = ({ isHidden = false }: Props) => {
     } = calculateYearlyValues();
 
     const onCalculate = (tableHeader: IncomeTableHeader) => {
+        setHasCalculated(true);
         appState?.setTotalIncome(yearGrossPay + yearSecGrossPay - yearPaye - yearAcc - (hasKiwiSaver ? yearKiwiSaver : 0) - (hasStudentLoan ? yearStudentLoan : 0) - yearSecPaye);
         populateTableRows({
             yearGrossPay,
@@ -153,6 +159,38 @@ const IncomePage = ({ isHidden = false }: Props) => {
     const onTableHeaderChange = (index: number) => {
         setTableHeader(HEADERS[index + 1]);
         onCalculate(HEADERS[index + 1]);
+    }
+
+    const onLabelChange = (e: NativeSyntheticEvent<TextInputChangeEventData>) => {
+        setDataLabel(e.nativeEvent.text);
+    }
+
+    const onSaveData = async () => {
+        const currentData = await AsyncStorage.getItem('incomeData');
+        const listData = currentData === null ? [] : JSON.parse(currentData);
+        const data = {
+            id: listData === null ? 1 : listData.length + 1,
+            date: new Date().toLocaleDateString(),
+            label: dataLabel,
+            currency: selectedCurrency,
+            amount: primaryIncomeHolder.current === "" ? 0 : parseFloat(primaryIncomeHolder.current),
+            frequency: incomePeriod,
+            ...hasKiwiSaver && {
+                kiwiSave: yearKiwiSaver,
+            },
+            ...hasStudentLoan && {
+                studentLoanRate,
+                studentLoanThreshold
+            },
+            ...hasSecondaryIncome && {
+                secondaryIncome
+            }
+        };
+
+        listData.push(data);
+        await AsyncStorage.setItem('incomeData', JSON.stringify(listData));
+        setDataLabel("");
+        setShowSaveModal(false);
     }
 
     const styles = StyleSheet.create({
@@ -259,8 +297,34 @@ const IncomePage = ({ isHidden = false }: Props) => {
                     }}
                 />
             </View>
-            <IncomeTable rows={rows} />
-            <IncomePieChart pieData={pieData} yearGrossPay={yearGrossPay} />
+            <View style={{ position: "relative" }}>
+                <IncomeTable rows={rows} />
+                {hasCalculated && (
+                    <View style={{ position: "absolute", top: "45%", right: 0 }}>
+                        <Button title='Save' onPress={() => setShowSaveModal(true)} color={appState.isDarkMode ? "#A78DFF" : "#01B0E6"} />
+                    </View>
+                )}
+                <IncomePieChart pieData={pieData} yearGrossPay={yearGrossPay} />
+            </View>
+            {showSaveModal && (
+                <CustomModal
+                    isVisible={true}
+                    onClose={() => setShowSaveModal(false)}
+                >
+                    <CustomInput
+                        label={"Label (Optional)"}
+                        onChange={onLabelChange}
+                        value={dataLabel}
+                    />
+                    <View style={{ width: 150, marginTop: 15 }}>
+                        <Button
+                            title="Save"
+                            onPress={onSaveData}
+                            color={appState.isDarkMode ? "#A78DFF" : "#01B0E6"}
+                        />
+                    </View>
+                </CustomModal>
+            )}
         </ScrollView>
     )
 };
