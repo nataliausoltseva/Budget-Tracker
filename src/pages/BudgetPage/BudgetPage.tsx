@@ -1,5 +1,5 @@
 import React, { memo, useContext, useState } from 'react';
-import { Button, ScrollView, StyleSheet, View } from 'react-native';
+import { Button, NativeSyntheticEvent, ScrollView, StyleSheet, TextInputChangeEventData, View } from 'react-native';
 import BudgetItemModal from './components/BudgetItemModal';
 import PieChartWithSelection from './components/PieChartWithSelection';
 import { AppContext } from '../../context/AppContext';
@@ -7,6 +7,9 @@ import { randomHex } from '../../hooks/color';
 import { FREQUENCES } from '../../constants';
 import CustomText from '../../components/CustomText';
 import BudgetItem from './components/BudgetItem';
+import CustomModal from '../../components/CustomModal';
+import CustomInput from '../../components/CustomInput';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type Props = {
     isHidden: boolean
@@ -25,8 +28,10 @@ const BudgetPage = ({ isHidden = false }: Props) => {
     const appState = useContext(AppContext);
     const [expenses, setExpenses] = useState<ExpenseItem[]>([]);
 
-    const [random, setRandom] = useState(Math.random());
+    const [, setRandom] = useState(Math.random());
     const [showMoal, setShowModal] = useState(false);
+    const [showSaveModal, setShowSaveModal] = useState(false);
+    const [dataLabel, setDataLabel] = useState(new Date().toLocaleDateString());
 
     const onChangeExpense = (index: number, item: ExpenseItem) => {
         setExpenses((prevState: ExpenseItem[]) => {
@@ -101,6 +106,28 @@ const BudgetPage = ({ isHidden = false }: Props) => {
         setShowModal(false);
     }
 
+    const onLabelChange = (e: NativeSyntheticEvent<TextInputChangeEventData>) => {
+        setDataLabel(e.nativeEvent.text);
+    }
+
+    const onSaveData = async () => {
+        const currentData = await AsyncStorage.getItem('budgetData');
+        const listData = currentData === null ? [] : JSON.parse(currentData);
+        const data = {
+            id: listData === null ? 1 : listData.length + 1,
+            date: new Date().toLocaleDateString(),
+            label: dataLabel,
+            expenses: expenses,
+        };
+
+        listData.push(data);
+        await AsyncStorage.setItem('budgetData', JSON.stringify(listData));
+        setDataLabel("");
+        setShowSaveModal(false);
+    }
+
+    console.log(showMoal)
+
     return (
         <View style={{ display: isHidden ? "none" : "flex", flexGrow: 1 }}>
             {showMoal && (
@@ -109,8 +136,30 @@ const BudgetPage = ({ isHidden = false }: Props) => {
                     onClose={onCloseModal}
                 />
             )}
+            {showSaveModal && (
+                <CustomModal
+                    isVisible={true}
+                    onClose={() => setShowSaveModal(false)}
+                >
+                    <CustomInput
+                        label={"Label (Optional)"}
+                        onChange={onLabelChange}
+                        value={dataLabel}
+                    />
+                    <View style={{ width: 150, marginTop: 15 }}>
+                        <Button
+                            title="Save"
+                            onPress={onSaveData}
+                            color={appState.isDarkMode ? "#A78DFF" : "#01B0E6"}
+                        />
+                    </View>
+                </CustomModal>
+            )}
             {expenses.length ? (
-                <ScrollView >
+                <ScrollView>
+                    <View style={{ position: "absolute", top: "20%", right: 0 }}>
+                        <Button title='Save' onPress={() => setShowSaveModal(true)} color={appState.isDarkMode ? "#A78DFF" : "#01B0E6"} />
+                    </View>
                     <PieChartWithSelection expenses={expenses} onAddToSavings={onAddToSavings} />
                     <View style={styles.spacer} />
                     {expenses.map((item: ExpenseItem, index: number) => (
@@ -130,8 +179,9 @@ const BudgetPage = ({ isHidden = false }: Props) => {
                     <CustomText style={{ marginBottom: 20 }}>Add you first expense</CustomText>
                     {renderButton()}
                 </View>
-            )}
-        </View>
+            )
+            }
+        </View >
     );
 }
 
