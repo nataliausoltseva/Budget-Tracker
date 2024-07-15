@@ -10,6 +10,7 @@ import TopNavigationBar from './src/components/TopNavigationBar';
 import { AppContextProvider } from './src/context/AppContext';
 import InvestmentPage from './src/pages/InvestmentPage/InvestmentPage';
 import DarkModeToggle from './src/components/DarkModeToggle';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const TABS: PanelTab[] = [
   {
@@ -38,7 +39,14 @@ function App(): React.JSX.Element {
     if (value && value !== null) {
       setIsDarkMode(value);
     } else {
-      setIsDarkMode(prevState => !prevState)
+      setIsDarkMode(prevState => {
+        async function setMode() {
+          await AsyncStorage.setItem('isDarkMode', (!prevState).toString());
+        }
+
+        setMode();
+        return !prevState
+      });
     }
   }
 
