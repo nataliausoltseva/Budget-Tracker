@@ -4,7 +4,6 @@ import BudgetItemModal from './components/BudgetItemModal';
 import PieChartWithSelection from './components/PieChartWithSelection';
 import { AppContext } from '../../context/AppContext';
 import { randomHex } from '../../hooks/color';
-import { FREQUENCES } from '../../constants';
 import CustomText from '../../components/CustomText';
 import BudgetItem from './components/BudgetItem';
 import CustomModal from '../../components/CustomModal';
@@ -126,8 +125,6 @@ const BudgetPage = ({ isHidden = false }: Props) => {
         setShowSaveModal(false);
     }
 
-    console.log(showMoal)
-
     return (
         <View style={{ display: isHidden ? "none" : "flex", flexGrow: 1 }}>
             {showMoal && (
@@ -156,31 +153,34 @@ const BudgetPage = ({ isHidden = false }: Props) => {
                 </CustomModal>
             )}
             {expenses.length ? (
-                <ScrollView>
-                    <View style={{ position: "absolute", top: "20%", right: 0 }}>
-                        <Button title='Save' onPress={() => setShowSaveModal(true)} color={appState.isDarkMode ? "#A78DFF" : "#01B0E6"} />
+                <>
+                    <View style={{ alignItems: "flex-end", marginBottom: 20 }}>
+                        <View style={{ position: "relative", width: 100 }}>
+                            <Button title='Save' onPress={() => setShowSaveModal(true)} color={appState.isDarkMode ? "#A78DFF" : "#01B0E6"} />
+                        </View>
                     </View>
-                    <PieChartWithSelection expenses={expenses} onAddToSavings={onAddToSavings} />
-                    <View style={styles.spacer} />
-                    {expenses.map((item: ExpenseItem, index: number) => (
-                        <BudgetItem
-                            key={index}
-                            item={item}
-                            onDelete={() => onItemDelete(index)}
-                            onSave={(item: ExpenseItem) => onChangeExpense(index, item)}
-                        />
-                    ))}
-                    <View style={{ alignItems: "flex-end", marginTop: 20 }}>
-                        {renderButton()}
-                    </View>
-                </ScrollView>
+                    <ScrollView>
+                        <PieChartWithSelection expenses={expenses} onAddToSavings={onAddToSavings} />
+                        <View style={styles.spacer} />
+                        {expenses.map((item: ExpenseItem, index: number) => (
+                            <BudgetItem
+                                key={index}
+                                item={item}
+                                onDelete={() => onItemDelete(index)}
+                                onSave={(item: ExpenseItem) => onChangeExpense(index, item)}
+                            />
+                        ))}
+                        <View style={{ alignItems: "flex-end", marginTop: 20 }}>
+                            {renderButton()}
+                        </View>
+                    </ScrollView>
+                </>
             ) : (
                 <View style={{ justifyContent: "center", flexGrow: 1, alignItems: "center" }}>
                     <CustomText style={{ marginBottom: 20 }}>Add you first expense</CustomText>
                     {renderButton()}
                 </View>
-            )
-            }
+            )}
         </View >
     );
 }

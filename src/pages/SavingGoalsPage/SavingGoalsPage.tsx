@@ -4,6 +4,7 @@ import GoalModal from './components/GoalModal';
 import Goal from './components/Goal';
 import CustomText from '../../components/CustomText';
 import { AppContext } from '../../context/AppContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type Props = {
     isHidden: boolean
@@ -18,6 +19,7 @@ const SavingGoalsPage = ({ isHidden = false }: Props) => {
         setGoals((prevState: SavingGoalItem[]) => {
             const newGoals = [...prevState];
             newGoals.push(goal);
+            onSaveData(goal);
             return newGoals;
         });
         setVisible(false);
@@ -37,6 +39,19 @@ const SavingGoalsPage = ({ isHidden = false }: Props) => {
             newGoals[index] = goal;;
             return newGoals;
         });
+    }
+
+    const onSaveData = async (newGoal: SavingGoalItem) => {
+        const currentData = await AsyncStorage.getItem('savingGoalsData');
+        const listData = currentData === null ? [] : JSON.parse(currentData);
+        const data = {
+            id: listData === null ? 1 : listData.length + 1,
+            date: new Date().toLocaleDateString(),
+            goal: newGoal
+        };
+
+        listData.push(data);
+        await AsyncStorage.setItem('savingGoalsData', JSON.stringify(listData));
     }
 
     const renderButton = () => (

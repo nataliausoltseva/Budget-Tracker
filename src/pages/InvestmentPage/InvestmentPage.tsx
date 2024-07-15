@@ -4,6 +4,7 @@ import InvestmentItem from "./components/InvestmentItem"
 import InvestmentModal from "./components/InvestmentModal"
 import CustomText from "../../components/CustomText"
 import { AppContext } from "../../context/AppContext"
+import AsyncStorage from "@react-native-async-storage/async-storage"
 
 type Props = {
     isHidden: boolean
@@ -19,6 +20,7 @@ const InvestmentPage = ({ isHidden = false }: Props) => {
         setInvestments((prevState: InvestmentItem[]) => {
             const newInvestments = [...prevState];
             newInvestments.push(newInvestment);
+            onSaveData(newInvestment);
             return newInvestments;
         });
         setRandom(Math.random());
@@ -38,6 +40,19 @@ const InvestmentPage = ({ isHidden = false }: Props) => {
             newInvestments.splice(index, 1);
             return newInvestments;
         });
+    }
+
+    const onSaveData = async (newInvesment: InvestmentItem) => {
+        const currentData = await AsyncStorage.getItem('investmentData');
+        const listData = currentData === null ? [] : JSON.parse(currentData);
+        const data = {
+            id: listData === null ? 1 : listData.length + 1,
+            date: new Date().toLocaleDateString(),
+            investment: newInvesment
+        };
+
+        listData.push(data);
+        await AsyncStorage.setItem('investmentData', JSON.stringify(listData));
     }
 
     const renderButton = () => {
