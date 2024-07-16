@@ -1,4 +1,4 @@
-import React, { memo, useContext, useState } from 'react';
+import React, { memo, useContext, useEffect, useState } from 'react';
 import { Button, ScrollView, StyleSheet, View } from 'react-native';
 import GoalModal from './components/GoalModal';
 import Goal from './components/Goal';
@@ -14,6 +14,17 @@ const SavingGoalsPage = ({ isHidden = false }: Props) => {
     const appState = useContext(AppContext);
     const [visible, setVisible] = useState(false);
     const [goals, setGoals] = useState<SavingGoalItem[]>([]);
+
+    useEffect(() => {
+        const getData = async () => {
+            const data = await AsyncStorage.getItem('savingGoalsData');
+            if (data !== null) {
+                setGoals(JSON.parse(data));
+            }
+        }
+
+        getData();
+    }, []);
 
     const onAddGoal = (goal: SavingGoalItem) => {
         setGoals((prevState: SavingGoalItem[]) => {
@@ -44,13 +55,7 @@ const SavingGoalsPage = ({ isHidden = false }: Props) => {
     const onSaveData = async (newGoal: SavingGoalItem) => {
         const currentData = await AsyncStorage.getItem('savingGoalsData');
         const listData = currentData === null ? [] : JSON.parse(currentData);
-        const data = {
-            id: listData === null ? 1 : listData.length + 1,
-            date: new Date().toLocaleDateString(),
-            goal: newGoal
-        };
-
-        listData.push(data);
+        listData.push(newGoal);
         await AsyncStorage.setItem('savingGoalsData', JSON.stringify(listData));
     }
 
