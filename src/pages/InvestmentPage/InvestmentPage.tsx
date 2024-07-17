@@ -1,5 +1,5 @@
 import { Button, ScrollView, StyleSheet, View } from "react-native"
-import { memo, useContext, useState } from "react"
+import { memo, useContext, useEffect, useState } from "react"
 import InvestmentItem from "./components/InvestmentItem"
 import InvestmentModal from "./components/InvestmentModal"
 import CustomText from "../../components/CustomText"
@@ -16,11 +16,22 @@ const InvestmentPage = ({ isHidden = false }: Props) => {
     const [investments, setInvestments] = useState<InvestmentItem[]>([]);
     const [isModalVisible, setIsModalVisible] = useState(false);
 
+    useEffect(() => {
+        const getData = async () => {
+            const data = await AsyncStorage.getItem('investmentData');
+            if (data !== null) {
+                setInvestments(JSON.parse(data));
+            }
+        }
+
+        getData();
+    }, []);
+
     const onSave = (newInvestment: InvestmentItem) => {
         setInvestments((prevState: InvestmentItem[]) => {
             const newInvestments = [...prevState];
             newInvestments.push(newInvestment);
-            onSaveData(newInvestment);
+            onSaveToStorage();
             return newInvestments;
         });
         setRandom(Math.random());
@@ -30,6 +41,7 @@ const InvestmentPage = ({ isHidden = false }: Props) => {
         setInvestments((prevState: InvestmentItem[]) => {
             const newInvestments = [...prevState];
             newInvestments[index] = item;
+            onSaveToStorage();
             return newInvestments;
         });
     }
@@ -42,17 +54,8 @@ const InvestmentPage = ({ isHidden = false }: Props) => {
         });
     }
 
-    const onSaveData = async (newInvesment: InvestmentItem) => {
-        const currentData = await AsyncStorage.getItem('investmentData');
-        const listData = currentData === null ? [] : JSON.parse(currentData);
-        const data = {
-            id: listData === null ? 1 : listData.length + 1,
-            date: new Date().toLocaleDateString(),
-            investment: newInvesment
-        };
-
-        listData.push(data);
-        await AsyncStorage.setItem('investmentData', JSON.stringify(listData));
+    const onSaveToStorage = async () => {
+        await AsyncStorage.setItem('investmentData', JSON.stringify(investments));
     }
 
     const renderButton = () => {
