@@ -31,7 +31,7 @@ const InvestmentPage = ({ isHidden = false }: Props) => {
         setInvestments((prevState: InvestmentItem[]) => {
             const newInvestments = [...prevState];
             newInvestments.push(newInvestment);
-            onSaveData(newInvestment);
+            onSaveToStorage();
             return newInvestments;
         });
         setRandom(Math.random());
@@ -41,6 +41,7 @@ const InvestmentPage = ({ isHidden = false }: Props) => {
         setInvestments((prevState: InvestmentItem[]) => {
             const newInvestments = [...prevState];
             newInvestments[index] = item;
+            onSaveToStorage();
             return newInvestments;
         });
     }
@@ -53,11 +54,8 @@ const InvestmentPage = ({ isHidden = false }: Props) => {
         });
     }
 
-    const onSaveData = async (newInvesment: InvestmentItem) => {
-        const currentData = await AsyncStorage.getItem('investmentData');
-        const listData = currentData === null ? [] : JSON.parse(currentData);
-        listData.push(newInvesment);
-        await AsyncStorage.setItem('investmentData', JSON.stringify(listData));
+    const onSaveToStorage = async () => {
+        await AsyncStorage.setItem('investmentData', JSON.stringify(investments));
     }
 
     const renderButton = () => {

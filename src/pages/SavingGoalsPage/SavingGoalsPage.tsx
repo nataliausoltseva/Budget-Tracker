@@ -30,7 +30,7 @@ const SavingGoalsPage = ({ isHidden = false }: Props) => {
         setGoals((prevState: SavingGoalItem[]) => {
             const newGoals = [...prevState];
             newGoals.push(goal);
-            onSaveData(goal);
+            onSaveData();
             return newGoals;
         });
         setVisible(false);
@@ -47,16 +47,14 @@ const SavingGoalsPage = ({ isHidden = false }: Props) => {
     const onEdit = (goal: SavingGoalItem, index: number) => {
         setGoals((prevState: SavingGoalItem[]) => {
             const newGoals = [...prevState];
-            newGoals[index] = goal;;
+            newGoals[index] = goal;
+            onSaveData();
             return newGoals;
         });
     }
 
-    const onSaveData = async (newGoal: SavingGoalItem) => {
-        const currentData = await AsyncStorage.getItem('savingGoalsData');
-        const listData = currentData === null ? [] : JSON.parse(currentData);
-        listData.push(newGoal);
-        await AsyncStorage.setItem('savingGoalsData', JSON.stringify(listData));
+    const onSaveData = async () => {
+        await AsyncStorage.setItem('savingGoalsData', JSON.stringify(goals));
     }
 
     const renderButton = () => (

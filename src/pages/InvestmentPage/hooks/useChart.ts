@@ -30,12 +30,13 @@ const useChart = ({ item }: Props) => {
     const returnsAmountColour = appState.isDarkMode ? "#5A9AEF" : "#CD8BFF";
 
     const prepareData = () => {
+        const startDate = new Date(item.startDate);
         let data: stackDataItem[] = [
             {
                 stacks: [
                     { value: item.amount, color: initialAmountColour },
                 ],
-                label: item.termPeriod.name === "month" ? item.startDate.toLocaleDateString() : item.startDate.getFullYear().toString()
+                label: item.termPeriod.name === "month" ? startDate.toLocaleDateString() : startDate.getFullYear().toString()
             },
         ];
         if (item.termPeriod.name === "month") {
