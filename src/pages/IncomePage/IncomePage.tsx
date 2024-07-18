@@ -1,6 +1,7 @@
-import React, { memo, useContext, useRef, useState } from 'react';
+import React, { memo, useContext, useEffect, useRef, useState } from 'react';
 import { Animated, Button, Easing, NativeSyntheticEvent, ScrollView, StyleSheet, TextInputChangeEventData, View } from 'react-native';
 import { CheckBox } from '@ui-kitten/components';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { CURRENCIES, incomePeriods } from '../../constants';
 import useIncome, { COLORS } from './hooks/useIncome';
@@ -15,7 +16,6 @@ import { getMainColour } from '../../hooks/color';
 import CustomInput from '../../components/CustomInput';
 import Dropdown from '../../components/Dropdown';
 import CustomModal from '../../components/CustomModal';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type Props = {
     isHidden: boolean,

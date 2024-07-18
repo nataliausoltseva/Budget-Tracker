@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { SafeAreaView, View } from 'react-native';
 import * as eva from '@eva-design/eva';
 import { ApplicationProvider } from '@ui-kitten/components';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import IncomePage from './src/pages/IncomePage/IncomePage';
 import BudgetPage from './src/pages/BudgetPage/BudgetPage';
@@ -10,7 +11,6 @@ import TopNavigationBar from './src/components/TopNavigationBar';
 import { AppContextProvider } from './src/context/AppContext';
 import InvestmentPage from './src/pages/InvestmentPage/InvestmentPage';
 import DarkModeToggle from './src/components/DarkModeToggle';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const TABS: PanelTab[] = [
   {
@@ -34,6 +34,27 @@ const TABS: PanelTab[] = [
 function App(): React.JSX.Element {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const [incomeData, setIncomeData] = useState([]);
+  const [budgetData, setBudgetData] = useState([]);
+
+  useEffect(() => {
+    const getIncomeData = async () => {
+      const data = await AsyncStorage.getItem('incomeData');
+      if (data !== null) {
+        setIncomeData(JSON.parse(data));
+      }
+    }
+
+    const getBudgetData = async () => {
+      const data = await AsyncStorage.getItem('budgetData');
+      if (data !== null) {
+        setBudgetData(JSON.parse(data));
+      }
+    }
+
+    getIncomeData();
+    getBudgetData();
+  }, []);
 
   const onModeChange = (value?: boolean | null) => {
     if (value && value !== null) {
