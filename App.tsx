@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Button, SafeAreaView, Text, View } from 'react-native';
+import { SafeAreaView, View } from 'react-native';
 import * as eva from '@eva-design/eva';
 import { ApplicationProvider } from '@ui-kitten/components';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -11,9 +11,8 @@ import TopNavigationBar from './src/components/TopNavigationBar';
 import { AppContextProvider } from './src/context/AppContext';
 import InvestmentPage from './src/pages/InvestmentPage/InvestmentPage';
 import DarkModeToggle from './src/components/DarkModeToggle';
-import CustomModal from './src/components/CustomModal';
-import IncomeHistoryModal from './src/pages/IncomePage/components/HistoryModal';
-import BudgetHistoryModal from './src/pages/BudgetPage/components/HistoryModal';
+import HistoryIcon from './src/components/HistoryIcon';
+import Button from './src/components/Button';
 
 
 const TABS: PanelTab[] = [
@@ -38,28 +37,28 @@ const TABS: PanelTab[] = [
 function App(): React.JSX.Element {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [isDarkMode, setIsDarkMode] = useState(false);
-  const [incomeData, setIncomeData] = useState([]);
+  const [incomeData, setIncomeData] = useState<IncomeHistoryItem[]>([]);
   const [budgetData, setBudgetData] = useState([]);
-  const [showHistoryModal, setShowHistoryModal] = useState(false);
+  const [showHistoryModal, setShowHistoryModal] = useState('');
 
   useEffect(() => {
-    const getIncomeData = async () => {
-      const data = await AsyncStorage.getItem('incomeData');
-      if (data !== null) {
-        setIncomeData(JSON.parse(data));
-      }
-    }
-
-    const getBudgetData = async () => {
-      const data = await AsyncStorage.getItem('budgetData');
-      if (data !== null) {
-        setBudgetData(JSON.parse(data));
-      }
-    }
-
     getIncomeData();
     getBudgetData();
-  }, []);
+  }, [showHistoryModal]);
+
+  const getIncomeData = async () => {
+    const data = await AsyncStorage.getItem('incomeData');
+    if (data !== null) {
+      setIncomeData(JSON.parse(data));
+    }
+  }
+
+  const getBudgetData = async () => {
+    const data = await AsyncStorage.getItem('budgetData');
+    if (data !== null) {
+      setBudgetData(JSON.parse(data));
+    }
+  }
 
   const onModeChange = (value?: boolean | null) => {
     if (value && value !== null) {
@@ -76,6 +75,25 @@ function App(): React.JSX.Element {
     }
   }
 
+  const onDeleteStorageItem = (id: number) => {
+    const updateStorage = async (list: any[], key: string) => {
+      await AsyncStorage.setItem(key, JSON.stringify(list));
+    }
+
+    if (TABS[selectedIndex].key === 'income') {
+      const itemIndex = incomeData.findIndex(item => item.id === id);
+      updateStorage(incomeData.splice(itemIndex, 1), 'incomeData');
+      getIncomeData();
+    } else {
+      const itemIndex = incomeData.findIndex(item => item.id === id);
+      updateStorage(budgetData.splice(itemIndex, 1), 'budgetData');
+      getBudgetData();
+    }
+  }
+
+  const hasHistoryButton = (TABS[selectedIndex].key === 'income' && incomeData.length > 0) ||
+    (TABS[selectedIndex].key === 'budget' && budgetData.length > 0);
+
   return (
     <SafeAreaView>
       <ApplicationProvider {...eva} theme={isDarkMode ? eva.dark : eva.light}>
@@ -83,25 +101,30 @@ function App(): React.JSX.Element {
           <SafeAreaView style={{ backgroundColor: isDarkMode ? '#443472' : "white", height: "100%" }}>
             <TopNavigationBar tabs={TABS} onSelect={setSelectedIndex} selectedIndex={selectedIndex} />
             <View style={{ flexGrow: 1, padding: 20 }}>
-              <IncomePage isHidden={TABS[selectedIndex].key !== 'income'} />
-              <BudgetPage isHidden={TABS[selectedIndex].key !== 'budget'} />
+              <IncomePage
+                isHidden={TABS[selectedIndex].key !== 'income'}
+                showHistoryModal={showHistoryModal === 'income'}
+                storageData={incomeData}
+                onCloseModal={() => setShowHistoryModal('')}
+                onDeleteStorageItem={onDeleteStorageItem}
+              />
+              <BudgetPage
+                isHidden={TABS[selectedIndex].key !== 'budget'}
+              />
               <SavingGoalsPage isHidden={TABS[selectedIndex].key !== 'savingGoals'} />
               <InvestmentPage isHidden={TABS[selectedIndex].key !== 'investment'} />
             </View>
-            <View style={{ flexDirection: 'row', width: "100%", justifyContent: "space-between" }}>
-              <Button
-                title={"Add"}
-                onPress={() => setShowHistoryModal(true)}
-                color={isDarkMode ? "#A78DFF" : "#01B0E6"}
-                disabled={incomeData.length === 0 && budgetData.length === 0}
-              />
+            <View style={{ flexDirection: 'row', width: "100%", justifyContent: hasHistoryButton ? "space-between" : 'flex-end', alignItems: "center" }}>
+              {hasHistoryButton && (
+                <Button
+                  containerStyle={{ flexDirection: "row", padding: 8, marginLeft: 10, borderRadius: 2 }}
+                  onPress={() => setShowHistoryModal(TABS[selectedIndex].key)}
+                  Icon={HistoryIcon}
+                  label='OLD CALCULATIONS'
+                />
+              )}
               <DarkModeToggle onToggle={onModeChange} />
             </View>
-            {showHistoryModal && (
-              TABS[selectedIndex].key === 'income' ?
-                <IncomeHistoryModal data={incomeData} onClose={() => setShowHistoryModal(false)} /> :
-                <BudgetHistoryModal data={budgetData} onClose={() => setShowHistoryModal(false)} />
-            )}
           </SafeAreaView>
         </AppContextProvider>
       </ApplicationProvider>

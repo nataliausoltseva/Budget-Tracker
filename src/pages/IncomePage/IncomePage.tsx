@@ -1,4 +1,4 @@
-import React, { memo, useContext, useEffect, useRef, useState } from 'react';
+import React, { memo, useContext, useRef, useState } from 'react';
 import { Animated, Button, Easing, NativeSyntheticEvent, ScrollView, StyleSheet, TextInputChangeEventData, View } from 'react-native';
 import { CheckBox } from '@ui-kitten/components';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -16,12 +16,17 @@ import { getMainColour } from '../../hooks/color';
 import CustomInput from '../../components/CustomInput';
 import Dropdown from '../../components/Dropdown';
 import CustomModal from '../../components/CustomModal';
+import HistoryModal from './components/HistoryModal';
 
 type Props = {
     isHidden: boolean,
+    showHistoryModal: boolean,
+    storageData: IncomeHistoryItem[],
+    onCloseModal: () => void,
+    onDeleteStorageItem: (id: number) => void,
 }
 
-const IncomePage = ({ isHidden = false }: Props) => {
+const IncomePage = ({ isHidden = false, showHistoryModal = false, storageData = [], onCloseModal, onDeleteStorageItem }: Props) => {
     const appState = useContext(AppContext);
     const [selectedCurrency, setSelecctedCurrency] = useState<string>(CURRENCIES[0]);
     const [showFilter, setShowFilter] = useState(false);
@@ -176,7 +181,7 @@ const IncomePage = ({ isHidden = false }: Props) => {
             amount: primaryIncomeHolder.current === "" ? 0 : parseFloat(primaryIncomeHolder.current),
             frequency: incomePeriod,
             ...hasKiwiSaver && {
-                kiwiSave: yearKiwiSaver,
+                kiwiSaver: kiwiSaverOption,
             },
             ...hasStudentLoan && {
                 studentLoanRate,
@@ -324,6 +329,14 @@ const IncomePage = ({ isHidden = false }: Props) => {
                         />
                     </View>
                 </CustomModal>
+            )}
+            {showHistoryModal && (
+                <HistoryModal
+                    data={storageData}
+                    onClose={onCloseModal}
+                    onDelete={onDeleteStorageItem}
+                    onUse={console.log}
+                />
             )}
         </ScrollView>
     )
