@@ -110,6 +110,10 @@ function App(): React.JSX.Element {
               />
               <BudgetPage
                 isHidden={TABS[selectedIndex].key !== 'budget'}
+                showHistoryModal={showHistoryModal === 'income'}
+                storageData={incomeData}
+                onCloseHistoryModal={() => setShowHistoryModal('')}
+                onDeleteStorageItem={onDeleteStorageItem}
               />
               <SavingGoalsPage isHidden={TABS[selectedIndex].key !== 'savingGoals'} />
               <InvestmentPage isHidden={TABS[selectedIndex].key !== 'investment'} />

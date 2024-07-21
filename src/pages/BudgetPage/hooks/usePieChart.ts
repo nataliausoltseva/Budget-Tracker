@@ -1,6 +1,4 @@
 import { useContext, useMemo } from "react";
-import { pieDataItem } from "react-native-gifted-charts";
-import { ExpenseItem } from "../BudgetPage"
 import { AppContext } from "../../../context/AppContext";
 import { FREQUENCES } from "../../../constants";
 

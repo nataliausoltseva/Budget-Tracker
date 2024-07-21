@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Button, NativeSyntheticEvent, TextInputChangeEventData, View } from 'react-native';
-import { ExpenseItem } from '../BudgetPage';
 import CustomModal from '../../../components/CustomModal';
 import Dropdown from '../../../components/Dropdown';
 import CustomInput from '../../../components/CustomInput';

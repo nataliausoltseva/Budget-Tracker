@@ -9,21 +9,17 @@ import BudgetItem from './components/BudgetItem';
 import CustomModal from '../../components/CustomModal';
 import CustomInput from '../../components/CustomInput';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import HistoryModal from './components/HistoryModal';
 
 type Props = {
-    isHidden: boolean
+    isHidden: boolean,
+    showHistoryModal: boolean,
+    storageData: BudgetHistoryItem[],
+    onCloseHistoryModal: () => void,
+    onDeleteStorageItem: (id: number) => void,
 }
 
-export type ExpenseItem = {
-    key?: string,
-    name: string,
-    value: number,
-    frequency: FrequencyItem,
-    id?: number,
-    color?: string,
-}
-
-const BudgetPage = ({ isHidden = false }: Props) => {
+const BudgetPage = ({ isHidden = false, showHistoryModal = false, storageData = [], onCloseHistoryModal, onDeleteStorageItem }: Props) => {
     const appState = useContext(AppContext);
     const [expenses, setExpenses] = useState<ExpenseItem[]>([]);
 
@@ -181,7 +177,15 @@ const BudgetPage = ({ isHidden = false }: Props) => {
                     {renderButton()}
                 </View>
             )}
-        </View >
+            {showHistoryModal && (
+                <HistoryModal
+                    data={storageData}
+                    onClose={onCloseModal}
+                    onDelete={onDeleteStorageItem}
+                    onUse={console.log}
+                />
+            )}
+        </View>
     );
 }
 

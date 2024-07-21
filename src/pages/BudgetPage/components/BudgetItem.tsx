@@ -1,5 +1,4 @@
 import React, { useContext, useState } from "react";
-import { ExpenseItem } from "../BudgetPage";
 import { View } from "react-native";
 import CustomText from "../../../components/CustomText";
 import TrashIcon from "../../../components/TrashIcon";

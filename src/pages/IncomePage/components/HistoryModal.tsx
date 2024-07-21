@@ -4,7 +4,7 @@ import CustomText from "../../../components/CustomText";
 import HistoryItem from "./HistoryItem";
 
 type Props = {
-    data: any[],
+    data: IncomeHistoryItem[],
     onClose: () => void,
     onDelete: (id: number) => void,
     onUse: (item: IncomeHistoryItem) => void,

@@ -87,3 +87,19 @@ type IncomeHistoryItem = {
     studentLoanRate?: number,
     studentLoanThreshold?: number
 }
+
+type BudgetHistoryItem = {
+    id: number,
+    date: string,
+    label: string,
+    expenses: ExpenseItem[]
+}
+
+type ExpenseItem = {
+    key?: string,
+    name: string,
+    value: number,
+    frequency: FrequencyItem,
+    id?: number,
+    color?: string,
+}
