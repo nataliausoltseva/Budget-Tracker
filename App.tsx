@@ -46,18 +46,22 @@ function App(): React.JSX.Element {
     getBudgetData();
   }, [showHistoryModal]);
 
+  useEffect(() => {
+    if ((TABS[selectedIndex].key === 'budget' && budgetData.length === 0) ||
+      (TABS[selectedIndex].key === 'icnome' && incomeData.length === 0)
+    ) {
+      setShowHistoryModal("");
+    }
+  }, [incomeData, budgetData, selectedIndex]);
+
   const getIncomeData = async () => {
     const data = await AsyncStorage.getItem('incomeData');
-    if (data !== null) {
-      setIncomeData(JSON.parse(data));
-    }
+    setIncomeData(data === null ? [] : JSON.parse(data));
   }
 
   const getBudgetData = async () => {
     const data = await AsyncStorage.getItem('budgetData');
-    if (data !== null) {
-      setBudgetData(JSON.parse(data));
-    }
+    setBudgetData(data === null ? [] : JSON.parse(data));
   }
 
   const onModeChange = (value?: boolean | null) => {
@@ -82,11 +86,19 @@ function App(): React.JSX.Element {
 
     if (TABS[selectedIndex].key === 'income') {
       const itemIndex = incomeData.findIndex(item => item.id === id);
-      updateStorage(incomeData.splice(itemIndex, 1), 'incomeData');
+      updateStorage(budgetData.length === 1 ? [] : budgetData.splice(itemIndex, 1), 'incomeData');
       getIncomeData();
     } else {
       const itemIndex = incomeData.findIndex(item => item.id === id);
-      updateStorage(budgetData.splice(itemIndex, 1), 'budgetData');
+      updateStorage(budgetData.length === 1 ? [] : budgetData.splice(itemIndex, 1), 'budgetData');
+      getBudgetData();
+    }
+  }
+
+  const onSaveHistory = () => {
+    if (TABS[selectedIndex].key === 'income') {
+      getIncomeData();
+    } else {
       getBudgetData();
     }
   }
@@ -107,13 +119,15 @@ function App(): React.JSX.Element {
                 storageData={incomeData}
                 onCloseModal={() => setShowHistoryModal('')}
                 onDeleteStorageItem={onDeleteStorageItem}
+                onSaveHistory={getIncomeData}
               />
               <BudgetPage
                 isHidden={TABS[selectedIndex].key !== 'budget'}
-                showHistoryModal={showHistoryModal === 'income'}
-                storageData={incomeData}
+                showHistoryModal={showHistoryModal === 'budget'}
+                storageData={budgetData}
                 onCloseHistoryModal={() => setShowHistoryModal('')}
                 onDeleteStorageItem={onDeleteStorageItem}
+                onSaveHistory={getBudgetData}
               />
               <SavingGoalsPage isHidden={TABS[selectedIndex].key !== 'savingGoals'} />
               <InvestmentPage isHidden={TABS[selectedIndex].key !== 'investment'} />

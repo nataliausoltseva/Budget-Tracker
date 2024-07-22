@@ -45,8 +45,9 @@ const HistoryItem = ({ item, onDelete, onUse }: Props) => {
                 {isExpanded && (
                     <View>
                         {item.expenses.map((expense, index) => (
-                            <View key={index}>
-
+                            <View key={index} style={{ flexDirection: 'row', alignItems: "center", justifyContent: "space-between" }}>
+                                <CustomText>{expense.name}</CustomText>
+                                <CustomText>{expense.value} / {expense.frequency.name}</CustomText>
                             </View>
                         ))}
                     </View>

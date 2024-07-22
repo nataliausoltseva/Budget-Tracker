@@ -23,10 +23,11 @@ type Props = {
     showHistoryModal: boolean,
     storageData: IncomeHistoryItem[],
     onCloseModal: () => void,
+    onSaveHistory: () => void,
     onDeleteStorageItem: (id: number) => void,
 }
 
-const IncomePage = ({ isHidden = false, showHistoryModal = false, storageData = [], onCloseModal, onDeleteStorageItem }: Props) => {
+const IncomePage = ({ isHidden = false, showHistoryModal = false, storageData = [], onCloseModal, onSaveHistory, onDeleteStorageItem }: Props) => {
     const appState = useContext(AppContext);
     const [selectedCurrency, setSelecctedCurrency] = useState<string>(CURRENCIES[0]);
     const [showFilter, setShowFilter] = useState(false);
@@ -196,6 +197,7 @@ const IncomePage = ({ isHidden = false, showHistoryModal = false, storageData = 
         await AsyncStorage.setItem('incomeData', JSON.stringify(listData));
         setDataLabel("");
         setShowSaveModal(false);
+        onSaveHistory();
     }
 
     const styles = StyleSheet.create({
