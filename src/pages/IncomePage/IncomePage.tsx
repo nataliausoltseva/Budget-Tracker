@@ -35,6 +35,7 @@ const IncomePage = ({ isHidden = false, showHistoryModal = false, storageData = 
     const [hasCalculated, setHasCalculated] = useState(false);
     const [showSaveModal, setShowSaveModal] = useState(false);
     const [dataLabel, setDataLabel] = useState(new Date().toLocaleDateString());
+    const [selectedHistoryItem, setSelectedHistoryItem] = useState<IncomeHistoryItem>();
 
     // The list (table) only updates if we pass something new to the extraData prop.
     const [, setRandom] = useState(Math.random());
@@ -193,11 +194,38 @@ const IncomePage = ({ isHidden = false, showHistoryModal = false, storageData = 
             }
         };
 
-        listData.push(data);
+        if (selectedHistoryItem) {
+            data.id = selectedHistoryItem.id
+            const itemIndex = listData.findIndex((item: IncomeHistoryItem) => item.id === selectedHistoryItem.id);
+            listData[itemIndex] = data;
+        } else {
+            setSelectedHistoryItem(data);
+            listData.push(data);
+        }
         await AsyncStorage.setItem('incomeData', JSON.stringify(listData));
-        setDataLabel("");
+        if (!selectedHistoryItem) {
+            setDataLabel("");
+        }
         setShowSaveModal(false);
         onSaveHistory();
+    }
+
+    const onHistoryUse = (item: IncomeHistoryItem) => {
+        setSelectedHistoryItem(item);
+        onPrimaryIncomeChange(item.amount);
+        setSelecctedCurrency(item.currency);
+        onIncomePeriodChange(item.frequency);
+        setDataLabel(item.label);
+        primaryIncomeHolder.current = item.amount.toString();
+        setHasSecondaryIncome(!!item?.secondaryIncome);
+        setSecondaryIncome(item?.secondaryIncome || 0);
+        setHasKiwiSaver(!!item?.kiwiSaver);
+        onKiwiSaverChange(item?.kiwiSaver || 0);
+        setHasStudentLoan(!!item.studentLoanRate || !!item.studentLoanThreshold);
+        onStudentLoanChange(item?.studentLoanRate || 0, item?.studentLoanThreshold || 0);
+        onCloseFilter();
+        onCalculate(tableHeader);
+        onCloseModal();
     }
 
     const styles = StyleSheet.create({
@@ -214,7 +242,7 @@ const IncomePage = ({ isHidden = false, showHistoryModal = false, storageData = 
     });
 
     return (
-        <ScrollView style={{ display: isHidden ? "none" : "flex" }}>
+        <View style={{ display: isHidden ? "none" : "flex" }}>
             <View style={styles.incomeView}>
                 <Dropdown
                     onSelect={(index: number) => setSelecctedCurrency(CURRENCIES[index])}
@@ -282,6 +310,11 @@ const IncomePage = ({ isHidden = false, showHistoryModal = false, storageData = 
                     disabled={primaryIncome === 0}
                     color={appState.isDarkMode ? "#A78DFF" : "#01B0E6"}
                 />
+                {hasCalculated && (
+                    <View style={{ position: "absolute", right: 0 }}>
+                        <Button title='Save' onPress={() => setShowSaveModal(true)} color={appState.isDarkMode ? "#A78DFF" : "#01B0E6"} />
+                    </View>
+                )}
             </View>
             <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: 35 }}>
                 <CheckBox
@@ -304,13 +337,8 @@ const IncomePage = ({ isHidden = false, showHistoryModal = false, storageData = 
                     }}
                 />
             </View>
-            <View style={{ position: "relative" }}>
+            <View>
                 <IncomeTable rows={rows} />
-                {hasCalculated && (
-                    <View style={{ position: "absolute", top: "45%", right: 0 }}>
-                        <Button title='Save' onPress={() => setShowSaveModal(true)} color={appState.isDarkMode ? "#A78DFF" : "#01B0E6"} />
-                    </View>
-                )}
                 <IncomePieChart pieData={pieData} yearGrossPay={yearGrossPay} />
             </View>
             {showSaveModal && (
@@ -337,10 +365,10 @@ const IncomePage = ({ isHidden = false, showHistoryModal = false, storageData = 
                     data={storageData}
                     onClose={onCloseModal}
                     onDelete={onDeleteStorageItem}
-                    onUse={console.log}
+                    onUse={onHistoryUse}
                 />
             )}
-        </ScrollView>
+        </View>
     )
 };
 

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { SafeAreaView, View } from 'react-native';
+import { SafeAreaView, ScrollView, View } from 'react-native';
 import * as eva from '@eva-design/eva';
 import { ApplicationProvider } from '@ui-kitten/components';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -112,7 +112,7 @@ function App(): React.JSX.Element {
         <AppContextProvider>
           <SafeAreaView style={{ backgroundColor: isDarkMode ? '#443472' : "white", height: "100%" }}>
             <TopNavigationBar tabs={TABS} onSelect={setSelectedIndex} selectedIndex={selectedIndex} />
-            <View style={{ flexGrow: 1, padding: 20 }}>
+            <ScrollView style={{ margin: 20, flexGrow: 1 }}>
               <IncomePage
                 isHidden={TABS[selectedIndex].key !== 'income'}
                 showHistoryModal={showHistoryModal === 'income'}
@@ -131,7 +131,7 @@ function App(): React.JSX.Element {
               />
               <SavingGoalsPage isHidden={TABS[selectedIndex].key !== 'savingGoals'} />
               <InvestmentPage isHidden={TABS[selectedIndex].key !== 'investment'} />
-            </View>
+            </ScrollView>
             <View style={{ flexDirection: 'row', width: "100%", justifyContent: hasHistoryButton ? "space-between" : 'flex-end', alignItems: "center" }}>
               {hasHistoryButton && (
                 <Button

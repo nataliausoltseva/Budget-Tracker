@@ -128,7 +128,9 @@ const BudgetPage = ({ isHidden = false, showHistoryModal = false, storageData = 
         }
 
         await AsyncStorage.setItem('budgetData', JSON.stringify(listData));
-        setDataLabel("");
+        if (!selectedHistoryItem) {
+            setDataLabel("");
+        }
         setShowSaveModal(false);
         onSaveHistory();
     }
