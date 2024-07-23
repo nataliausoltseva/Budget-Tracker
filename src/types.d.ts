@@ -74,3 +74,32 @@ type IncomeTableHeader = {
     label: string,
     calcToYear: number,
 }
+
+type IncomeHistoryItem = {
+    amount: number,
+    currency: string,
+    date: string,
+    frequency: IncomePeriod,
+    id: number,
+    label: string,
+    kiwiSaver?: number,
+    secondaryIncome?: number,
+    studentLoanRate?: number,
+    studentLoanThreshold?: number
+}
+
+type BudgetHistoryItem = {
+    id: number,
+    date: string,
+    label: string,
+    expenses: ExpenseItem[]
+}
+
+type ExpenseItem = {
+    key?: string,
+    name: string,
+    value: number,
+    frequency: FrequencyItem,
+    id?: number,
+    color?: string,
+}

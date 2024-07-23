@@ -2,7 +2,6 @@ import React, { useContext, useState } from 'react';
 import { Button, SafeAreaView, View } from 'react-native';
 import { PieChart } from 'react-native-gifted-charts';
 import usePieChart from '../hooks/usePieChart';
-import { ExpenseItem } from '../BudgetPage';
 import Dropdown from '../../../components/Dropdown';
 import CustomText from '../../../components/CustomText';
 import { AppContext } from '../../../context/AppContext';

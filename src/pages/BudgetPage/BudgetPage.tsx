@@ -1,5 +1,7 @@
 import React, { memo, useContext, useState } from 'react';
 import { Button, NativeSyntheticEvent, ScrollView, StyleSheet, TextInputChangeEventData, View } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import BudgetItemModal from './components/BudgetItemModal';
 import PieChartWithSelection from './components/PieChartWithSelection';
 import { AppContext } from '../../context/AppContext';
@@ -8,22 +10,18 @@ import CustomText from '../../components/CustomText';
 import BudgetItem from './components/BudgetItem';
 import CustomModal from '../../components/CustomModal';
 import CustomInput from '../../components/CustomInput';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import HistoryModal from './components/HistoryModal';
 
 type Props = {
-    isHidden: boolean
+    isHidden: boolean,
+    showHistoryModal: boolean,
+    storageData: BudgetHistoryItem[],
+    onCloseHistoryModal: () => void,
+    onSaveHistory: () => void,
+    onDeleteStorageItem: (id: number) => void,
 }
 
-export type ExpenseItem = {
-    key?: string,
-    name: string,
-    value: number,
-    frequency: FrequencyItem,
-    id?: number,
-    color?: string,
-}
-
-const BudgetPage = ({ isHidden = false }: Props) => {
+const BudgetPage = ({ isHidden = false, showHistoryModal = false, storageData = [], onCloseHistoryModal, onSaveHistory, onDeleteStorageItem }: Props) => {
     const appState = useContext(AppContext);
     const [expenses, setExpenses] = useState<ExpenseItem[]>([]);
 
@@ -31,6 +29,7 @@ const BudgetPage = ({ isHidden = false }: Props) => {
     const [showMoal, setShowModal] = useState(false);
     const [showSaveModal, setShowSaveModal] = useState(false);
     const [dataLabel, setDataLabel] = useState(new Date().toLocaleDateString());
+    const [selectedHistoryItem, setSelectedHistoryItem] = useState<BudgetHistoryItem>();
 
     const onChangeExpense = (index: number, item: ExpenseItem) => {
         setExpenses((prevState: ExpenseItem[]) => {
@@ -112,17 +111,35 @@ const BudgetPage = ({ isHidden = false }: Props) => {
     const onSaveData = async () => {
         const currentData = await AsyncStorage.getItem('budgetData');
         const listData = currentData === null ? [] : JSON.parse(currentData);
-        const data = {
+        const data: BudgetHistoryItem = {
             id: listData === null ? 1 : listData.length + 1,
             date: new Date().toLocaleDateString(),
             label: dataLabel,
             expenses: expenses,
         };
 
-        listData.push(data);
+        if (selectedHistoryItem) {
+            data.id = selectedHistoryItem.id
+            const itemIndex = listData.findIndex((item: BudgetHistoryItem) => item.id === selectedHistoryItem.id);
+            listData[itemIndex] = data;
+        } else {
+            setSelectedHistoryItem(data);
+            listData.push(data);
+        }
+
         await AsyncStorage.setItem('budgetData', JSON.stringify(listData));
-        setDataLabel("");
+        if (!selectedHistoryItem) {
+            setDataLabel("");
+        }
         setShowSaveModal(false);
+        onSaveHistory();
+    }
+
+    const onUse = (item: BudgetHistoryItem) => {
+        setExpenses(item.expenses);
+        setSelectedHistoryItem(item);
+        setDataLabel(item.label || item.date);
+        onCloseHistoryModal();
     }
 
     return (
@@ -181,7 +198,15 @@ const BudgetPage = ({ isHidden = false }: Props) => {
                     {renderButton()}
                 </View>
             )}
-        </View >
+            {showHistoryModal && (
+                <HistoryModal
+                    data={storageData}
+                    onClose={onCloseHistoryModal}
+                    onDelete={onDeleteStorageItem}
+                    onUse={onUse}
+                />
+            )}
+        </View>
     );
 }
 
