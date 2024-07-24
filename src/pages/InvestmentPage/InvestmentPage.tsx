@@ -1,10 +1,10 @@
 import { Button, ScrollView, StyleSheet, View } from "react-native"
 import { memo, useContext, useEffect, useState } from "react"
+import AsyncStorage from "@react-native-async-storage/async-storage"
 import InvestmentItem from "./components/InvestmentItem"
 import InvestmentModal from "./components/InvestmentModal"
 import CustomText from "../../components/CustomText"
 import { AppContext } from "../../context/AppContext"
-import AsyncStorage from "@react-native-async-storage/async-storage"
 
 type Props = {
     isHidden: boolean
@@ -31,7 +31,7 @@ const InvestmentPage = ({ isHidden = false }: Props) => {
         setInvestments((prevState: InvestmentItem[]) => {
             const newInvestments = [...prevState];
             newInvestments.push(newInvestment);
-            onSaveToStorage();
+            onSaveToStorage(newInvestments);
             return newInvestments;
         });
         setRandom(Math.random());
@@ -41,7 +41,7 @@ const InvestmentPage = ({ isHidden = false }: Props) => {
         setInvestments((prevState: InvestmentItem[]) => {
             const newInvestments = [...prevState];
             newInvestments[index] = item;
-            onSaveToStorage();
+            onSaveToStorage(newInvestments);
             return newInvestments;
         });
     }
@@ -50,12 +50,13 @@ const InvestmentPage = ({ isHidden = false }: Props) => {
         setInvestments((prevState: InvestmentItem[]) => {
             const newInvestments = [...prevState];
             newInvestments.splice(index, 1);
+            onSaveToStorage(newInvestments);
             return newInvestments;
         });
     }
 
-    const onSaveToStorage = async () => {
-        await AsyncStorage.setItem('investmentData', JSON.stringify(investments));
+    const onSaveToStorage = async (newInvestments?: InvestmentItem[]) => {
+        await AsyncStorage.setItem('investmentData', JSON.stringify(newInvestments || investments));
     }
 
     const renderButton = () => {

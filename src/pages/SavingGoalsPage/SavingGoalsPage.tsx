@@ -1,10 +1,10 @@
 import React, { memo, useContext, useEffect, useState } from 'react';
 import { Button, ScrollView, StyleSheet, View } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import GoalModal from './components/GoalModal';
 import Goal from './components/Goal';
 import CustomText from '../../components/CustomText';
 import { AppContext } from '../../context/AppContext';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type Props = {
     isHidden: boolean
@@ -30,7 +30,7 @@ const SavingGoalsPage = ({ isHidden = false }: Props) => {
         setGoals((prevState: SavingGoalItem[]) => {
             const newGoals = [...prevState];
             newGoals.push(goal);
-            onSaveData();
+            onSaveData(newGoals);
             return newGoals;
         });
         setVisible(false);
@@ -40,6 +40,7 @@ const SavingGoalsPage = ({ isHidden = false }: Props) => {
         setGoals((prevState: SavingGoalItem[]) => {
             const newGoals = [...prevState];
             newGoals.splice(index, 1);
+            onSaveData(newGoals);
             return newGoals;
         });
     }
@@ -48,13 +49,13 @@ const SavingGoalsPage = ({ isHidden = false }: Props) => {
         setGoals((prevState: SavingGoalItem[]) => {
             const newGoals = [...prevState];
             newGoals[index] = goal;
-            onSaveData();
+            onSaveData(newGoals);
             return newGoals;
         });
     }
 
-    const onSaveData = async () => {
-        await AsyncStorage.setItem('savingGoalsData', JSON.stringify(goals));
+    const onSaveData = async (newGoals?: SavingGoalItem[]) => {
+        await AsyncStorage.setItem('savingGoalsData', JSON.stringify(newGoals || goals));
     }
 
     const renderButton = () => (
