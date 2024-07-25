@@ -1,6 +1,7 @@
-import React, { memo, useContext, useEffect, useState } from 'react';
+import React, { memo, useContext, useEffect, useMemo, useState } from 'react';
 import { Button, ScrollView, StyleSheet, View } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import GoalModal from './components/GoalModal';
 import Goal from './components/Goal';
 import CustomText from '../../components/CustomText';
@@ -64,11 +65,15 @@ const SavingGoalsPage = ({ isHidden = false }: Props) => {
         </View>
     )
 
+    const sortedGoals = useMemo(() => (
+        goals.sort((a, b) => new Date(a.date.toString()).getTime() > new Date(b.date.toString()).getTime() ? -1 : 1)
+    ), [goals]);
+
     return (
         <View style={containerStyles(isHidden).container}>
             {goals.length ? (
                 <ScrollView>
-                    {goals.map((goal: SavingGoalItem, index: number) => (
+                    {sortedGoals.map((goal: SavingGoalItem, index: number) => (
                         <Goal
                             key={index}
                             goal={goal}
