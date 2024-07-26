@@ -1,10 +1,11 @@
 import { Button, ScrollView, StyleSheet, View } from "react-native"
-import { memo, useContext, useEffect, useState } from "react"
+import { memo, useContext, useEffect, useMemo, useState } from "react"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import InvestmentItem from "./components/InvestmentItem"
 import InvestmentModal from "./components/InvestmentModal"
 import CustomText from "../../components/CustomText"
 import { AppContext } from "../../context/AppContext"
+import { getEndDate } from "../../hooks/date"
 
 type Props = {
     isHidden: boolean
@@ -71,11 +72,22 @@ const InvestmentPage = ({ isHidden = false }: Props) => {
         )
     }
 
+    const sortedInvestments = useMemo(() => (
+        investments.sort((a, b) => {
+            const aEndDate = getEndDate(new Date(a.startDate), a.term, a.termPeriod.name === 'month');
+            const bEndDate = getEndDate(new Date(b.startDate), b.term, b.termPeriod.name === 'month');
+            if (aEndDate.getTime() > bEndDate.getTime()) {
+                return -1;
+            }
+            return 1;
+        })
+    ), [investments]);
+
     return (
         <View style={{ display: isHidden ? "none" : "flex", flexGrow: 1 }}>
             {investments.length ? (
                 <ScrollView style={containerStyles(isHidden).container}>
-                    {investments.map((item: InvestmentItem, index: number) => (
+                    {sortedInvestments.map((item: InvestmentItem, index: number) => (
                         <InvestmentItem
                             key={`i-${index}-${random}`}
                             item={item}

@@ -20,11 +20,11 @@ type Props = {
 const GoalModal = ({ onSave, isVisible = false, onClose, goal = null }: Props) => {
     const appState = useContext(AppContext);
     const now = new Date();
-    const tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+    const tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 10);
     const [name, setName] = useState(goal?.name || "");
     const [amount, setAmount] = useState(goal?.amount?.toString() || "0");
     const [savedAmount, setSavedAmount] = useState(goal?.savedAmount?.toString() || "0");
-    const [date, setDate] = useState<Date>(goal?.date || tomorrow);
+    const [date, setDate] = useState<Date>(goal?.date ? new Date(goal.date.toString()) : tomorrow);
 
     useEffect(() => {
         if (goal) {
@@ -98,7 +98,7 @@ const GoalModal = ({ onSave, isVisible = false, onClose, goal = null }: Props) =
                 <View style={{ marginTop: 20 }}>
                     <CustomText style={{ marginBottom: 10, fontSize: 12 }}>Date by</CustomText>
                     <Datepicker
-                        date={date}
+                        date={new Date(date.toString())}
                         onSelect={setDate}
                         min={tomorrow}
                         status="primary"
