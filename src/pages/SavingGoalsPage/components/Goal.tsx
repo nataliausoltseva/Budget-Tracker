@@ -2,10 +2,11 @@ import { StyleSheet, View, useWindowDimensions } from "react-native"
 import { formatDate, getDateDiffSeconds } from "../../../hooks/date";
 import React, { useContext, useState } from "react";
 import CountDown from 'react-native-countdown-fixed';
+import { LineChart } from "react-native-gifted-charts";
+
 import GoalModal from "./GoalModal";
 import TransactionModal from "./TransactionModal";
 import TransactionItem from "./TransactionItem";
-import { LineChart } from "react-native-gifted-charts";
 import CustomText from "../../../components/CustomText";
 import TrashIcon from "../../../components/TrashIcon";
 import PenIcon from "../../../components/PenIcon";
@@ -130,7 +131,7 @@ const Goal = ({ goal, onDelete, onEdit }: Props) => {
                         </View>
                         <View style={{ flexDirection: "row", justifyContent: "space-between", width: "100%" }}>
                             <CustomText>Date by:</CustomText>
-                            <CustomText>{formatDate(goal.date)}</CustomText>
+                            <CustomText>{formatDate(new Date(goal.date.toString()))}</CustomText>
                         </View>
                         <View style={{ flexDirection: "row", alignItems: "center" }}>
                             <CustomText>Transactions:</CustomText>

@@ -179,7 +179,7 @@ const InvestmentModal = ({ onSave, onClose, investment = null }: Props) => {
                 </View>
                 <CustomText style={{ fontSize: 12 }}>Start date</CustomText>
                 <Datepicker
-                    date={item.startDate}
+                    date={new Date(item.startDate.toString())}
                     onSelect={_onStartDateChange}
                     status="primary"
                     controlStyle={{

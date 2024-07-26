@@ -66,7 +66,21 @@ const SavingGoalsPage = ({ isHidden = false }: Props) => {
     )
 
     const sortedGoals = useMemo(() => (
-        goals.sort((a, b) => new Date(a.date.toString()).getTime() > new Date(b.date.toString()).getTime() ? -1 : 1)
+        goals.sort((a, b) => {
+            if (new Date(a.date.toString()).getTime() > new Date(b.date.toString()).getTime()) {
+                return -1;
+            } else if (new Date(a.date.toString()).getTime() < new Date(b.date.toString()).getTime()) {
+                return 1;
+            }
+
+            if (a.isReached && !b.isReached) {
+                return -1;
+            } else if (b.isReached && !a.isReached) {
+                return -1
+            } else {
+                return 0
+            }
+        })
     ), [goals]);
 
     return (
