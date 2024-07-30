@@ -1,10 +1,10 @@
 import React from 'react';
+import { View } from 'react-native';
 import CustomModal from '../../../components/CustomModal';
-import { CheckBox } from '@ui-kitten/components';
 import KiwiSaverForm from './KiwiSaverForm';
 import StudentLoanForm from './StudentLoanForm';
 import SecondaryIncomeForm from './SecondaryIncomeForm';
-import { View } from 'react-native';
+import CheckBox from '../../../components/Checkbox';
 
 type Props = {
     onClose: () => void,
@@ -43,11 +43,10 @@ const FilterModal = ({
         <CustomModal onClose={onClose} isVisible={true}>
             <View style={{ flexDirection: "row" }}>
                 <CheckBox
-                    checked={hasKiwiSaver}
-                    onChange={nextChecked => setHasKiwiSaver(nextChecked)}
-                >
-                    KiwiSaver
-                </CheckBox>
+                    isChecked={hasKiwiSaver}
+                    onPress={nextChecked => setHasKiwiSaver(nextChecked)}
+                    label={"KiwiSaver"}
+                />
                 <KiwiSaverForm
                     option={kiwiSaverOption}
                     setKiwiSaverOption={onKiwiSaverChange}
@@ -56,11 +55,10 @@ const FilterModal = ({
             </View>
             <View>
                 <CheckBox
-                    checked={hasStudentLoan}
-                    onChange={nextChecked => setHasStudentLoan(nextChecked)}
-                >
-                    Student Loan
-                </CheckBox>
+                    isChecked={hasStudentLoan}
+                    onPress={nextChecked => setHasStudentLoan(nextChecked)}
+                    label='Student Loan'
+                />
                 <StudentLoanForm
                     rate={studentLoanRate}
                     threshold={studentLoanThreshold}
@@ -71,11 +69,10 @@ const FilterModal = ({
             </View>
             <View style={{ flexDirection: "row" }}>
                 <CheckBox
-                    checked={hasSecondaryIncome}
-                    onChange={nextChecked => setHasSecondaryIncome(nextChecked)}
-                >
-                    Secondary Income
-                </CheckBox>
+                    isChecked={hasSecondaryIncome}
+                    onPress={nextChecked => setHasSecondaryIncome(nextChecked)}
+                    label='Secondary Income'
+                />
                 <SecondaryIncomeForm
                     income={secondaryIncome}
                     setIncome={setSecondaryIncome}
