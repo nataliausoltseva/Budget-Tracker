@@ -1,10 +1,10 @@
-import { Datepicker } from "@ui-kitten/components";
 import { useContext, useEffect, useState } from "react";
 import { Button, NativeSyntheticEvent, TextInputChangeEventData, View } from "react-native";
 import CustomText from "../../../components/CustomText";
 import CustomInput from "../../../components/CustomInput";
 import CustomModal from "../../../components/CustomModal";
 import { AppContext } from "../../../context/AppContext";
+import DatePicker from "../../../components/DatePicker";
 
 type Props = {
     onSave: (goal: SavingGoalItem) => void,
@@ -20,7 +20,7 @@ type Props = {
 const GoalModal = ({ onSave, isVisible = false, onClose, goal = null }: Props) => {
     const appState = useContext(AppContext);
     const now = new Date();
-    const tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 10);
+    const tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
     const [name, setName] = useState(goal?.name || "");
     const [amount, setAmount] = useState(goal?.amount?.toString() || "0");
     const [savedAmount, setSavedAmount] = useState(goal?.savedAmount?.toString() || "0");
@@ -97,19 +97,10 @@ const GoalModal = ({ onSave, isVisible = false, onClose, goal = null }: Props) =
                 </View>
                 <View style={{ marginTop: 20 }}>
                     <CustomText style={{ marginBottom: 10, fontSize: 12 }}>Date by</CustomText>
-                    <Datepicker
-                        date={new Date(date.toString())}
-                        onSelect={setDate}
+                    <DatePicker
+                        value={new Date(date.toString())}
+                        onChange={setDate}
                         min={tomorrow}
-                        status="primary"
-                        controlStyle={{
-                            backgroundColor: appState.isDarkMode ? "#33294e" : "white",
-                            borderColor: appState.isDarkMode ? "white" : "black",
-                            borderTopWidth: 0,
-                            borderRightWidth: 0,
-                            borderLeftWidth: 0,
-                            paddingLeft: 0
-                        }}
                     />
                 </View>
                 <View style={{ alignItems: "center", marginTop: 30 }}>

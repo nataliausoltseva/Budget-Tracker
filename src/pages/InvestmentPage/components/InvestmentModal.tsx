@@ -1,4 +1,3 @@
-import { Datepicker } from "@ui-kitten/components"
 import { useContext, useEffect, useState } from "react";
 import { Button, NativeSyntheticEvent, TextInputChangeEventData, View } from "react-native"
 import CustomModal from "../../../components/CustomModal";
@@ -6,6 +5,7 @@ import CustomText from "../../../components/CustomText";
 import CustomInput from "../../../components/CustomInput";
 import Dropdown from "../../../components/Dropdown";
 import { AppContext } from "../../../context/AppContext";
+import DatePicker from "../../../components/DatePicker";
 
 type Props = {
     onClose: () => void,
@@ -178,18 +178,9 @@ const InvestmentModal = ({ onSave, onClose, investment = null }: Props) => {
                     />
                 </View>
                 <CustomText style={{ fontSize: 12 }}>Start date</CustomText>
-                <Datepicker
-                    date={new Date(item.startDate.toString())}
-                    onSelect={_onStartDateChange}
-                    status="primary"
-                    controlStyle={{
-                        backgroundColor: appState.isDarkMode ? "#33294e" : "white",
-                        borderColor: appState.isDarkMode ? "white" : "black",
-                        borderTopWidth: 0,
-                        borderRightWidth: 0,
-                        borderLeftWidth: 0,
-                        paddingLeft: 0,
-                    }}
+                <DatePicker
+                    value={new Date(item.startDate.toString())}
+                    onChange={_onStartDateChange}
                 />
                 <View style={{ alignItems: "center", marginTop: 30 }}>
                     <View style={{ width: 150 }}>

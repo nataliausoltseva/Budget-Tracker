@@ -1,6 +1,5 @@
 import React, { memo, useContext, useRef, useState } from 'react';
 import { Animated, Button, Easing, NativeSyntheticEvent, ScrollView, StyleSheet, TextInputChangeEventData, View } from 'react-native';
-import { CheckBox } from '@ui-kitten/components';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { CURRENCIES, incomePeriods } from '../../constants';
@@ -17,6 +16,7 @@ import CustomInput from '../../components/CustomInput';
 import Dropdown from '../../components/Dropdown';
 import CustomModal from '../../components/CustomModal';
 import HistoryModal from './components/HistoryModal';
+import CheckBox from '../../components/Checkbox';
 
 type Props = {
     isHidden: boolean,
@@ -318,11 +318,10 @@ const IncomePage = ({ isHidden = false, showHistoryModal = false, storageData = 
             </View>
             <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: 35 }}>
                 <CheckBox
-                    checked={isSimpleTable}
-                    onChange={updateTableRows}
-                >
-                    Simple table
-                </CheckBox>
+                    isChecked={isSimpleTable}
+                    onPress={updateTableRows}
+                    label='Simple table'
+                />
                 <Dropdown
                     onSelect={onTableHeaderChange}
                     value={tableHeader.label}

@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { KeyboardAvoidingView, SafeAreaView, ScrollView, View } from 'react-native';
-import * as eva from '@eva-design/eva';
-import { ApplicationProvider } from '@ui-kitten/components';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { SafeAreaView, ScrollView, View, KeyboardAvoidingView } from 'react-native';
 
 import IncomePage from './src/pages/IncomePage/IncomePage';
 import BudgetPage from './src/pages/BudgetPage/BudgetPage';
@@ -101,7 +99,6 @@ function App(): React.JSX.Element {
   return (
     <SafeAreaView>
       <KeyboardAvoidingView>
-        <ApplicationProvider {...eva} theme={isDarkMode ? eva.dark : eva.light}>
           <AppContextProvider>
             <SafeAreaView style={{ backgroundColor: isDarkMode ? '#443472' : "white", height: "100%" }}>
               <TopNavigationBar tabs={TABS} onSelect={setSelectedIndex} selectedIndex={selectedIndex} />
@@ -138,7 +135,6 @@ function App(): React.JSX.Element {
               </View>
             </SafeAreaView>
           </AppContextProvider>
-        </ApplicationProvider>
       </KeyboardAvoidingView>
     </SafeAreaView >
   );

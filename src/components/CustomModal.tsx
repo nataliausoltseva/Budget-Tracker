@@ -1,6 +1,6 @@
-import { Card, Modal } from '@ui-kitten/components';
 import React, { useContext } from 'react';
-import { StyleProp, StyleSheet, ViewStyle } from 'react-native';
+import { StyleProp, StyleSheet, ViewStyle, Modal, View, TouchableOpacity } from 'react-native';
+
 import { AppContext } from '../context/AppContext';
 
 type Props = {
@@ -14,18 +14,22 @@ type Props = {
 const CustomModal = ({ children, isVisible = false, onClose, hasOverlay = true, style }: Props) => {
     const appState = useContext(AppContext);
     return (
-        <Modal
-            visible={isVisible}
-            {...hasOverlay && {
-                backdropStyle: styles.backdrop
-            }}
-            style={style}
-            onBackdropPress={onClose}
-        >
-            <Card disabled={true} style={{ backgroundColor: appState.isDarkMode ? "#33294e" : "white" }}>
-                {children}
-            </Card>
-        </Modal>
+        <View style={styles.centeredView}>
+            <Modal
+                transparent={true}
+                visible={isVisible}
+                {...hasOverlay && {
+                    backdropStyle: styles.backdrop
+                }}
+                onRequestClose={onClose}
+            >
+                <TouchableOpacity onPress={onClose} style={[styles.centeredView, hasOverlay ? styles.backdrop : []]}>
+                    <View style={[{ backgroundColor: appState.isDarkMode ? "#33294e" : "white", padding: 20, borderRadius: 8 }, style]}>
+                        {children}
+                    </View>
+                </TouchableOpacity>
+            </Modal>
+        </View>
     )
 }
 
@@ -34,5 +38,10 @@ export default CustomModal;
 const styles = StyleSheet.create({
     backdrop: {
         backgroundColor: 'rgba(130, 130, 130, 0.7)',
+    },
+    centeredView: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
 });
