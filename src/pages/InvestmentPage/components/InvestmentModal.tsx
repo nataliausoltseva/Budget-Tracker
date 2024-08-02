@@ -156,16 +156,7 @@ const InvestmentModal = ({ onSave, onClose, investment = null }: Props) => {
                                 value={item.termPeriod.label}
                                 onSelect={onTermPeriodChange}
                                 list={PERIODS.map(p => p.label)}
-                                listStyle={{
-                                    width: 75,
-                                    left: 159,
-                                    top: 501,
-                                    height: 90
-                                }}
-                                containerStyle={{
-                                    width: 75,
-                                    paddingTop: 13
-                                }}
+                                width={75}
                             />
                         </View>
                     </View>

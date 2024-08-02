@@ -1,116 +1,96 @@
-import React, { useContext, useRef, useState } from 'react';
-import { Animated, Easing, FlatList, Modal, StyleProp, StyleSheet, TouchableOpacity, View, ViewStyle } from 'react-native';
-import { AppContext } from '../context/AppContext';
+import React, { FC, useContext, useRef, useState } from 'react';
+import { FlatList, Modal, SafeAreaView, StyleSheet, TouchableOpacity, View } from 'react-native';
+
 import CustomText from './CustomText';
-import ChevronIcon from './ChevronIcon';
+import { AppContext } from '../context/AppContext';
 
 type Props = {
-    listStyle?: StyleProp<ViewStyle> | undefined,
-    containerStyle?: StyleProp<ViewStyle> | undefined,
     onSelect: (item: number) => void,
     value: string,
-    list: string[]
+    list: string[],
+    width?: number,
 }
 
-const Dropdown = ({ containerStyle, listStyle, onSelect, value, list }: Props) => {
-    const [show, setShow] = useState(false);
+const Dropdown: FC<Props> = ({ onSelect, value, list, width = null }) => {
     const appState = useContext(AppContext);
-    const rotateValue = useRef(new Animated.Value(0)).current;
-    const positionInterPol = rotateValue.interpolate({ inputRange: [0, 1], outputRange: ["0deg", "180deg"] });
+    const [modalVisible, setModalVisible] = useState(false);
+    const [dropdownMeasurements, setDropdownMeasurements] = useState({ top: 0, left: 0, width: 0 });
+    const dropdownRef = useRef<any>(null);
 
-    const toggleDropdown = () => {
-        setShow(prevState => !prevState);
-        Animated.timing(rotateValue, {
-            toValue: 1,
-            duration: 150,
-            easing: Easing.ease,
-            useNativeDriver: true,
-        }).start();
-    }
+    const openDropdown = () => {
+        if (dropdownRef.current) {
+            dropdownRef.current.measure((fx: number, fy: number, width: number, height: number, px: number, py: number) => {
+                setDropdownMeasurements({ top: py + height, left: px, width });
+                setModalVisible(true);
+            });
+        }
+    };
 
-    const _onSelect = (index: number) => {
+    const handleSelectItem = (index: number) => {
         onSelect(index);
-        onClose();
-    }
-
-    const onClose = () => {
-        setShow(false);
-        Animated.timing(rotateValue, {
-            toValue: 0,
-            duration: 150,
-            easing: Easing.ease,
-            useNativeDriver: true,
-        }).start();
-    }
+        setModalVisible(false);
+    };
 
     const styles = StyleSheet.create({
-        button: {
-            flexDirection: "row",
+        container: {
+            justifyContent: 'center',
             alignItems: 'center',
-            height: 40,
-            width: "100%",
-            zIndex: 1,
+        },
+        dropdown: {
+            padding: 10,
             borderBottomColor: appState.isDarkMode ? "white" : "black",
             borderBottomWidth: 1,
+            borderRadius: 5,
+            width: width || '100%',
         },
-        buttonText: {
-            flex: 1,
-            textAlign: 'center',
+        modalContent: {
+            backgroundColor: appState.isDarkMode ? "#2F244D" : "white",
+            borderBottomLeftRadius: 8,
+            borderBottomRightRadius: 8,
+            shadowOffset: {
+                width: 0,
+                height: -6,
+            },
+            shadowOpacity: 1,
+            shadowColor: appState.isDarkMode ? "white" : "black",
+            elevation: 2,
         },
     });
 
     return (
-        <TouchableOpacity style={[{ flexDirection: 'column', position: "relative" }]} onPress={() => setShow(false)}>
-            <View>
-                <TouchableOpacity onPress={toggleDropdown}>
-                    <View style={[styles.button, containerStyle]}>
-                        <CustomText style={styles.buttonText}>{value}</CustomText>
-                        <Animated.View style={{ transform: [{ rotate: positionInterPol }] }} pointerEvents={"none"}>
-                            <ChevronIcon />
-                        </Animated.View>
+        <SafeAreaView style={styles.container}>
+            <TouchableOpacity ref={dropdownRef} onPress={openDropdown} style={styles.dropdown}>
+                <CustomText style={{ textAlign: "center" }}>{value}</CustomText>
+            </TouchableOpacity>
+
+            <Modal visible={modalVisible} transparent={true}>
+                <TouchableOpacity onPress={() => setModalVisible(false)} style={{ flex: 1 }}>
+                    <View
+                        style={[
+                            styles.modalContent,
+                            {
+                                top: dropdownMeasurements.top,
+                                left: dropdownMeasurements.left,
+                                width: dropdownMeasurements.width,
+                            }
+                        ]}>
+                        <FlatList
+                            data={list}
+                            renderItem={(item) => (
+                                <CustomText
+                                    style={[{ height: 40, textAlign: "center", paddingTop: 10 }]}
+                                    onPress={() => handleSelectItem(item.index)}
+                                >
+                                    {item.item}
+                                </CustomText>
+                            )}
+                            style={{ maxHeight: 40 * Math.min(list.length, 4) }}
+                        />
                     </View>
                 </TouchableOpacity>
-                <Modal visible={show} transparent animationType="none">
-                    <TouchableOpacity
-                        onPress={onClose}
-                        style={{ flexGrow: 1 }}
-                    >
-                        <View
-                            style={[
-                                {
-                                    backgroundColor: appState.isDarkMode ? "#2F244D" : "white",
-                                    borderBottomLeftRadius: 8,
-                                    borderBottomRightRadius: 8,
-                                    shadowOffset: {
-                                        width: 0,
-                                        height: -6,
-                                    },
-                                    shadowOpacity: 1,
-                                    shadowColor: appState.isDarkMode ? "white" : "black",
-                                    elevation: 2,
-                                },
-                                listStyle
-                            ]}
-                        >
-                            <FlatList
-                                data={list}
-                                renderItem={(item) => (
-                                    <CustomText
-                                        style={[{ height: 40, textAlign: "center", paddingTop: 10 }]}
-                                        onPress={() => _onSelect(item.index)}
-                                    >
-                                        {item.item}
-                                    </CustomText>
-                                )}
-                                keyExtractor={(item, index) => index.toString()}
-                                style={{ height: 200 }}
-                            />
-                        </View>
-                    </TouchableOpacity>
-                </Modal>
-            </View>
-        </TouchableOpacity>
-    )
-}
+            </Modal>
+        </SafeAreaView>
+    );
+};
 
 export default Dropdown;
