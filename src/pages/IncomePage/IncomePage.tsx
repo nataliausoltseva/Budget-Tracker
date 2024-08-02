@@ -13,7 +13,7 @@ import IncomePieChart from './components/IncomePieChart';
 import FilterModal from './components/FilterModal';
 import { getMainColour } from '../../hooks/color';
 import CustomInput from '../../components/CustomInput';
-import Dropdown from '../../components/Dropdown';
+import Dropdown from '../../components/NewDropdown';
 import CustomModal from '../../components/CustomModal';
 import HistoryModal from './components/HistoryModal';
 import CheckBox from '../../components/Checkbox';
