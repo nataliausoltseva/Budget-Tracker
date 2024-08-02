@@ -80,14 +80,7 @@ const PieChartWithSelection = ({ expenses, onAddToSavings }: Props) => {
                     onSelect={onFrequencySelect}
                     value={frequency.name}
                     list={CHART_FREQUENCY.map(value => value.name)}
-                    listStyle={{
-                        width: 150,
-                        left: 260,
-                        top: 112,
-                    }}
-                    containerStyle={{
-                        width: 150
-                    }}
+                    width={150}
                 />
                 <Button
                     onPress={() => onAddToSavings(leftOver, frequency)}

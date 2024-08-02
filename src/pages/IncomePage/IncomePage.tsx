@@ -230,10 +230,8 @@ const IncomePage = ({ isHidden = false, showHistoryModal = false, storageData = 
 
     const styles = StyleSheet.create({
         incomeView: {
-            display: "flex",
             flexDirection: 'row',
-            position: "relative",
-            justifyContent: "space-between"
+            justifyContent: "space-between",
         },
         input: {
             width: 100,
@@ -248,14 +246,7 @@ const IncomePage = ({ isHidden = false, showHistoryModal = false, storageData = 
                     onSelect={(index: number) => setSelecctedCurrency(CURRENCIES[index])}
                     value={selectedCurrency}
                     list={CURRENCIES}
-                    listStyle={{
-                        width: 110,
-                        left: 20,
-                        top: 112,
-                    }}
-                    containerStyle={{
-                        width: 110
-                    }}
+                    width={110}
                 />
                 <CustomInput
                     value={primaryIncomeHolder.current}
@@ -267,14 +258,7 @@ const IncomePage = ({ isHidden = false, showHistoryModal = false, storageData = 
                     onSelect={onPreiodSelect}
                     value={incomePeriod.label}
                     list={incomePeriods.map(p => (p.label))}
-                    listStyle={{
-                        width: 150,
-                        left: 245,
-                        top: 112,
-                    }}
-                    containerStyle={{
-                        width: 150
-                    }}
+                    width={150}
                 />
                 <View>
                     <Animated.View style={{ transform: [{ rotate: positionInterPol }] }}>
@@ -326,14 +310,7 @@ const IncomePage = ({ isHidden = false, showHistoryModal = false, storageData = 
                     onSelect={onTableHeaderChange}
                     value={tableHeader.label}
                     list={HEADERS.filter(h => !!h.label).map(h => h.label)}
-                    listStyle={{
-                        width: 150,
-                        left: 278,
-                        top: 267,
-                    }}
-                    containerStyle={{
-                        width: 150
-                    }}
+                    width={150}
                 />
             </View>
             <View>

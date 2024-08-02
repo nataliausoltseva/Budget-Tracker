@@ -97,14 +97,7 @@ const BudgetItemModal = ({ onSave, onClose, expense = null }: Props) => {
                     onSelect={onFrequencySelect}
                     value={item.frequency.name}
                     list={FREQUENCES.map(value => value.name)}
-                    listStyle={{
-                        width: 150,
-                        left: 200,
-                        top: 501,
-                    }}
-                    containerStyle={{
-                        width: 150
-                    }}
+                    width={150}
                 />
             </View>
             <View style={{ alignItems: "center" }}>
