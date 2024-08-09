@@ -4,6 +4,8 @@ This application is written in Typescript using React Native. It was only tested
 
 The app offers dark/light mode.
 
+The app is using [React Native Async Storage](https://github.com/react-native-async-storage/async-storage#readme) for local storage on your device. Refer to the link to read more about. The income and budget pages offer to store calculations optionally. The data for saving and investment pages goes straight to your local storage. By removing it from the list on the pages, the data is going to be cleared from your local storage.
+
 ## How to use it
 ### Income Page
 When the application is loaded, the landing page is the Income page. You can select a currency, amount and frequency of your income.
