@@ -16,11 +16,11 @@ const CustomToggle = ({ isChecked = false, onChange, label }: Props) => {
 
     useEffect(() => {
         if (isChecked) {
-            startAnimToOff(0);
-        } else {
             startAnimToOn(0);
+        } else {
+            startAnimToOff(0);
         }
-    }, [])
+    }, []);
 
     const startAnimToOff = (duration?: number) => {
         Animated.timing(positionButton, {
