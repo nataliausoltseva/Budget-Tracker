@@ -4,21 +4,21 @@ import { incomePeriods } from "../../../constants";
 export const TAX_THRESHOLDS: TaxThreshold[] = [
     {
         min: 0,
-        max: 14000,
+        max: 15600,
         rate: 10.5
     },
     {
-        min: 14001,
-        max: 48000,
+        min: 15601,
+        max: 53500,
         rate: 17.5,
     },
     {
-        min: 48001,
-        max: 70000,
+        min: 53501,
+        max: 78100,
         rate: 30,
     },
     {
-        min: 70001,
+        min: 78101,
         max: 180000,
         rate: 33,
     },
