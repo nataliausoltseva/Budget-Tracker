@@ -1,31 +1,32 @@
 import { useRef, useState } from "react";
 import { incomePeriods } from "../../../constants";
+import { NativeSyntheticEvent, TextInputChangeEventData } from "react-native";
 
 export const TAX_THRESHOLDS: TaxThreshold[] = [
     {
-        min: 0,
-        max: 15600,
-        rate: 10.5
+        min: "0",
+        max: "15600",
+        rate: "10.5"
     },
     {
-        min: 15601,
-        max: 53500,
-        rate: 17.5,
+        min: "15601",
+        max: "53500",
+        rate: "17.5",
     },
     {
-        min: 53501,
-        max: 78100,
-        rate: 30,
+        min: "53501",
+        max: "78100",
+        rate: "30",
     },
     {
-        min: 78101,
-        max: 180000,
-        rate: 33,
+        min: "78101",
+        max: "180000",
+        rate: "33",
     },
     {
-        min: 180001,
-        max: Infinity,
-        rate: 39
+        min: "180001",
+        max: "",
+        rate: "39"
     }
 ];
 
@@ -51,6 +52,8 @@ const useIncome = () => {
     const [studentLoanRate, setStudentLoanRate] = useState(12)
     const [studentLoanThreshold, setStudentLoanThreshold] = useState(24128);
     const [secondaryIncome, setSecondaryIncome] = useState(0);
+
+    const [taxThresholds, setTaxThresholds] = useState<TaxThreshold[]>(TAX_THRESHOLDS);
 
     const onPrimaryIncomeChange = (income: number) => {
         setPrimaryIncome(income);
@@ -112,24 +115,27 @@ const useIncome = () => {
         let previousMax = 0;
         let isDone = false;
         let paidTax = 0;
-        TAX_THRESHOLDS.forEach((threshold: TaxThreshold) => {
+        taxThresholds.forEach((threshold: TaxThreshold) => {
+            const max = threshold.max ? parseFloat(threshold.max) : Infinity;
+            const min = parseFloat(threshold.min);
+            const rate = parseFloat(threshold.rate);
             if (!isDone) {
                 const amountToTax = previousMax === 0 ?
-                    threshold.max :
-                    (yearGrossPay > threshold.max ? threshold.max - threshold.min + 1 : yearGrossPay - threshold.min + 1);
-                const taxToPay = amountToTax * threshold.rate / 100;
+                    max :
+                    (yearGrossPay > max ? max - min + 1 : yearGrossPay - min + 1);
+                const taxToPay = amountToTax * rate / 100;
                 paidTax += taxToPay;
-                previousMax = threshold.max;
-                isDone = yearGrossPay < threshold.max;
+                previousMax = max;
+                isDone = yearGrossPay < max;
             }
         });
         return paidTax;
     }
 
     const calculateYearSecondaryPaye = (yearGrossPay: number) => {
-        const taxThresholdIndex = TAX_THRESHOLDS.findIndex((threshold: TaxThreshold) => yearGrossPay < threshold.max);
-        const actualThreshold = TAX_THRESHOLDS[taxThresholdIndex];
-        return secondaryIncome * actualThreshold.rate / 100;
+        const taxThresholdIndex = taxThresholds.findIndex((threshold: TaxThreshold) => yearGrossPay < (threshold.max ? parseFloat(threshold.max) : Infinity));
+        const actualThreshold = taxThresholds[taxThresholdIndex];
+        return secondaryIncome * parseFloat(actualThreshold.rate) / 100;
     }
 
     const calculcateYearAcc = (yearGrossPay: number) => {
@@ -180,6 +186,36 @@ const useIncome = () => {
         };
     }
 
+    const onTaxThresholdsChange = (e: NativeSyntheticEvent<TextInputChangeEventData>, index: number, isRate: boolean) => {
+        setTaxThresholds(prevState => {
+            const newThresholds = [...prevState];
+            if (isRate) {
+                newThresholds[index].rate = e.nativeEvent.text || "";
+            } else {
+                newThresholds[index].max = e.nativeEvent.text || "";
+            }
+
+            return newThresholds;
+        });
+    }
+
+    const onCloseFilterModal = () => {
+        setTaxThresholds(prevState => {
+            const newThresholds = [...prevState];
+            newThresholds.forEach((threshold, index) => {
+                if (!threshold.max) {
+                    newThresholds[index].max = TAX_THRESHOLDS[index].max;
+                }
+
+                if (!threshold.rate) {
+                    newThresholds[index].rate = TAX_THRESHOLDS[index].rate;
+                }
+            });
+
+            return newThresholds;
+        });
+    }
+
     return {
         primaryIncome,
         incomePeriod,
@@ -190,6 +226,7 @@ const useIncome = () => {
         studentLoanRate,
         studentLoanThreshold,
         secondaryIncome,
+        taxThresholds,
         onPrimaryIncomeChange,
         onIncomePeriodChange,
         onKiwiSaverChange,
@@ -200,6 +237,8 @@ const useIncome = () => {
         setKiwiSaverOption,
         setSecondaryIncome,
         calculateYearlyValues,
+        onTaxThresholdsChange,
+        onCloseFilterModal,
     }
 }
 

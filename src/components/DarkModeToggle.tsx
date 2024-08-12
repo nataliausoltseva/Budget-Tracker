@@ -32,8 +32,6 @@ const DarkModeToggle = ({ onToggle }: Props) => {
         onToggle(isDarkMode);
     }
 
-    console.log(appState.isDarkMode)
-
     return (
         <View style={{ alignItems: "flex-end", marginRight: 20, marginBottom: 20 }}>
             <View style={{ alignItems: "center" }}>

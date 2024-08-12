@@ -52,6 +52,7 @@ const IncomePage = ({ isHidden = false, showHistoryModal = false, storageData = 
         studentLoanRate,
         studentLoanThreshold,
         secondaryIncome,
+        taxThresholds,
         onPrimaryIncomeChange,
         onIncomePeriodChange,
         onKiwiSaverChange,
@@ -61,6 +62,8 @@ const IncomePage = ({ isHidden = false, showHistoryModal = false, storageData = 
         setHasKiwiSaver,
         setSecondaryIncome,
         calculateYearlyValues,
+        onTaxThresholdsChange,
+        onCloseFilterModal,
     } = useIncome();
 
     const {
@@ -148,7 +151,7 @@ const IncomePage = ({ isHidden = false, showHistoryModal = false, storageData = 
             easing: Easing.ease,
             useNativeDriver: true,
         }).start();
-        setShowFilter(true)
+        setShowFilter(true);
     }
 
     const onCloseFilter = () => {
@@ -160,7 +163,8 @@ const IncomePage = ({ isHidden = false, showHistoryModal = false, storageData = 
                 useNativeDriver: true,
             }).start();
         }
-        setShowFilter(false)
+        setShowFilter(false);
+        onCloseFilterModal();
     }
 
     const onTableHeaderChange = (index: number) => {
@@ -283,6 +287,8 @@ const IncomePage = ({ isHidden = false, showHistoryModal = false, storageData = 
                             setHasSecondaryIncome={setHasSecondaryIncome}
                             secondaryIncome={secondaryIncome}
                             setSecondaryIncome={setSecondaryIncome}
+                            taxThresholds={taxThresholds}
+                            onTaxThresholdsChange={onTaxThresholdsChange}
                         />
                     )}
                 </View>
