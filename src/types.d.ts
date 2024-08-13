@@ -4,9 +4,9 @@ type IncomePeriod = {
 }
 
 type TaxThreshold = {
-    min: number,
-    max: number,
-    rate: number
+    min: string,
+    max: string,
+    rate: string
 }
 
 type PanelTab = {
