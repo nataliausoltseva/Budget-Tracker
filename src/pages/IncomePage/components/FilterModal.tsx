@@ -85,13 +85,13 @@ const FilterModal = ({
                     isEditable={hasSecondaryIncome}
                 />
             </View>
-            <View style={{ flexDirection: 'row', justifyContent: "space-evenly" }}>
+            <View style={{ flexDirection: 'row', justifyContent: "space-evenly", marginTop: 20 }}>
                 <View>
                     <CustomText>Income Thresholds</CustomText>
                     {taxThresholds.map((threshold: TaxThreshold, index: number) => (
                         <CustomInput
                             key={index}
-                            style={styles.input}
+                            style={[styles.input, { textAlign: "center" }]}
                             value={index === taxThresholds.length - 1 ? (taxThresholds[taxThresholds.length - 2].max + 1).toString() + "+" : threshold.max.toString()}
                             onChange={(e) => onTaxThresholdsChange(e, index, false)}
                             isEditable={index < taxThresholds.length - 1}
@@ -104,7 +104,7 @@ const FilterModal = ({
                     {taxThresholds.map((threshold: TaxThreshold, index: number) => (
                         <CustomInput
                             key={index}
-                            style={styles.input}
+                            style={[styles.input, { textAlign: "center" }]}
                             value={threshold.rate.toString()}
                             onChange={(e) => onTaxThresholdsChange(e, index, true)}
                             isNumeric
