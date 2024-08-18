@@ -29,7 +29,8 @@ const KiwiSaverForm = ({ option, setKiwiSaverOption, isEditable = false }: Props
                 value={inputHolder.current}
                 onChange={onCustomOptionChange}
                 style={{
-                    width: 100
+                    width: 50,
+                    marginLeft: 10
                 }}
                 isEditable={isEditable}
                 isNumeric
