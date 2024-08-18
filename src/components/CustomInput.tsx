@@ -18,7 +18,9 @@ const CustomInput = ({ placeholder = "", value, onChange, isNumeric = false, isE
     const appState = useContext(AppContext);
     return (
         <View>
-            <CustomText style={{ fontSize: label ? 12 : 8 }}>{label}</CustomText>
+            {label && (
+                <CustomText style={{ fontSize: label ? 12 : 8 }}>{label}</CustomText>
+            )}
             <TextInput
                 placeholder={placeholder}
                 placeholderTextColor={appState.isDarkMode ? "#ffffff80" : "#00000080"}
