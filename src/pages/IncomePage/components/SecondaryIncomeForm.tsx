@@ -29,7 +29,8 @@ const SecondaryIncomeForm = ({ income, setIncome, isEditable = true }: Props) =>
                     onChange={onIncomeChange}
                     isEditable={isEditable}
                     style={{
-                        width: 80
+                        width: 80,
+                        marginLeft: 10
                     }}
                     isNumeric
                 />
