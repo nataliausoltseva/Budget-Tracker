@@ -252,12 +252,14 @@ const IncomePage = ({ isHidden = false, showHistoryModal = false, storageData = 
                     list={CURRENCIES}
                     width={110}
                 />
-                <CustomInput
-                    value={primaryIncomeHolder.current}
-                    onChange={onIncomeAmountChange}
-                    style={styles.input}
-                    isNumeric
-                />
+                <View style={{ justifyContent: "flex-end" }}>
+                    <CustomInput
+                        value={primaryIncomeHolder.current}
+                        onChange={onIncomeAmountChange}
+                        style={styles.input}
+                        isNumeric
+                    />
+                </View>
                 <Dropdown
                     onSelect={onPreiodSelect}
                     value={incomePeriod.label}

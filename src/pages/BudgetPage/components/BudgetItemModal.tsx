@@ -87,12 +87,14 @@ const BudgetItemModal = ({ onSave, onClose, expense = null }: Props) => {
                 onChange={onNameChange}
             />
             <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: 20, marginTop: 10 }}>
-                <CustomInput
-                    value={amountInputHolder.current}
-                    onChange={_onAmountChange}
-                    style={{ width: 80, marginRight: 10 }}
-                    isNumeric
-                />
+                <View style={{ justifyContent: "flex-end" }}>
+                    <CustomInput
+                        value={amountInputHolder.current}
+                        onChange={_onAmountChange}
+                        style={{ width: 80, marginRight: 10 }}
+                        isNumeric
+                    />
+                </View>
                 <Dropdown
                     onSelect={onFrequencySelect}
                     value={item.frequency.name}

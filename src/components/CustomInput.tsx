@@ -19,7 +19,7 @@ const CustomInput = ({ placeholder = "", value, onChange, isNumeric = false, isE
     return (
         <View>
             {label && (
-                <CustomText style={{ fontSize: label ? 12 : 8 }}>{label}</CustomText>
+                <CustomText style={{ fontSize: 12 }}>{label}</CustomText>
             )}
             <TextInput
                 placeholder={placeholder}

@@ -46,7 +46,7 @@ const FilterModal = ({
     onTaxThresholdsChange,
 }: Props) => {
     return (
-        <CustomModal onClose={onClose} isVisible={true}>
+        <CustomModal onClose={onClose} isVisible={true} style={{ gap: 10 }}>
             <View style={{ flexDirection: "row" }}>
                 <CheckBox
                     isChecked={hasKiwiSaver}
