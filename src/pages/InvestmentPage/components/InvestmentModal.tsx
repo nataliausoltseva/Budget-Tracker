@@ -134,13 +134,20 @@ const InvestmentModal = ({ onSave, onClose, investment = null }: Props) => {
                         style={{ width: 115 }}
                         isNumeric
                     />
-                    <CustomInput
-                        label={"Tax rate"}
-                        value={item.taxRate.toString()}
-                        onChange={_onTaxRateChange}
-                        style={{ width: 115 }}
-                        isNumeric
-                    />
+                    <View>
+                        <CustomInput
+                            label={"Tax rate"}
+                            value={item.taxRate}
+                            onChange={_onTaxRateChange}
+                            style={{ width: 115 }}
+                            isNumeric
+                        />
+                        {item.taxRate !== "" && (
+                            <View>
+                                <CustomText>%</CustomText>
+                            </View>
+                        )}
+                    </View>
                 </View>
                 <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 10, marginBottom: 10 }}>
                     <View style={{ flexDirection: "row" }}>

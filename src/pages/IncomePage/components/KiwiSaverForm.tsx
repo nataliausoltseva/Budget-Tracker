@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { NativeSyntheticEvent, SafeAreaView, TextInputChangeEventData } from 'react-native';
+import { NativeSyntheticEvent, SafeAreaView, TextInputChangeEventData, View } from 'react-native';
 import CustomInput from '../../../components/CustomInput';
 import CustomText from '../../../components/CustomText';
 
@@ -35,6 +35,11 @@ const KiwiSaverForm = ({ option, setKiwiSaverOption, isEditable = false }: Props
                 isEditable={isEditable}
                 isNumeric
             />
+            {inputHolder.current && (
+                <View>
+                    <CustomText>%</CustomText>
+                </View>
+            )}
         </SafeAreaView>
     )
 }
