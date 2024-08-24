@@ -24,13 +24,20 @@ const StudentLoanForm = ({ rate, threshold, setRate, setThreshold, isEditable = 
         <SafeAreaView style={{ flexDirection: "row" }}>
             <View style={styles.view}>
                 <CustomText style={{ opacity: isEditable ? 1 : 0.3 }}>Rate:</CustomText>
-                <CustomInput
-                    style={styles.input}
-                    value={rate.toString()}
-                    onChange={onRateChange}
-                    isEditable={isEditable}
-                    isNumeric
-                />
+                <View style={{ position: "relative", justifyContent: "center" }}>
+                    <CustomInput
+                        style={styles.input}
+                        value={rate.toString()}
+                        onChange={onRateChange}
+                        isEditable={isEditable}
+                        isNumeric
+                    />
+                    {rate && (
+                        <View style={{ position: "absolute", right: 0, opacity: isEditable ? 1 : 0.3 }}>
+                            <CustomText>%</CustomText>
+                        </View>
+                    )}
+                </View>
             </View>
             <View style={[styles.view, { marginLeft: 10 }]}>
                 <CustomText style={{ opacity: isEditable ? 1 : 0.3 }}>Threshold:</CustomText>
