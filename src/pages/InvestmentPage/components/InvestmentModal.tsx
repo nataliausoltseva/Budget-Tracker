@@ -134,13 +134,20 @@ const InvestmentModal = ({ onSave, onClose, investment = null }: Props) => {
                         style={{ width: 115 }}
                         isNumeric
                     />
-                    <CustomInput
-                        label={"Tax rate"}
-                        value={item.taxRate.toString()}
-                        onChange={_onTaxRateChange}
-                        style={{ width: 115 }}
-                        isNumeric
-                    />
+                    <View style={{ position: "relative", justifyContent: "center" }}>
+                        <CustomInput
+                            label={"Tax rate"}
+                            value={item.taxRate}
+                            onChange={_onTaxRateChange}
+                            style={{ width: 115 }}
+                            isNumeric
+                        />
+                        {item.taxRate !== "" && (
+                            <View style={{ position: "absolute", right: 0, paddingTop: 12 }}>
+                                <CustomText>%</CustomText>
+                            </View>
+                        )}
+                    </View>
                 </View>
                 <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 10, marginBottom: 10 }}>
                     <View style={{ flexDirection: "row" }}>
@@ -160,13 +167,20 @@ const InvestmentModal = ({ onSave, onClose, investment = null }: Props) => {
                             />
                         </View>
                     </View>
-                    <CustomInput
-                        label={"Term Rate"}
-                        value={item.rate.toString()}
-                        onChange={_onRateChange}
-                        style={{ width: 90 }}
-                        isNumeric
-                    />
+                    <View style={{ position: "relative", justifyContent: "center" }}>
+                        <CustomInput
+                            label={"Term Rate"}
+                            value={item.rate.toString()}
+                            onChange={_onRateChange}
+                            style={{ width: 90 }}
+                            isNumeric
+                        />
+                        {item.taxRate !== "" && (
+                            <View style={{ position: "absolute", right: 0, paddingTop: 12 }}>
+                                <CustomText>%</CustomText>
+                            </View>
+                        )}
+                    </View>
                 </View>
                 <CustomText style={{ fontSize: 12 }}>Start date</CustomText>
                 <DatePicker
@@ -183,8 +197,8 @@ const InvestmentModal = ({ onSave, onClose, investment = null }: Props) => {
                         />
                     </View>
                 </View>
-            </CustomModal>
-        </View>
+            </CustomModal >
+        </View >
     )
 }
 
