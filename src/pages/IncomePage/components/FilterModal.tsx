@@ -1,7 +1,7 @@
 import React from 'react';
 import { NativeSyntheticEvent, StyleSheet, TextInputChangeEventData, View } from 'react-native';
 import CustomModal from '../../../components/CustomModal';
-import KiwiSaverForm from './KiwiSaverForm';
+import SuperannuationForm from './SuperannuationForm';
 import StudentLoanForm from './StudentLoanForm';
 import SecondaryIncomeForm from './SecondaryIncomeForm';
 import CheckBox from '../../../components/Checkbox';
@@ -10,10 +10,10 @@ import CustomInput from '../../../components/CustomInput';
 
 type Props = {
     onClose: () => void,
-    hasKiwiSaver: boolean,
-    setHasKiwiSaver: (value: boolean) => void,
-    kiwiSaverOption: number,
-    onKiwiSaverChange: (option: number) => void,
+    hasSuperannuation: boolean,
+    setHasSuperannuation: (value: boolean) => void,
+    superannuationOption: number,
+    onSuperannuationChange: (option: number) => void,
     hasStudentLoan: boolean,
     setHasStudentLoan: (value: boolean) => void,
     studentLoanRate: number,
@@ -29,10 +29,10 @@ type Props = {
 
 const FilterModal = ({
     onClose,
-    hasKiwiSaver = false,
-    setHasKiwiSaver,
-    kiwiSaverOption,
-    onKiwiSaverChange,
+    hasSuperannuation = false,
+    setHasSuperannuation,
+    superannuationOption,
+    onSuperannuationChange,
     hasStudentLoan,
     setHasStudentLoan,
     studentLoanRate,
@@ -49,14 +49,14 @@ const FilterModal = ({
         <CustomModal onClose={onClose} isVisible={true} style={{ gap: 10 }}>
             <View style={{ flexDirection: "row" }}>
                 <CheckBox
-                    isChecked={hasKiwiSaver}
-                    onPress={nextChecked => setHasKiwiSaver(nextChecked)}
-                    label={"KiwiSaver"}
+                    isChecked={hasSuperannuation}
+                    onPress={nextChecked => setHasSuperannuation(nextChecked)}
+                    label={"Superannuation"}
                 />
-                <KiwiSaverForm
-                    option={kiwiSaverOption}
-                    setKiwiSaverOption={onKiwiSaverChange}
-                    isEditable={hasKiwiSaver}
+                <SuperannuationForm
+                    option={superannuationOption}
+                    setSuperannuationOption={onSuperannuationChange}
+                    isEditable={hasSuperannuation}
                 />
             </View>
             <View>

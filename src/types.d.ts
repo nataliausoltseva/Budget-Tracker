@@ -82,7 +82,7 @@ type IncomeHistoryItem = {
     frequency: IncomePeriod,
     id: number,
     label: string,
-    kiwiSaver?: number,
+    superannuation?: number,
     secondaryIncome?: number,
     studentLoanRate?: number,
     studentLoanThreshold?: number

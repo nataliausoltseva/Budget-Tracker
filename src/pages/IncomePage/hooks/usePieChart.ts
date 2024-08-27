@@ -4,7 +4,7 @@ type PopulateDataType = {
     yearPaye: number,
     yearSecPaye: number,
     yearAcc: number,
-    yearKiwiSaver: number,
+    yearSuperannuation: number,
     yearStudentLoan: number,
     colors: string[],
 };
@@ -15,7 +15,7 @@ const usePieChart = () => {
     const populateData = ({
         yearPaye,
         yearAcc,
-        yearKiwiSaver,
+        yearSuperannuation,
         yearStudentLoan,
         yearSecPaye,
         colors,
@@ -26,7 +26,7 @@ const usePieChart = () => {
             yearPaye,
             ...yearSecPaye ? [yearSecPaye] : [null],
             yearAcc,
-            ...yearKiwiSaver ? [yearKiwiSaver] : [null],
+            ...yearSuperannuation ? [yearSuperannuation] : [null],
             ...yearStudentLoan ? [yearStudentLoan] : [null],
         ];
 
