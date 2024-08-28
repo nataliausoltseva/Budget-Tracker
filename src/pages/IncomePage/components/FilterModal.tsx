@@ -90,7 +90,7 @@ const FilterModal = ({
                     <CustomText>Income Thresholds</CustomText>
                     {taxThresholds.map((threshold: TaxThreshold, index: number) => (
                         <CustomInput
-                            key={index}
+                            key={`${index}-thresholds`}
                             style={[styles.input, { textAlign: "center" }]}
                             value={index === taxThresholds.length - 1 ? (taxThresholds[taxThresholds.length - 2].max + 1).toString() + "+" : threshold.max.toString()}
                             onChange={(e) => onTaxThresholdsChange(e, index, false)}
@@ -104,7 +104,7 @@ const FilterModal = ({
                     {taxThresholds.map((threshold: TaxThreshold, index: number) => (
                         <View style={{ position: "relative", justifyContent: "center" }}>
                             <CustomInput
-                                key={index}
+                                key={`${index}-rate`}
                                 style={[styles.input, { textAlign: "center" }]}
                                 value={threshold.rate}
                                 onChange={(e) => onTaxThresholdsChange(e, index, true)}
