@@ -48,10 +48,10 @@ const HistoryItem = ({ item, onDelete, onUse }: Props) => {
                             <CustomText>Amount</CustomText>
                             <CustomText>{item.currency} {item.amount} / {item.frequency.label}</CustomText>
                         </View>
-                        {item.kiwiSaver && (
+                        {item.superannuation && (
                             <View style={{ flexDirection: 'row', alignItems: "center", justifyContent: "space-between" }}>
-                                <CustomText>KiwiSaver</CustomText>
-                                <CustomText>{item.kiwiSaver}%</CustomText>
+                                <CustomText>Superannuation</CustomText>
+                                <CustomText>{item.superannuation}%</CustomText>
                             </View>
                         )}
                         {(item.studentLoanRate || item.studentLoanThreshold) && (

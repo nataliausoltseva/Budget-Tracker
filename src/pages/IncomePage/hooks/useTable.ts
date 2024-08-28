@@ -6,7 +6,7 @@ type PopulateRowsProps = {
     yearPaye: number,
     yearSecPaye: number,
     yearAcc: number,
-    yearKiwiSaver: number,
+    yearSuperannuation: number,
     yearStudentLoan: number,
     tableHeader: IncomeTableHeader
 };
@@ -80,8 +80,8 @@ export const DEFAULT_ROWS: RowIndicator[] = [
         hideWhenEmpty: false,
     },
     {
-        label: "Saver",
-        key: 'kiwiSaver',
+        label: "Superannuation",
+        key: 'superannuation',
         value: 0,
         isHidden: true,
         isSimple: false,
@@ -113,7 +113,7 @@ const useTable = () => {
         Math.round(value * 100) / 100
     );
 
-    const calculateValues = ({ yearGrossPay, yearPaye, yearAcc, yearKiwiSaver, yearStudentLoan, yearSecGrossPay, yearSecPaye, tableHeader }: PopulateRowsProps) => {
+    const calculateValues = ({ yearGrossPay, yearPaye, yearAcc, yearSuperannuation, yearStudentLoan, yearSecGrossPay, yearSecPaye, tableHeader }: PopulateRowsProps) => {
         let newRows: RowIndicator[] = [...rows];
         if (yearGrossPay > 0) {
             newRows = DEFAULT_ROWS;
@@ -122,7 +122,7 @@ const useTable = () => {
             const paye = roundToTwoDecimals(yearPaye / tableHeader.calcToYear);
             const secPaye = roundToTwoDecimals(yearSecPaye / tableHeader.calcToYear);
             const acc = roundToTwoDecimals(yearAcc / tableHeader.calcToYear);
-            const kiwiSaver = roundToTwoDecimals(yearKiwiSaver === 0 ? 0 : yearKiwiSaver / tableHeader.calcToYear);
+            const superannuation = roundToTwoDecimals(yearSuperannuation === 0 ? 0 : yearSuperannuation / tableHeader.calcToYear);
             const studentLoan = roundToTwoDecimals(yearStudentLoan === 0 ? 0 : yearStudentLoan / tableHeader.calcToYear);
 
             newRows[0].value = grossPay;
@@ -130,13 +130,13 @@ const useTable = () => {
             newRows[2].value = paye;
             newRows[3].value = secPaye;
             newRows[4].value = acc;
-            newRows[5].value = kiwiSaver;
+            newRows[5].value = superannuation;
             newRows[6].value = studentLoan;
-            newRows[7].value = roundToTwoDecimals(grossPay + secGrossPay - paye - acc - kiwiSaver - studentLoan - secPaye);
+            newRows[7].value = roundToTwoDecimals(grossPay + secGrossPay - paye - acc - superannuation - studentLoan - secPaye);
         }
         newRows[1].isHidden = yearSecGrossPay === 0;
         newRows[3].isHidden = yearSecGrossPay === 0;
-        newRows[5].isHidden = yearKiwiSaver === 0;
+        newRows[5].isHidden = yearSuperannuation === 0;
         newRows[6].isHidden = yearStudentLoan === 0;
 
         newRows = hideSimpleRows(newRows);
@@ -153,8 +153,8 @@ const useTable = () => {
         return newRows;
     }
 
-    const populateTableRows = ({ yearGrossPay, yearPaye, yearAcc, yearKiwiSaver, yearStudentLoan, yearSecGrossPay, yearSecPaye, tableHeader }: PopulateRowsProps) => {
-        setRows(calculateValues({ yearGrossPay, yearPaye, yearAcc, yearKiwiSaver, yearStudentLoan, yearSecGrossPay, yearSecPaye, tableHeader }));
+    const populateTableRows = ({ yearGrossPay, yearPaye, yearAcc, yearSuperannuation, yearStudentLoan, yearSecGrossPay, yearSecPaye, tableHeader }: PopulateRowsProps) => {
+        setRows(calculateValues({ yearGrossPay, yearPaye, yearAcc, yearSuperannuation, yearStudentLoan, yearSecGrossPay, yearSecPaye, tableHeader }));
     }
 
     return {

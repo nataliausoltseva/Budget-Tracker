@@ -5,22 +5,22 @@ import CustomText from '../../../components/CustomText';
 
 type Props = {
     option: number,
-    setKiwiSaverOption: (option: number) => void,
+    setSuperannuationOption: (option: number) => void,
     isEditable: boolean,
 }
 
-const KiwiSaverForm = ({ option, setKiwiSaverOption, isEditable = false }: Props) => {
+const SuperannuationForm = ({ option, setSuperannuationOption, isEditable = false }: Props) => {
     const inputHolder = useRef(option.toString());
 
     const onCustomOptionChange = (e: NativeSyntheticEvent<TextInputChangeEventData>) => {
         inputHolder.current = e.nativeEvent.text || "";
 
         if (inputHolder.current) {
-            setKiwiSaverOption(parseFloat(inputHolder.current));
+            setSuperannuationOption(parseFloat(inputHolder.current));
         } else if (!e.nativeEvent.text) {
-            setKiwiSaverOption(0);
+            setSuperannuationOption(0);
         }
-        setKiwiSaverOption(parseInt(e.nativeEvent.text));
+        setSuperannuationOption(parseInt(e.nativeEvent.text));
     }
 
     return (
@@ -46,4 +46,4 @@ const KiwiSaverForm = ({ option, setKiwiSaverOption, isEditable = false }: Props
     )
 }
 
-export default KiwiSaverForm;
+export default SuperannuationForm;

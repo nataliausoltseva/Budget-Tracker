@@ -45,21 +45,21 @@ const IncomePage = ({ isHidden = false, showHistoryModal = false, storageData = 
     const {
         primaryIncome,
         incomePeriod,
-        hasKiwiSaver,
+        hasSuperannuation,
         hasSecondaryIncome,
         hasStudentLoan,
-        kiwiSaverOption,
+        superannuationOption,
         studentLoanRate,
         studentLoanThreshold,
         secondaryIncome,
         taxThresholds,
         onPrimaryIncomeChange,
         onIncomePeriodChange,
-        onKiwiSaverChange,
+        onSuperannuationChange,
         onStudentLoanChange,
         setHasSecondaryIncome,
         setHasStudentLoan,
-        setHasKiwiSaver,
+        setHasSuperannuation,
         setSecondaryIncome,
         calculateYearlyValues,
         onTaxThresholdsChange,
@@ -97,7 +97,7 @@ const IncomePage = ({ isHidden = false, showHistoryModal = false, storageData = 
         yearGrossPay,
         yearPaye,
         yearAcc,
-        yearKiwiSaver,
+        yearSuperannuation,
         yearStudentLoan,
         yearSecGrossPay,
         yearSecPaye,
@@ -105,12 +105,12 @@ const IncomePage = ({ isHidden = false, showHistoryModal = false, storageData = 
 
     const onCalculate = (tableHeader: IncomeTableHeader) => {
         setHasCalculated(true);
-        appState?.setTotalIncome(yearGrossPay + yearSecGrossPay - yearPaye - yearAcc - (hasKiwiSaver ? yearKiwiSaver : 0) - (hasStudentLoan ? yearStudentLoan : 0) - yearSecPaye);
+        appState?.setTotalIncome(yearGrossPay + yearSecGrossPay - yearPaye - yearAcc - (hasSuperannuation ? yearSuperannuation : 0) - (hasStudentLoan ? yearStudentLoan : 0) - yearSecPaye);
         populateTableRows({
             yearGrossPay,
             yearPaye,
             yearAcc,
-            yearKiwiSaver: hasKiwiSaver ? yearKiwiSaver : 0,
+            yearSuperannuation: hasSuperannuation ? yearSuperannuation : 0,
             yearStudentLoan: hasStudentLoan ? yearStudentLoan : 0,
             yearSecGrossPay: hasSecondaryIncome ? yearSecGrossPay : 0,
             yearSecPaye: hasSecondaryIncome ? yearSecPaye : 0,
@@ -120,7 +120,7 @@ const IncomePage = ({ isHidden = false, showHistoryModal = false, storageData = 
         populateData({
             yearPaye,
             yearAcc,
-            yearKiwiSaver: hasKiwiSaver ? yearKiwiSaver : 0,
+            yearSuperannuation: hasSuperannuation ? yearSuperannuation : 0,
             yearStudentLoan: hasStudentLoan ? yearStudentLoan : 0,
             yearSecPaye: hasSecondaryIncome ? yearSecPaye : 0,
             colors: COLORS,
@@ -155,7 +155,7 @@ const IncomePage = ({ isHidden = false, showHistoryModal = false, storageData = 
     }
 
     const onCloseFilter = () => {
-        if (!hasKiwiSaver && !hasSecondaryIncome && !hasStudentLoan) {
+        if (!hasSuperannuation && !hasSecondaryIncome && !hasStudentLoan) {
             Animated.timing(rotateValue, {
                 toValue: 0,
                 duration: 150,
@@ -186,8 +186,8 @@ const IncomePage = ({ isHidden = false, showHistoryModal = false, storageData = 
             currency: selectedCurrency,
             amount: primaryIncomeHolder.current === "" ? 0 : parseFloat(primaryIncomeHolder.current),
             frequency: incomePeriod,
-            ...hasKiwiSaver && {
-                kiwiSaver: kiwiSaverOption,
+            ...hasSuperannuation && {
+                superannuation: superannuationOption,
             },
             ...hasStudentLoan && {
                 studentLoanRate,
@@ -223,8 +223,8 @@ const IncomePage = ({ isHidden = false, showHistoryModal = false, storageData = 
         primaryIncomeHolder.current = item.amount.toString();
         setHasSecondaryIncome(!!item?.secondaryIncome);
         setSecondaryIncome(item?.secondaryIncome || 0);
-        setHasKiwiSaver(!!item?.kiwiSaver);
-        onKiwiSaverChange(item?.kiwiSaver || 0);
+        setHasSuperannuation(!!item?.superannuation);
+        onSuperannuationChange(item?.superannuation || 0);
         setHasStudentLoan(!!item.studentLoanRate || !!item.studentLoanThreshold);
         onStudentLoanChange(item?.studentLoanRate || 0, item?.studentLoanThreshold || 0);
         onCloseFilter();
@@ -270,16 +270,16 @@ const IncomePage = ({ isHidden = false, showHistoryModal = false, storageData = 
                     <Animated.View style={{ transform: [{ rotate: positionInterPol }] }}>
                         <FilterIcon
                             onPress={onShowFilter}
-                            color={getMainColour(appState.isDarkMode, hasKiwiSaver || hasSecondaryIncome || hasSecondaryIncome)}
+                            color={getMainColour(appState.isDarkMode, hasSuperannuation || hasSecondaryIncome || hasSecondaryIncome)}
                         />
                     </Animated.View>
                     {showFilter && (
                         <FilterModal
                             onClose={onCloseFilter}
-                            hasKiwiSaver={hasKiwiSaver}
-                            setHasKiwiSaver={setHasKiwiSaver}
-                            kiwiSaverOption={kiwiSaverOption}
-                            onKiwiSaverChange={onKiwiSaverChange}
+                            hasSuperannuation={hasSuperannuation}
+                            setHasSuperannuation={setHasSuperannuation}
+                            superannuationOption={superannuationOption}
+                            onSuperannuationChange={onSuperannuationChange}
                             hasStudentLoan={hasStudentLoan}
                             setHasStudentLoan={setHasStudentLoan}
                             studentLoanRate={studentLoanRate}

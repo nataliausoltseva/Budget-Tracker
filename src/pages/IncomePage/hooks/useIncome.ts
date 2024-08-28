@@ -39,7 +39,7 @@ export const ACC = {
 }
 
 const useIncome = () => {
-    const [hasKiwiSaver, setHasKiwiSaver] = useState(false);
+    const [hasSuperannuation, setHasSuperannuation] = useState(false);
     const [hasStudentLoan, setHasStudentLoan] = useState(false);
     const [hasSecondaryIncome, setHasSecondaryIncome] = useState(false);
 
@@ -47,7 +47,7 @@ const useIncome = () => {
     const [incomePeriod, setIncomePeriod] = useState(incomePeriods[0]);
     const isIncomePeriodAuto = useRef(true)
 
-    const [kiwiSaverOption, setKiwiSaverOption] = useState(3);
+    const [superannuationOption, setSuperannuationOption] = useState(3);
 
     const [studentLoanRate, setStudentLoanRate] = useState(12)
     const [studentLoanThreshold, setStudentLoanThreshold] = useState(24128);
@@ -71,12 +71,12 @@ const useIncome = () => {
         isIncomePeriodAuto.current = period.value === 'auto';
     }
 
-    const calculateYearKiwiSaver = (yearGrossPay: number) => {
-        return yearGrossPay * kiwiSaverOption / 100;
+    const calculateYearSuperannuation = (yearGrossPay: number) => {
+        return yearGrossPay * superannuationOption / 100;
     }
 
-    const onKiwiSaverChange = (rate: number) => {
-        setKiwiSaverOption(rate);
+    const onSuperannuationChange = (rate: number) => {
+        setSuperannuationOption(rate);
     }
 
     const calculateYearStudentLoan = (yearGrossPay: number) => {
@@ -172,14 +172,14 @@ const useIncome = () => {
         const yearPrimaryPaye = calculateYearlyPaye(yearPrimaryGrossPay);
 
         const yearAcc = calculcateYearAcc(yearPrimaryGrossPay);
-        const yearKiwiSaver = calculateYearKiwiSaver(yearPrimaryGrossPay);
+        const yearSuperannuation = calculateYearSuperannuation(yearPrimaryGrossPay);
         const yearStudentLoan = calculateYearStudentLoan(yearPrimaryGrossPay);
 
         return {
             yearGrossPay: yearPrimaryGrossPay,
             yearPaye: yearPrimaryPaye,
             yearAcc,
-            yearKiwiSaver,
+            yearSuperannuation,
             yearStudentLoan,
             yearSecGrossPay: secondaryIncome,
             yearSecPaye: yearSecondaryPaye
@@ -219,22 +219,22 @@ const useIncome = () => {
     return {
         primaryIncome,
         incomePeriod,
-        hasKiwiSaver,
+        hasSuperannuation,
         hasStudentLoan,
         hasSecondaryIncome,
-        kiwiSaverOption,
+        superannuationOption,
         studentLoanRate,
         studentLoanThreshold,
         secondaryIncome,
         taxThresholds,
         onPrimaryIncomeChange,
         onIncomePeriodChange,
-        onKiwiSaverChange,
+        onSuperannuationChange,
         onStudentLoanChange,
-        setHasKiwiSaver,
+        setHasSuperannuation,
         setHasStudentLoan,
         setHasSecondaryIncome,
-        setKiwiSaverOption,
+        setSuperannuationOption,
         setSecondaryIncome,
         calculateYearlyValues,
         onTaxThresholdsChange,
