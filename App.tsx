@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { SafeAreaView, ScrollView, View, KeyboardAvoidingView } from 'react-native';
+import { SafeAreaView, ScrollView, View, KeyboardAvoidingView, StyleSheet } from 'react-native';
 
 import IncomePage from './src/pages/IncomePage/IncomePage';
 import BudgetPage from './src/pages/BudgetPage/BudgetPage';
@@ -96,45 +96,68 @@ function App(): React.JSX.Element {
   const hasHistoryButton = (TABS[selectedIndex].key === 'income' && incomeData.length > 0) ||
     (TABS[selectedIndex].key === 'budget' && budgetData.length > 0);
 
+  const styles = StyleSheet.create({
+    container: {
+      backgroundColor: isDarkMode ? '#443472' : "white",
+      height: "100%"
+    },
+    scrollViewContainer: {
+      margin: 20,
+      flexGrow: 1
+    },
+    historyContainer: {
+      flexDirection: 'row',
+      width: "100%",
+      justifyContent: hasHistoryButton ? "space-between" : 'flex-end',
+      alignItems: "center"
+    },
+    historyButton: {
+      flexDirection: "row",
+      padding: 8,
+      marginLeft: 10,
+      borderRadius: 2
+    }
+  });
+
   return (
     <SafeAreaView>
       <KeyboardAvoidingView>
-          <AppContextProvider>
-            <SafeAreaView style={{ backgroundColor: isDarkMode ? '#443472' : "white", height: "100%" }}>
-              <TopNavigationBar tabs={TABS} onSelect={setSelectedIndex} selectedIndex={selectedIndex} />
-              <ScrollView style={{ margin: 20, flexGrow: 1 }}>
-                <IncomePage
-                  isHidden={TABS[selectedIndex].key !== 'income'}
-                  showHistoryModal={showHistoryModal === 'income'}
-                  storageData={incomeData}
-                  onCloseModal={() => setShowHistoryModal('')}
-                  onDeleteStorageItem={onDeleteStorageItem}
-                  onSaveHistory={getIncomeData}
+        <AppContextProvider>
+          <SafeAreaView style={styles.container}>
+            <TopNavigationBar tabs={TABS} onSelect={setSelectedIndex} selectedIndex={selectedIndex} />
+            <ScrollView style={styles.scrollViewContainer}>
+              <IncomePage
+                isHidden={TABS[selectedIndex].key !== 'income'}
+                showHistoryModal={showHistoryModal === 'income'}
+                storageData={incomeData}
+                onCloseModal={() => setShowHistoryModal('')}
+                onDeleteStorageItem={onDeleteStorageItem}
+                onSaveHistory={getIncomeData}
+              />
+              <BudgetPage
+                isHidden={TABS[selectedIndex].key !== 'budget'}
+                showHistoryModal={showHistoryModal === 'budget'}
+                storageData={budgetData}
+                onCloseHistoryModal={() => setShowHistoryModal('')}
+                onDeleteStorageItem={onDeleteStorageItem}
+                onSaveHistory={getBudgetData}
+              />
+              <SavingGoalsPage isHidden={TABS[selectedIndex].key !== 'savingGoals'} />
+              <InvestmentPage isHidden={TABS[selectedIndex].key !== 'investment'} />
+            </ScrollView>
+            <View style={styles.historyContainer}>
+              {hasHistoryButton && (
+                <Button
+                  containerStyle={styles.historyButton}
+                  onPress={() => setShowHistoryModal(TABS[selectedIndex].key)}
+                  Icon={HistoryIcon}
+                  label='OLD CALCULATIONS'
                 />
-                <BudgetPage
-                  isHidden={TABS[selectedIndex].key !== 'budget'}
-                  showHistoryModal={showHistoryModal === 'budget'}
-                  storageData={budgetData}
-                  onCloseHistoryModal={() => setShowHistoryModal('')}
-                  onDeleteStorageItem={onDeleteStorageItem}
-                  onSaveHistory={getBudgetData}
-                />
-                <SavingGoalsPage isHidden={TABS[selectedIndex].key !== 'savingGoals'} />
-                <InvestmentPage isHidden={TABS[selectedIndex].key !== 'investment'} />
-              </ScrollView>
-              <View style={{ flexDirection: 'row', width: "100%", justifyContent: hasHistoryButton ? "space-between" : 'flex-end', alignItems: "center" }}>
-                {hasHistoryButton && (
-                  <Button
-                    containerStyle={{ flexDirection: "row", padding: 8, marginLeft: 10, borderRadius: 2 }}
-                    onPress={() => setShowHistoryModal(TABS[selectedIndex].key)}
-                    Icon={HistoryIcon}
-                    label='OLD CALCULATIONS'
-                  />
-                )}
-                <DarkModeToggle onToggle={onModeChange} />
-              </View>
-            </SafeAreaView>
-          </AppContextProvider>
+              )}
+              <DarkModeToggle onToggle={onModeChange} />
+            </View>
+          </SafeAreaView>
+        </AppContextProvider>
       </KeyboardAvoidingView>
     </SafeAreaView >
   );

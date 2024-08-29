@@ -1,5 +1,5 @@
 import { useContext } from "react"
-import { StyleProp, TouchableOpacity, ViewStyle } from "react-native";
+import { StyleProp, StyleSheet, TouchableOpacity, ViewStyle } from "react-native";
 
 import { AppContext } from "../context/AppContext"
 import CustomText from "./CustomText";
@@ -13,13 +13,22 @@ type Props = {
 
 const Button = ({ onPress, Icon, label = "", containerStyle, }: Props) => {
     const appState = useContext(AppContext);
+
+    const styles = StyleSheet.create({
+        label: {
+            marginLeft: 10
+        },
+        container: {
+            backgroundColor: appState.isDarkMode ? "#A78DFF" : "#01B0E6"
+        }
+    });
     return (
-        <TouchableOpacity style={[{ backgroundColor: appState.isDarkMode ? "#A78DFF" : "#01B0E6" }, containerStyle]} onPress={onPress}>
+        <TouchableOpacity style={[styles.container, containerStyle]} onPress={onPress}>
             {Icon && (
                 <Icon />
             )}
             {label && (
-                <CustomText style={{ marginLeft: 10 }}>{label}</CustomText>
+                <CustomText style={styles.label}>{label}</CustomText>
             )}
         </TouchableOpacity>
     )

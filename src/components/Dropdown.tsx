@@ -55,16 +55,30 @@ const Dropdown: FC<Props> = ({ onSelect, value, list, width = null }) => {
             shadowColor: appState.isDarkMode ? "white" : "black",
             elevation: 2,
         },
+        text: {
+            textAlign: "center"
+        },
+        listContianer: {
+            flex: 1
+        },
+        item: {
+            height: 40,
+            textAlign: "center",
+            paddingTop: 10
+        },
+        list: {
+            maxHeight: 40 * Math.min(list.length, 4)
+        }
     });
 
     return (
         <SafeAreaView style={styles.container}>
             <TouchableOpacity ref={dropdownRef} onPress={openDropdown} style={styles.dropdown}>
-                <CustomText style={{ textAlign: "center" }}>{value}</CustomText>
+                <CustomText style={styles.text}>{value}</CustomText>
             </TouchableOpacity>
 
             <Modal visible={modalVisible} transparent={true}>
-                <TouchableOpacity onPress={() => setModalVisible(false)} style={{ flex: 1 }}>
+                <TouchableOpacity onPress={() => setModalVisible(false)} style={styles.listContianer}>
                     <View
                         style={[
                             styles.modalContent,
@@ -78,13 +92,13 @@ const Dropdown: FC<Props> = ({ onSelect, value, list, width = null }) => {
                             data={list}
                             renderItem={(item) => (
                                 <CustomText
-                                    style={[{ height: 40, textAlign: "center", paddingTop: 10 }]}
+                                    style={styles.item}
                                     onPress={() => handleSelectItem(item.index)}
                                 >
                                     {item.item}
                                 </CustomText>
                             )}
-                            style={{ maxHeight: 40 * Math.min(list.length, 4) }}
+                            style={styles.list}
                         />
                     </View>
                 </TouchableOpacity>

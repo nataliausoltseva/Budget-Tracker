@@ -34,24 +34,14 @@ const DatePicker = ({ onChange, value, min, style }: Props) => {
                     supportedOrientations={['portrait']}
                     onRequestClose={() => setShow(false)}
                 >
-                    <View style={{ flex: 1 }}>
+                    <View style={styles.wrapper}>
                         <TouchableHighlight
-                            style={{
-                                flex: 1,
-                                alignItems: "flex-end",
-                                flexDirection: 'row'
-                            }}
+                            style={styles.clickableContainer}
                             activeOpacity={1}
                             onPress={() => setShow(false)}
                         >
-                            <View
-                                style={{
-                                    backgroundColor: "#FFFFFF",
-                                    height: 256,
-                                    overflow: "hidden"
-                                }}
-                            >
-                                <View style={{ marginTop: 20 }}>
+                            <View style={styles.contianer}>
+                                <View style={styles.picker}>
                                     <DateTimePicker
                                         value={date}
                                         mode={"date"}
@@ -79,6 +69,22 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10,
         borderColor: 'gray',
         borderWidth: 1
+    },
+    picker: {
+        marginTop: 20
+    },
+    contianer: {
+        backgroundColor: "#FFFFFF",
+        height: 256,
+        overflow: "hidden"
+    },
+    clickableContainer: {
+        flex: 1,
+        alignItems: "flex-end",
+        flexDirection: 'row'
+    },
+    wrapper: {
+        flex: 1
     }
 
 });
