@@ -45,9 +45,10 @@ const FilterModal = ({
     taxThresholds,
     onTaxThresholdsChange,
 }: Props) => {
+
     return (
-        <CustomModal onClose={onClose} isVisible={true} style={{ gap: 10 }}>
-            <View style={{ flexDirection: "row" }}>
+        <CustomModal onClose={onClose} isVisible={true} style={styles.modal}>
+            <View style={styles.container}>
                 <CheckBox
                     isChecked={hasSuperannuation}
                     onPress={nextChecked => setHasSuperannuation(nextChecked)}
@@ -73,7 +74,7 @@ const FilterModal = ({
                     isEditable={hasStudentLoan}
                 />
             </View>
-            <View style={{ flexDirection: "row" }}>
+            <View style={styles.container}>
                 <CheckBox
                     isChecked={hasSecondaryIncome}
                     onPress={nextChecked => setHasSecondaryIncome(nextChecked)}
@@ -85,13 +86,13 @@ const FilterModal = ({
                     isEditable={hasSecondaryIncome}
                 />
             </View>
-            <View style={{ flexDirection: 'row', justifyContent: "space-evenly", marginTop: 20 }}>
+            <View style={styles.taxBracketsContainer}>
                 <View>
                     <CustomText>Income Thresholds</CustomText>
                     {taxThresholds.map((threshold: TaxThreshold, index: number) => (
                         <CustomInput
                             key={`${index}-thresholds`}
-                            style={[styles.input, { textAlign: "center" }]}
+                            style={[styles.input, styles.inputText]}
                             value={index === taxThresholds.length - 1 ? (taxThresholds[taxThresholds.length - 2].max + 1).toString() + "+" : threshold.max.toString()}
                             onChange={(e) => onTaxThresholdsChange(e, index, false)}
                             isEditable={index < taxThresholds.length - 1}
@@ -102,16 +103,16 @@ const FilterModal = ({
                 <View>
                     <CustomText>Tax Rates</CustomText>
                     {taxThresholds.map((threshold: TaxThreshold, index: number) => (
-                        <View style={{ position: "relative", justifyContent: "center" }}>
+                        <View style={styles.taxBracketWrapper}>
                             <CustomInput
                                 key={`${index}-rate`}
-                                style={[styles.input, { textAlign: "center" }]}
+                                style={[styles.input, styles.inputText]}
                                 value={threshold.rate}
                                 onChange={(e) => onTaxThresholdsChange(e, index, true)}
                                 isNumeric
                             />
                             {threshold.rate && (
-                                <View style={{ position: "absolute", right: 0 }}>
+                                <View style={styles.percent}>
                                     <CustomText>%</CustomText>
                                 </View>
                             )}
@@ -125,9 +126,32 @@ const FilterModal = ({
 
 export default FilterModal;
 
+
 const styles = StyleSheet.create({
+    modal: {
+        gap: 10
+    },
+    container: {
+        flexDirection: "row"
+    },
+    taxBracketsContainer: {
+        flexDirection: 'row',
+        justifyContent: "space-evenly",
+        marginTop: 20
+    },
+    inputText: {
+        textAlign: "center"
+    },
     input: {
         marginLeft: 10,
         width: 70
+    },
+    taxBracketWrapper: {
+        position: "relative",
+        justifyContent: "center"
+    },
+    percent: {
+        position: "absolute",
+        right: 0
     }
 });

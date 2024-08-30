@@ -25,18 +25,45 @@ const HistoryItem = ({ item, onDelete, onUse }: Props) => {
         icon: {
             width: 20,
             transform: [{ rotate: `${isExpanded ? 180 : 0}deg` }]
+        },
+        container: {
+            width: '100%'
+        },
+        topContainer: {
+            flexDirection: 'row',
+            alignItems: "center"
+        },
+        topWrapper: {
+            flexGrow: 1,
+            flexDirection: 'row',
+            justifyContent: "space-between",
+            marginLeft: 10
+        },
+        actions: {
+            flexDirection: 'row'
+        },
+        expense: {
+            flexDirection: 'row',
+            alignItems: "center",
+            justifyContent: "space-between"
+        },
+        divider: {
+            height: 1,
+            backgroundColor: appState.isDarkMode ? "white" : '#707070',
+            marginBottom: 20,
+            marginTop: 5
         }
     });
 
     return (
         <>
-            <View style={{ width: '100%' }}>
-                <View style={{ flexDirection: 'row', alignItems: "center" }}>
+            <View style={style.container}>
+                <View style={style.topContainer}>
                     <ChevronIcon onPress={onToggleExpand} style={style.icon} />
-                    <View style={{ flexGrow: 1, flexDirection: 'row', justifyContent: "space-between", marginLeft: 10 }} >
+                    <View style={style.topWrapper} >
                         <CustomText>{item.label}</CustomText>
                         <CustomText>{item.date}</CustomText>
-                        <View style={{ flexDirection: 'row' }}>
+                        <View style={style.actions}>
                             <TrashIcon onPress={onDelete} />
                             <UseIcon onPress={onUse} colour={appState.isDarkMode ? "#04E2C7" : "#149890"} />
                         </View>
@@ -45,7 +72,7 @@ const HistoryItem = ({ item, onDelete, onUse }: Props) => {
                 {isExpanded && (
                     <View>
                         {item.expenses.map((expense, index) => (
-                            <View key={index} style={{ flexDirection: 'row', alignItems: "center", justifyContent: "space-between" }}>
+                            <View key={index} style={style.expense}>
                                 <CustomText>{expense.name}</CustomText>
                                 <CustomText>{expense.value} / {expense.frequency.name}</CustomText>
                             </View>
@@ -54,7 +81,7 @@ const HistoryItem = ({ item, onDelete, onUse }: Props) => {
                 )}
 
             </View>
-            <View style={{ height: 1, backgroundColor: appState.isDarkMode ? "white" : '#707070', marginBottom: 20, marginTop: 5 }} />
+            <View style={style.divider} />
         </>
 
     )

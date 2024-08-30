@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { Button, SafeAreaView, View } from 'react-native';
+import { Button, SafeAreaView, StyleSheet, View } from 'react-native';
 import { PieChart } from 'react-native-gifted-charts';
 import usePieChart from '../hooks/usePieChart';
 import Dropdown from '../../../components/Dropdown';
@@ -46,9 +46,53 @@ const PieChartWithSelection = ({ expenses, onAddToSavings }: Props) => {
         setFrequency(CHART_FREQUENCY[index]);
     }
 
+    const styles = StyleSheet.create({
+        container: {
+            flexDirection: 'row'
+        },
+        pieContainer: {
+            alignItems: 'center'
+        },
+        pieLabel: {
+            justifyContent: 'center',
+            alignItems: 'center'
+        },
+        labelText: {
+            fontSize: 16,
+            fontWeight: 'bold'
+        },
+        subLabelText: {
+            fontSize: 14
+        },
+        listContainer: {
+            alignItems: "flex-start"
+        },
+        itemWrapper: {
+            flexDirection: 'row',
+            alignItems: 'center'
+        },
+        itemIndicator: {
+            width: 12,
+            height: 12,
+            borderRadius: 50,
+            marginRight: 10,
+            borderColor: 'white',
+            borderWidth: 1
+        },
+        itemLabel: {
+            flexWrap: "wrap",
+            maxWidth: 200
+        },
+        actions: {
+            flexGrow: 1,
+            flexDirection: "column",
+            justifyContent: "space-between"
+        }
+    });
+
     return (
-        <View style={{ flexDirection: 'row' }}>
-            <View style={{ alignItems: 'center' }}>
+        <View style={styles.container}>
+            <View style={styles.pieContainer}>
                 <PieChart
                     data={pieData}
                     labelsPosition='outward'
@@ -57,25 +101,24 @@ const PieChartWithSelection = ({ expenses, onAddToSavings }: Props) => {
                     innerRadius={60}
                     innerCircleColor={appState.isDarkMode ? "#443472" : 'white'}
                     centerLabelComponent={() => (
-                        <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-                            <CustomText
-                                style={{ fontSize: 16, fontWeight: 'bold' }}>
+                        <View style={styles.pieLabel}>
+                            <CustomText style={styles.labelText}>
                                 ${Number(leftOver).toFixed(2)}
                             </CustomText>
-                            <CustomText style={{ fontSize: 14 }}>Left from income</CustomText>
+                            <CustomText style={styles.subLabelText}>Left from income</CustomText>
                         </View>
                     )}
                 />
-                <View style={{ alignItems: "flex-start" }}>
+                <View style={styles.listContainer}>
                     {pieData.map((item: ExpenseItem, index: number) => (
-                        <SafeAreaView style={{ flexDirection: 'row', alignItems: 'center' }} key={item.id + "-" + index}>
-                            <View style={{ backgroundColor: item.color, width: 12, height: 12, borderRadius: 50, marginRight: 10, borderColor: 'white', borderWidth: 1 }} />
-                            <CustomText key={item.id} style={{ flexWrap: "wrap", maxWidth: 200 }}>{item.name}: ${Number(item.value).toFixed(2)}</CustomText>
+                        <SafeAreaView style={styles.itemWrapper} key={item.id + "-" + index}>
+                            <View style={[styles.itemIndicator, { backgroundColor: item.color }]} />
+                            <CustomText key={item.id} style={styles.itemLabel}>{item.name}: ${Number(item.value).toFixed(2)}</CustomText>
                         </SafeAreaView>
                     ))}
                 </View>
             </View>
-            <View style={{ flexGrow: 1, flexDirection: "column", justifyContent: "space-between" }}>
+            <View style={styles.actions}>
                 <Dropdown
                     onSelect={onFrequencySelect}
                     value={frequency.name}

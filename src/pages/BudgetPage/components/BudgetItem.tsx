@@ -49,13 +49,17 @@ const BudgetItem = ({ item, onDelete, onSave }: Props) => {
             backgroundColor: appState.isDarkMode ? "white" : '#707070',
             marginTop: 10,
             marginBottom: 20
+        },
+        labelWrapper: {
+            flexDirection: 'row',
+            alignItems: "center"
         }
     });
 
     return (
         <>
             <View style={styles.container}>
-                <View style={{ flexDirection: 'row', alignItems: "center" }}>
+                <View style={styles.labelWrapper}>
                     <View style={styles.diamond} />
                     <CustomText style={styles.text}>{item.name}</CustomText>
                 </View>

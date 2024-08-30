@@ -241,10 +241,35 @@ const IncomePage = ({ isHidden = false, showHistoryModal = false, storageData = 
             width: 100,
             backgroundColor: appState.isDarkMode ? '#443472' : "white"
         },
+        container: {
+            display: isHidden ? "none" : "flex"
+        },
+        incomeInput: {
+            justifyContent: "flex-end"
+        },
+        actions: {
+            flexDirection: "row",
+            justifyContent: "center",
+            marginTop: 35,
+            marginBottom: 35
+        },
+        historySaveButton: {
+            position: "absolute",
+            right: 0
+        },
+        simpleDataContainer: {
+            flexDirection: "row",
+            justifyContent: "space-between",
+            marginBottom: 35
+        },
+        saveModalButton: {
+            width: 150,
+            marginTop: 15
+        }
     });
 
     return (
-        <View style={{ display: isHidden ? "none" : "flex" }}>
+        <View style={styles.container}>
             <View style={styles.incomeView}>
                 <Dropdown
                     onSelect={(index: number) => setSelecctedCurrency(CURRENCIES[index])}
@@ -252,7 +277,7 @@ const IncomePage = ({ isHidden = false, showHistoryModal = false, storageData = 
                     list={CURRENCIES}
                     width={110}
                 />
-                <View style={{ justifyContent: "flex-end" }}>
+                <View style={styles.incomeInput}>
                     <CustomInput
                         value={primaryIncomeHolder.current}
                         onChange={onIncomeAmountChange}
@@ -295,7 +320,7 @@ const IncomePage = ({ isHidden = false, showHistoryModal = false, storageData = 
                     )}
                 </View>
             </View>
-            <View style={{ flexDirection: "row", justifyContent: "center", marginTop: 35, marginBottom: 35 }}>
+            <View style={styles.actions}>
                 <Button
                     title='Calculate'
                     onPress={() => onCalculate(tableHeader)}
@@ -303,12 +328,12 @@ const IncomePage = ({ isHidden = false, showHistoryModal = false, storageData = 
                     color={appState.isDarkMode ? "#A78DFF" : "#01B0E6"}
                 />
                 {hasCalculated && (
-                    <View style={{ position: "absolute", right: 0 }}>
+                    <View style={styles.historySaveButton}>
                         <Button title='Save' onPress={() => setShowSaveModal(true)} color={appState.isDarkMode ? "#A78DFF" : "#01B0E6"} />
                     </View>
                 )}
             </View>
-            <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: 35 }}>
+            <View style={styles.simpleDataContainer}>
                 <CheckBox
                     isChecked={isSimpleTable}
                     onPress={updateTableRows}
@@ -335,7 +360,7 @@ const IncomePage = ({ isHidden = false, showHistoryModal = false, storageData = 
                         onChange={onLabelChange}
                         value={dataLabel}
                     />
-                    <View style={{ width: 150, marginTop: 15 }}>
+                    <View style={styles.saveModalButton}>
                         <Button
                             title="Save"
                             onPress={onSaveData}
