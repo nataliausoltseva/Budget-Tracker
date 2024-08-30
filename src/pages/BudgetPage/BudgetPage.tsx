@@ -90,7 +90,7 @@ const BudgetPage = ({ isHidden = false, showHistoryModal = false, storageData = 
 
     const renderButton = () => {
         return (
-            <View style={{ width: 50 }}>
+            <View style={styles.button}>
                 <Button
                     title={"Add"}
                     onPress={() => setShowModal(true)}
@@ -142,8 +142,45 @@ const BudgetPage = ({ isHidden = false, showHistoryModal = false, storageData = 
         onCloseHistoryModal();
     }
 
+    const styles = StyleSheet.create({
+        spacer: {
+            marginBottom: 20
+        },
+        button: {
+            width: 50
+        },
+        container: {
+            display: isHidden ? "none" : "flex",
+            flexGrow: 1
+        },
+        saveModalButton: {
+            width: 150,
+            marginTop: 15
+        },
+        saveContainerButton: {
+            alignItems: "flex-end",
+            marginBottom: 20
+        },
+        saveWrapperButton: {
+            position: "relative",
+            width: 100
+        },
+        buttonWrapper: {
+            alignItems: "flex-end",
+            marginTop: 20
+        },
+        emptyMessageContainer: {
+            justifyContent: "center",
+            flexGrow: 1,
+            alignItems: "center"
+        },
+        emptyMessage: {
+            marginBottom: 20
+        }
+    });
+
     return (
-        <View style={{ display: isHidden ? "none" : "flex", flexGrow: 1 }}>
+        <View style={styles.container}>
             {showMoal && (
                 <BudgetItemModal
                     onSave={onSave}
@@ -160,7 +197,7 @@ const BudgetPage = ({ isHidden = false, showHistoryModal = false, storageData = 
                         onChange={onLabelChange}
                         value={dataLabel}
                     />
-                    <View style={{ width: 150, marginTop: 15 }}>
+                    <View style={styles.saveModalButton}>
                         <Button
                             title="Save"
                             onPress={onSaveData}
@@ -171,8 +208,8 @@ const BudgetPage = ({ isHidden = false, showHistoryModal = false, storageData = 
             )}
             {expenses.length ? (
                 <>
-                    <View style={{ alignItems: "flex-end", marginBottom: 20 }}>
-                        <View style={{ position: "relative", width: 100 }}>
+                    <View style={styles.saveContainerButton}>
+                        <View style={styles.saveWrapperButton}>
                             <Button title='Save' onPress={() => setShowSaveModal(true)} color={appState.isDarkMode ? "#A78DFF" : "#01B0E6"} />
                         </View>
                     </View>
@@ -187,14 +224,14 @@ const BudgetPage = ({ isHidden = false, showHistoryModal = false, storageData = 
                                 onSave={(item: ExpenseItem) => onChangeExpense(index, item)}
                             />
                         ))}
-                        <View style={{ alignItems: "flex-end", marginTop: 20 }}>
+                        <View style={styles.buttonWrapper}>
                             {renderButton()}
                         </View>
                     </ScrollView>
                 </>
             ) : (
-                <View style={{ justifyContent: "center", flexGrow: 1, alignItems: "center" }}>
-                    <CustomText style={{ marginBottom: 20 }}>Add you first expense</CustomText>
+                <View style={styles.emptyMessageContainer}>
+                    <CustomText style={styles.emptyMessage}>Add you first expense</CustomText>
                     {renderButton()}
                 </View>
             )}
@@ -211,9 +248,3 @@ const BudgetPage = ({ isHidden = false, showHistoryModal = false, storageData = 
 }
 
 export default memo(BudgetPage);
-
-const styles = StyleSheet.create({
-    spacer: {
-        marginBottom: 20
-    },
-});

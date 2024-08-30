@@ -80,10 +80,19 @@ const TopNavigationBar = ({ tabs, onSelect, selectedIndex }: Props) => {
             backgroundColor: getTabColor(appState.isDarkMode, true),
             borderRadius: 30
         },
+        container: {
+            flexDirection: "row"
+        },
+        text: {
+            height: 40,
+            paddingTop: 10,
+            textAlign: "center",
+            flexGrow: 1
+        }
     });
 
     return (
-        <View style={{ flexDirection: "row" }}>
+        <View style={styles.container}>
             {tabs.map((tab: PanelTab, index: number) => (
                 <TouchableOpacity
                     key={index}
@@ -94,7 +103,7 @@ const TopNavigationBar = ({ tabs, onSelect, selectedIndex }: Props) => {
                 >
                     <CustomText
                         key={index}
-                        style={{ height: 40, paddingTop: 10, textAlign: "center", flexGrow: 1 }}
+                        style={styles.text}
                         color={getTabColor(appState.isDarkMode, selectedIndex === index)}
                     >
                         {tab.label}
