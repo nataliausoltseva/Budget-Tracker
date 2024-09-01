@@ -1,5 +1,5 @@
 import React from 'react';
-import { View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { COLORS } from '../hooks/useIncome';
 import CustomText from '../../../components/CustomText';
 
@@ -8,16 +8,49 @@ type Props = {
 }
 
 const IncomeTable = ({ rows }: Props) => {
+
+    const styles = StyleSheet.create({
+        container: {
+            flexGrow: 1,
+            width: "100%"
+        },
+        row: {
+            position: "relative",
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            height: 50
+        },
+        indicator: {
+            width: 15,
+            height: 15, marginLeft: 5,
+            zIndex: 1,
+            transform: [{ rotate: "45deg" }]
+        },
+        label: {
+            marginLeft: 15
+        },
+        value: {
+            flexGrow: 1,
+            textAlign: "right",
+            marginRight: 10
+        },
+        divider: {
+            height: 1,
+            backgroundColor: '#707070'
+        }
+    })
+
     return (
-        <View style={{ flexGrow: 1, width: "100%" }}>
+        <View style={styles.container}>
             {rows.filter((row: RowIndicator) => !row.isHidden).map((row, index) => (
                 <React.Fragment key={index}>
-                    <View style={{ position: "relative", display: "flex", flexDirection: "row", alignItems: "center", height: 50 }}>
-                        <View style={{ width: 15, height: 15, marginLeft: 5, backgroundColor: COLORS[index], zIndex: 1, transform: [{ rotate: "45deg" }] }} />
-                        <CustomText style={{ marginLeft: 15 }}>{row.label}</CustomText>
-                        <CustomText style={{ flexGrow: 1, textAlign: "right", marginRight: 10 }}>{row.value.toString()}</CustomText>
+                    <View style={styles.row}>
+                        <View style={[styles.indicator, { backgroundColor: COLORS[index] }]} />
+                        <CustomText style={styles.label}>{row.label}</CustomText>
+                        <CustomText style={styles.value}>{row.value.toString()}</CustomText>
                     </View>
-                    <View style={{ height: 1, backgroundColor: '#707070' }} />
+                    <View style={styles.divider} />
                 </React.Fragment>
             ))}
         </View>

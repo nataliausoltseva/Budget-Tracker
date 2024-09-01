@@ -25,18 +25,48 @@ const HistoryItem = ({ item, onDelete, onUse }: Props) => {
         icon: {
             width: 20,
             transform: [{ rotate: `${isExpanded ? 180 : 0}deg` }]
+        },
+        container: {
+            width: '100%'
+        },
+        topContainer: {
+            flexDirection: 'row',
+            alignItems: "center"
+        },
+        title: {
+            flexGrow: 1,
+            flexDirection: 'row',
+            justifyContent: "space-between",
+            marginLeft: 10
+        },
+        actions: {
+            flexDirection: 'row'
+        },
+        flexCenterContainer: {
+            flexDirection: 'row',
+            alignItems: "center",
+            justifyContent: "space-between"
+        },
+        studentLoanContainer: {
+            marginLeft: 10
+        },
+        divider: {
+            height: 1,
+            backgroundColor: appState.isDarkMode ? "white" : '#707070',
+            marginBottom: 20,
+            marginTop: 5
         }
     });
 
     return (
         <>
-            <View style={{ width: '100%' }}>
-                <View style={{ flexDirection: 'row', alignItems: "center" }}>
+            <View style={style.container}>
+                <View style={style.topContainer}>
                     <ChevronIcon onPress={onToggleExpand} style={style.icon} />
-                    <View style={{ flexGrow: 1, flexDirection: 'row', justifyContent: "space-between", marginLeft: 10 }} >
+                    <View style={style.title} >
                         <CustomText>{item.label}</CustomText>
                         <CustomText>{item.date}</CustomText>
-                        <View style={{ flexDirection: 'row' }}>
+                        <View style={style.actions}>
                             <TrashIcon onPress={onDelete} />
                             <UseIcon onPress={onUse} colour={appState.isDarkMode ? "#04E2C7" : "#149890"} />
                         </View>
@@ -44,12 +74,12 @@ const HistoryItem = ({ item, onDelete, onUse }: Props) => {
                 </View>
                 {isExpanded && (
                     <View>
-                        <View style={{ flexDirection: 'row', alignItems: "center", justifyContent: "space-between" }}>
+                        <View style={style.flexCenterContainer}>
                             <CustomText>Amount</CustomText>
                             <CustomText>{item.currency} {item.amount} / {item.frequency.label}</CustomText>
                         </View>
                         {item.superannuation && (
-                            <View style={{ flexDirection: 'row', alignItems: "center", justifyContent: "space-between" }}>
+                            <View style={style.flexCenterContainer}>
                                 <CustomText>Superannuation</CustomText>
                                 <CustomText>{item.superannuation}%</CustomText>
                             </View>
@@ -57,12 +87,12 @@ const HistoryItem = ({ item, onDelete, onUse }: Props) => {
                         {(item.studentLoanRate || item.studentLoanThreshold) && (
                             <View>
                                 <CustomText>Student Loan:</CustomText>
-                                <View style={{ marginLeft: 10 }}>
-                                    <View style={{ flexDirection: 'row', alignItems: "center", justifyContent: "space-between" }}>
+                                <View style={style.studentLoanContainer}>
+                                    <View style={style.flexCenterContainer}>
                                         <CustomText>Rate:</CustomText>
                                         <CustomText>{item.studentLoanRate}%</CustomText>
                                     </View>
-                                    <View style={{ flexDirection: 'row', alignItems: "center", justifyContent: "space-between" }}>
+                                    <View style={style.flexCenterContainer}>
                                         <CustomText>Threshold:</CustomText>
                                         <CustomText>{item.studentLoanThreshold}%</CustomText>
                                     </View>
@@ -70,7 +100,7 @@ const HistoryItem = ({ item, onDelete, onUse }: Props) => {
                             </View>
                         )}
                         {item.secondaryIncome && (
-                            <View style={{ flexDirection: 'row', alignItems: "center", justifyContent: "space-between" }}>
+                            <View style={style.flexCenterContainer}>
                                 <CustomText>Secondary Income</CustomText>
                                 <CustomText>{item.currency} {item.secondaryIncome} / Year</CustomText>
                             </View>
@@ -79,7 +109,7 @@ const HistoryItem = ({ item, onDelete, onUse }: Props) => {
                 )}
 
             </View>
-            <View style={{ height: 1, backgroundColor: appState.isDarkMode ? "white" : '#707070', marginBottom: 20, marginTop: 5 }} />
+            <View style={style.divider} />
         </>
 
     )

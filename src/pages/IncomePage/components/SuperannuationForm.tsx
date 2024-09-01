@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { NativeSyntheticEvent, SafeAreaView, TextInputChangeEventData, View } from 'react-native';
+import { NativeSyntheticEvent, SafeAreaView, StyleSheet, TextInputChangeEventData, View } from 'react-native';
 import CustomInput from '../../../components/CustomInput';
 import CustomText from '../../../components/CustomText';
 
@@ -23,21 +23,34 @@ const SuperannuationForm = ({ option, setSuperannuationOption, isEditable = fals
         setSuperannuationOption(parseInt(e.nativeEvent.text));
     }
 
+    const styles = StyleSheet.create({
+        contianer: {
+            position: "relative",
+            justifyContent: 'center'
+        },
+        input: {
+            width: 50,
+            marginLeft: 10
+        },
+        percent: {
+            position: "absolute",
+            right: 0,
+            opacity: isEditable ? 1 : 0.3
+        }
+    })
+
     return (
         <SafeAreaView>
-            <View style={{ position: "relative", justifyContent: 'center' }}>
+            <View style={styles.contianer}>
                 <CustomInput
                     value={inputHolder.current}
                     onChange={onCustomOptionChange}
-                    style={{
-                        width: 50,
-                        marginLeft: 10
-                    }}
+                    style={styles.input}
                     isEditable={isEditable}
                     isNumeric
                 />
                 {inputHolder.current && (
-                    <View style={{ position: "absolute", right: 0, opacity: isEditable ? 1 : 0.3 }}>
+                    <View style={styles.percent}>
                         <CustomText>%</CustomText>
                     </View>
                 )}

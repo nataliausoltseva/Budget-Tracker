@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { BarChart } from 'react-native-gifted-charts';
 import useChart from '../hooks/useChart';
 import { AppContext } from '../../../context/AppContext';
@@ -14,8 +14,18 @@ const InvestmentChart = ({ item }: Props) => {
 
     const graphColor = appState.isDarkMode ? "white" : "black";
 
+    const styles = StyleSheet.create({
+        container: {
+            flexGrow: 1
+        },
+        color: {
+            color: graphColor
+        }
+
+    })
+
     return (
-        <View style={{ flexGrow: 1 }}>
+        <View style={styles.container}>
             <BarChart
                 width={340}
                 noOfSections={5}
@@ -25,12 +35,8 @@ const InvestmentChart = ({ item }: Props) => {
                 xAxisLabelsHeight={30}
                 yAxisColor={graphColor}
                 xAxisColor={graphColor}
-                yAxisTextStyle={{
-                    color: appState.isDarkMode ? "white" : "black"
-                }}
-                xAxisLabelTextStyle={{
-                    color: appState.isDarkMode ? "white" : "black"
-                }}
+                yAxisTextStyle={styles.color}
+                xAxisLabelTextStyle={styles.color}
             />
         </View>
     )
