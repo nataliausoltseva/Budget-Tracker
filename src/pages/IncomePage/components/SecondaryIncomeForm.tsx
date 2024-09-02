@@ -28,10 +28,7 @@ const SecondaryIncomeForm = ({ income, setIncome, isEditable = true }: Props) =>
                     value={secondaryIncomeHolder.current}
                     onChange={onIncomeChange}
                     isEditable={isEditable}
-                    style={{
-                        width: 80,
-                        marginLeft: 10
-                    }}
+                    style={styles.input}
                     isNumeric
                 />
             </View>
@@ -49,4 +46,8 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "space-between",
     },
+    input: {
+        width: 80,
+        marginLeft: 10
+    }
 });

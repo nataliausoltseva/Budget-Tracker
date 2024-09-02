@@ -49,23 +49,89 @@ const InvestmentItem = ({ item, onItemChange, onDelete }: Props) => {
         },
     });
 
+    const styles = StyleSheet.create({
+        container: {
+            flexDirection: "column",
+            marginBottom: 20,
+        },
+        goalContainer: {
+            flexDirection: 'row',
+            justifyContent: "space-between",
+            alignItems: "center",
+            height: 30,
+            marginBottom: 30
+        },
+        button: {
+            width: 20
+        },
+        dueDateContainer: {
+            flexDirection: "row"
+        },
+        timeLabel: {
+            color: "white"
+        },
+        time: {
+            backgroundColor: "#a3c2e3",
+        },
+        actionContainer: {
+            flexDirection: "row"
+        },
+        transactionsContainer: {
+            marginLeft: 20
+        },
+        topContainer: {
+            flexDirection: "row",
+            alignItems: "center"
+        },
+        topTitle: {
+            marginLeft: 15
+        },
+        countDownContainer: {
+            marginTop: 15
+        },
+        color: {
+            color: appState.isDarkMode ? "white" : "black"
+        },
+        expandedContainer: {
+            alignItems: "flex-start",
+            marginLeft: 35
+        },
+        row: {
+            flexDirection: "row",
+            justifyContent: "space-between",
+            width: "100%"
+        },
+        date: {
+            marginBottom: 10
+        },
+        divider: {
+            height: 1,
+            backgroundColor: appState.isDarkMode ? "white" : '#707070',
+            marginBottom: 20
+        },
+        buttonIcon: {
+            width: 20,
+            transform: [{ rotate: `${isExpanded ? 180 : 0}deg` }]
+        }
+    });
+
     return (
         <>
             <View>
                 <View style={styles.goalContainer}>
-                    <View style={{ flexDirection: "row", alignItems: "center" }}>
-                        <ChevronIcon onPress={onToggleExpand} style={buttonStyle(isExpanded).icon} />
-                        <CustomText style={{ marginLeft: 15 }}>{item.name}</CustomText>
+                    <View style={styles.topContainer}>
+                        <ChevronIcon onPress={onToggleExpand} style={styles.buttonIcon} />
+                        <CustomText style={styles.topTitle}>{item.name}</CustomText>
 
                     </View>
-                    <View style={{ marginTop: 15 }}>
+                    <View style={styles.countDownContainer}>
                         <CountDown
                             key={random}
                             until={seconds || 0}
                             size={15}
                             timeLabelStyle={themeStyles.timeLabel}
                             digitStyle={themeStyles.time}
-                            digitTxtStyle={{ color: appState.isDarkMode ? "white" : "black" }}
+                            digitTxtStyle={styles.color}
                         />
                     </View>
                     <View style={styles.actionContainer}>
@@ -74,24 +140,24 @@ const InvestmentItem = ({ item, onItemChange, onDelete }: Props) => {
                     </View>
                 </View>
                 {isExpanded && (
-                    <View style={{ alignItems: "flex-start", marginLeft: 35 }}>
-                        <View style={{ flexDirection: "row", justifyContent: "space-between", width: "100%" }}>
+                    <View style={styles.expandedContainer}>
+                        <View style={styles.row}>
                             <CustomText>Amount:</CustomText>
                             <CustomText>{item.amount.toString()}</CustomText>
                         </View>
-                        <View style={{ flexDirection: "row", justifyContent: "space-between", width: "100%" }}>
+                        <View style={styles.row}>
                             <CustomText>Rate:</CustomText>
                             <CustomText>{item.rate.toString()}%</CustomText>
                         </View>
-                        <View style={{ flexDirection: "row", justifyContent: "space-between", width: "100%" }}>
+                        <View style={styles.row}>
                             <CustomText>Term:</CustomText>
                             <CustomText>{item.term.toString()} {item.term > 1 ? `${item.termPeriod.name}s` : item.termPeriod.name}</CustomText>
                         </View>
-                        <View style={{ flexDirection: "row", justifyContent: "space-between", width: "100%" }}>
+                        <View style={styles.row}>
                             <CustomText>Tax Rate:</CustomText>
                             <CustomText>{item.taxRate.toString()}%</CustomText>
                         </View>
-                        <View style={{ flexDirection: "row", justifyContent: "space-between", width: "100%", marginBottom: 10 }}>
+                        <View style={[styles.row, styles.date]}>
                             <CustomText>Date:</CustomText>
                             <CustomText>{formatDate(item.startDate)}</CustomText>
                         </View>
@@ -106,49 +172,10 @@ const InvestmentItem = ({ item, onItemChange, onDelete }: Props) => {
                         onClose={() => setIsModalVisible(false)}
                     />
                 )}
-            </View>
-            <View style={{ height: 1, backgroundColor: appState.isDarkMode ? "white" : '#707070', marginBottom: 20 }} />
+            </View >
+            <View style={styles.divider} />
         </>
     )
 };
 
 export default InvestmentItem;
-
-const styles = StyleSheet.create({
-    container: {
-        flexDirection: "column",
-        marginBottom: 20,
-    },
-    goalContainer: {
-        flexDirection: 'row',
-        justifyContent: "space-between",
-        alignItems: "center",
-        height: 30,
-        marginBottom: 30
-    },
-    button: {
-        width: 20
-    },
-    dueDateContainer: {
-        flexDirection: "row"
-    },
-    timeLabel: {
-        color: "white"
-    },
-    time: {
-        backgroundColor: "#a3c2e3",
-    },
-    actionContainer: {
-        flexDirection: "row"
-    },
-    transactionsContainer: {
-        marginLeft: 20
-    }
-});
-
-const buttonStyle = (isExpanded: boolean) => StyleSheet.create({
-    icon: {
-        width: 20,
-        transform: [{ rotate: `${isExpanded ? 180 : 0}deg` }]
-    }
-})

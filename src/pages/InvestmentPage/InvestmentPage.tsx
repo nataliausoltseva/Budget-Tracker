@@ -62,7 +62,7 @@ const InvestmentPage = ({ isHidden = false }: Props) => {
 
     const renderButton = () => {
         return (
-            <View style={{ width: 50 }}>
+            <View style={styles.button}>
                 <Button
                     title={"Add"}
                     onPress={() => setIsModalVisible(true)}
@@ -83,10 +83,35 @@ const InvestmentPage = ({ isHidden = false }: Props) => {
         })
     ), [investments]);
 
+    const styles = StyleSheet.create({
+        container: {
+            display: isHidden ? "none" : "flex",
+            flexGrow: 1
+        },
+        wrapper: {
+            display: isHidden ? "none" : "flex",
+        },
+        buttonWrapper: {
+            alignItems: "flex-end",
+            marginTop: 20
+        },
+        initialMessageContainer: {
+            justifyContent: "center",
+            flexGrow: 1,
+            alignItems: "center"
+        },
+        initialMessage: {
+            marginBottom: 20
+        },
+        button: {
+            width: 50
+        }
+    });
+
     return (
-        <View style={{ display: isHidden ? "none" : "flex", flexGrow: 1 }}>
+        <View style={styles.container}>
             {investments.length ? (
-                <ScrollView style={containerStyles(isHidden).container}>
+                <ScrollView style={styles.wrapper}>
                     {sortedInvestments.map((item: InvestmentItem, index: number) => (
                         <InvestmentItem
                             key={`i-${index}-${random}`}
@@ -95,13 +120,13 @@ const InvestmentPage = ({ isHidden = false }: Props) => {
                             onDelete={() => onItemDelete(index)}
                         />
                     ))}
-                    <View style={{ alignItems: "flex-end", marginTop: 20 }}>
+                    <View style={styles.buttonWrapper}>
                         {renderButton()}
                     </View>
                 </ScrollView>
             ) : (
-                <View style={{ justifyContent: "center", flexGrow: 1, alignItems: "center" }}>
-                    <CustomText style={{ marginBottom: 20 }}>Add you first investment</CustomText>
+                <View style={styles.initialMessageContainer}>
+                    <CustomText style={styles.initialMessage}>Add you first investment</CustomText>
                     {renderButton()}
                 </View>
             )}
@@ -116,18 +141,3 @@ const InvestmentPage = ({ isHidden = false }: Props) => {
 }
 
 export default memo(InvestmentPage);
-
-const containerStyles = (isHidden: boolean) => StyleSheet.create({
-    container: {
-        display: isHidden ? "none" : "flex",
-    },
-});
-
-const styles = StyleSheet.create({
-    buttonContainer: {
-        alignItems: "flex-end"
-    },
-    button: {
-        width: 100,
-    },
-});

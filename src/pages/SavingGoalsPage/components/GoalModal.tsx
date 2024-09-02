@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { Button, NativeSyntheticEvent, TextInputChangeEventData, View } from "react-native";
+import { Button, NativeSyntheticEvent, StyleSheet, TextInputChangeEventData, View } from "react-native";
 import CustomText from "../../../components/CustomText";
 import CustomInput from "../../../components/CustomInput";
 import CustomModal from "../../../components/CustomModal";
@@ -67,44 +67,75 @@ const GoalModal = ({ onSave, isVisible = false, onClose, goal = null }: Props) =
         onClose();
     }
 
+    const styles = StyleSheet.create({
+        modal: {
+            width: 300
+        },
+        title: {
+            textAlign: "center",
+            marginBottom: 25
+        },
+        inputs: {
+            flexDirection: "row",
+            flexGrow: 1,
+            justifyContent: "space-between",
+            marginTop: 20
+        },
+        input: {
+            width: 110
+        },
+        datePicker: {
+            marginTop: 20
+        },
+        date: {
+            marginBottom: 10,
+            fontSize: 12
+        },
+        buttonContainer: {
+            alignItems: "center",
+            marginTop: 30
+        },
+        button: {
+            width: 150
+        }
+    })
+
     return (
         <View>
-            <CustomModal isVisible={isVisible} onClose={_onClose} style={{ width: 300 }}>
-                <CustomText style={{ textAlign: "center", marginBottom: 25 }}>
-                    {goal === null ? "New" : "Your"} goal
-                </CustomText>
+            <CustomModal isVisible={isVisible} onClose={_onClose} style={styles.modal}>
+                <CustomText style={styles.title}>{goal === null ? "New" : "Your"} goal</CustomText>
                 <CustomInput
                     label={"Name"}
                     placeholder='Enter your goal name'
                     value={name}
                     onChange={onNameChange}
                 />
-                <View style={{ flexDirection: "row", flexGrow: 1, justifyContent: "space-between", marginTop: 20 }}>
+                <View style={styles.inputs}>
                     <CustomInput
                         label={"Goal amount"}
                         value={amount}
                         onChange={onAmountChange}
-                        style={{ width: 110 }}
+                        style={styles.input}
                         isNumeric
                     />
                     <CustomInput
                         label={"Saved amount"}
                         value={savedAmount}
                         onChange={onSavedAmountChange}
-                        style={{ width: 110 }}
+                        style={styles.input}
                         isNumeric
                     />
                 </View>
-                <View style={{ marginTop: 20 }}>
-                    <CustomText style={{ marginBottom: 10, fontSize: 12 }}>Date by</CustomText>
+                <View style={styles.datePicker}>
+                    <CustomText style={styles.date}>Date by</CustomText>
                     <DatePicker
                         value={new Date(date.toString())}
                         onChange={setDate}
                         min={tomorrow}
                     />
                 </View>
-                <View style={{ alignItems: "center", marginTop: 30 }}>
-                    <View style={{ width: 150 }}>
+                <View style={styles.buttonContainer}>
+                    <View style={styles.button}>
                         <Button
                             title="Save"
                             onPress={_onSave}

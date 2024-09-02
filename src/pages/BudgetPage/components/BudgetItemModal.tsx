@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Button, NativeSyntheticEvent, TextInputChangeEventData, View } from 'react-native';
+import { Button, NativeSyntheticEvent, StyleSheet, TextInputChangeEventData, View } from 'react-native';
 import CustomModal from '../../../components/CustomModal';
 import Dropdown from '../../../components/Dropdown';
 import CustomInput from '../../../components/CustomInput';
@@ -78,20 +78,48 @@ const BudgetItemModal = ({ onSave, onClose, expense = null }: Props) => {
         _onClose();
     }
 
+    const styles = StyleSheet.create({
+        modal: {
+            width: 300
+        },
+        title: {
+            textAlign: "center"
+        },
+        container: {
+            flexDirection: "row",
+            justifyContent: "space-between",
+            marginBottom: 20,
+            marginTop: 10
+        },
+        inputContainer: {
+            justifyContent: "flex-end"
+        },
+        input: {
+            width: 80,
+            marginRight: 10
+        },
+        buttonContainer: {
+            alignItems: "center"
+        },
+        buttonWrapper: {
+            width: 100
+        }
+    });
+
     return (
-        <CustomModal isVisible={true} onClose={_onClose} style={{ width: 300 }} >
-            <CustomText style={{ textAlign: "center" }}>{expense !== null ? "Your" : "New"} expense</CustomText>
+        <CustomModal isVisible={true} onClose={_onClose} style={styles.modal} >
+            <CustomText style={styles.title}>{expense !== null ? "Your" : "New"} expense</CustomText>
             <CustomInput
                 placeholder='Expense name'
                 value={item.name}
                 onChange={onNameChange}
             />
-            <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: 20, marginTop: 10 }}>
-                <View style={{ justifyContent: "flex-end" }}>
+            <View style={styles.container}>
+                <View style={styles.inputContainer}>
                     <CustomInput
                         value={amountInputHolder.current}
                         onChange={_onAmountChange}
-                        style={{ width: 80, marginRight: 10 }}
+                        style={styles.input}
                         isNumeric
                     />
                 </View>
@@ -102,8 +130,8 @@ const BudgetItemModal = ({ onSave, onClose, expense = null }: Props) => {
                     width={150}
                 />
             </View>
-            <View style={{ alignItems: "center" }}>
-                <View style={{ width: 100 }}>
+            <View style={styles.buttonContainer}>
+                <View style={styles.buttonWrapper}>
                     <Button
                         title='Save'
                         onPress={_onSave}

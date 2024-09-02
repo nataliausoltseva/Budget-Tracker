@@ -20,11 +20,42 @@ const StudentLoanForm = ({ rate, threshold, setRate, setThreshold, isEditable = 
         setThreshold(parseFloat(e.nativeEvent.text));
     }
 
+    const styles = StyleSheet.create({
+        container: {
+            flexDirection: "row"
+        },
+        view: {
+            display: "flex",
+            flexDirection: 'row',
+            textAlign: "center",
+            alignItems: "center",
+            justifyContent: "space-between",
+        },
+        input: {
+            marginLeft: 10,
+            width: 70
+        },
+        editable: {
+            opacity: isEditable ? 1 : 0.3
+        },
+        wrapper: {
+            position: "relative",
+            justifyContent: "center"
+        },
+        percent: {
+            position: "absolute",
+            right: 0,
+        },
+        margin: {
+            marginLeft: 10
+        }
+    });
+
     return (
-        <SafeAreaView style={{ flexDirection: "row" }}>
+        <SafeAreaView style={styles.container}>
             <View style={styles.view}>
-                <CustomText style={{ opacity: isEditable ? 1 : 0.3 }}>Rate:</CustomText>
-                <View style={{ position: "relative", justifyContent: "center" }}>
+                <CustomText style={styles.editable}>Rate:</CustomText>
+                <View style={styles.wrapper}>
                     <CustomInput
                         style={styles.input}
                         value={rate.toString()}
@@ -33,14 +64,14 @@ const StudentLoanForm = ({ rate, threshold, setRate, setThreshold, isEditable = 
                         isNumeric
                     />
                     {rate && (
-                        <View style={{ position: "absolute", right: 0, opacity: isEditable ? 1 : 0.3 }}>
+                        <View style={[styles.percent, styles.editable]}>
                             <CustomText>%</CustomText>
                         </View>
                     )}
                 </View>
             </View>
-            <View style={[styles.view, { marginLeft: 10 }]}>
-                <CustomText style={{ opacity: isEditable ? 1 : 0.3 }}>Threshold:</CustomText>
+            <View style={[styles.view, styles.margin]}>
+                <CustomText style={styles.editable}>Threshold:</CustomText>
                 <CustomInput
                     style={styles.input}
                     value={threshold.toString()}
@@ -54,17 +85,3 @@ const StudentLoanForm = ({ rate, threshold, setRate, setThreshold, isEditable = 
 };
 
 export default StudentLoanForm;
-
-const styles = StyleSheet.create({
-    view: {
-        display: "flex",
-        flexDirection: 'row',
-        textAlign: "center",
-        alignItems: "center",
-        justifyContent: "space-between",
-    },
-    input: {
-        marginLeft: 10,
-        width: 70
-    }
-});

@@ -1,5 +1,5 @@
 import { useContext, useEffect } from "react"
-import { View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { AppContext } from "../context/AppContext"
@@ -33,8 +33,8 @@ const DarkModeToggle = ({ onToggle }: Props) => {
     }
 
     return (
-        <View style={{ alignItems: "flex-end", marginRight: 20, marginBottom: 20 }}>
-            <View style={{ alignItems: "center" }}>
+        <View style={styles.container}>
+            <View style={styles.wrapper}>
                 <CustomToggle
                     isChecked={appState.isDarkMode}
                     onChange={_onToggle}
@@ -45,3 +45,14 @@ const DarkModeToggle = ({ onToggle }: Props) => {
     )
 }
 export default DarkModeToggle;
+
+const styles = StyleSheet.create({
+    container: {
+        alignItems: "flex-end",
+        marginRight: 20,
+        marginBottom: 20
+    },
+    wrapper: {
+        alignItems: "center"
+    }
+});
