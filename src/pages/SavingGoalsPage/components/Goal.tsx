@@ -92,6 +92,40 @@ const Goal = ({ goal, onDelete, onEdit }: Props) => {
         },
         transactionsContainer: {
             marginLeft: 20
+        },
+        topContainer: {
+            flexDirection: "row",
+            alignItems: "center"
+        },
+        name: {
+            marginLeft: 15
+        },
+        countdownContainer: {
+            marginTop: 15
+        },
+        color: {
+            color: appState.isDarkMode ? "white" : "black"
+        },
+        expandedContainer: {
+            alignItems: "flex-start",
+            marginLeft: 35
+        },
+        row: {
+            flexDirection: "row",
+            justifyContent: "space-between",
+            width: "100%"
+        },
+        transactions: {
+            flexDirection: "row",
+            alignItems: "center"
+        },
+        plus: {
+            marginLeft: 10
+        },
+        divider: {
+            height: 1,
+            backgroundColor: appState.isDarkMode ? "white" : '#707070',
+            marginBottom: 20
         }
     });
 
@@ -101,17 +135,17 @@ const Goal = ({ goal, onDelete, onEdit }: Props) => {
         <>
             <View style={styles.container}>
                 <View style={styles.goalContainer}>
-                    <View style={{ flexDirection: "row", alignItems: "center" }}>
+                    <View style={styles.topContainer}>
                         <ChevronIcon onPress={onGoalToggle} style={buttonStyle(isGoalExpanded).icon} />
-                        <CustomText style={{ marginLeft: 15 }}>{goal.name}</CustomText>
+                        <CustomText style={styles.name}>{goal.name}</CustomText>
                     </View>
-                    <View style={{ marginTop: 15 }}>
+                    <View style={styles.countdownContainer}>
                         <CountDown
                             until={seconds || 0}
                             size={15}
                             timeLabelStyle={styles.timeLabel}
                             digitStyle={styles.time}
-                            digitTxtStyle={{ color: appState.isDarkMode ? "white" : "black" }}
+                            digitTxtStyle={styles.color}
                         />
                     </View>
                     <View style={styles.actionContainer}>
@@ -120,22 +154,22 @@ const Goal = ({ goal, onDelete, onEdit }: Props) => {
                     </View>
                 </View>
                 {isGoalExpanded && (
-                    <View style={{ alignItems: "flex-start", marginLeft: 35 }}>
-                        <View style={{ flexDirection: "row", justifyContent: "space-between", width: "100%" }}>
+                    <View style={styles.expandedContainer}>
+                        <View style={styles.row}>
                             <CustomText>Amount:</CustomText>
                             <CustomText>{goal.amount.toString()}</CustomText>
                         </View>
-                        <View style={{ flexDirection: "row", justifyContent: "space-between", width: "100%" }}>
+                        <View style={styles.row}>
                             <CustomText>Saved amount:</CustomText>
                             <CustomText>{goal.savedAmount.toString()}</CustomText>
                         </View>
-                        <View style={{ flexDirection: "row", justifyContent: "space-between", width: "100%" }}>
+                        <View style={styles.row}>
                             <CustomText>Date by:</CustomText>
                             <CustomText>{formatDate(new Date(goal.date.toString()))}</CustomText>
                         </View>
-                        <View style={{ flexDirection: "row", alignItems: "center" }}>
+                        <View style={styles.transactions}>
                             <CustomText>Transactions:</CustomText>
-                            <PlusIcon onPress={() => setTransactionVisible(true)} style={{ marginLeft: 10 }} />
+                            <PlusIcon onPress={() => setTransactionVisible(true)} style={styles.plus} />
                         </View>
                         {goal.transactions.length > 0 && (
                             <View>
@@ -164,9 +198,7 @@ const Goal = ({ goal, onDelete, onEdit }: Props) => {
                                         textFontSize={13}
                                         yAxisColor={graphColor}
                                         xAxisColor={graphColor}
-                                        yAxisTextStyle={{
-                                            color: appState.isDarkMode ? "white" : "black"
-                                        }}
+                                        yAxisTextStyle={styles.color}
                                         showVerticalLines
                                     />
                                 </View>
@@ -191,7 +223,7 @@ const Goal = ({ goal, onDelete, onEdit }: Props) => {
                     />
                 )}
             </View>
-            <View style={{ height: 1, backgroundColor: appState.isDarkMode ? "white" : '#707070', marginBottom: 20 }} />
+            <View style={styles.divider} />
         </>
     );
 }

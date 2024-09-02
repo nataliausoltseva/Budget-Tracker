@@ -98,8 +98,8 @@ const SavingGoalsPage = ({ isHidden = false }: Props) => {
                     {renderButton()}
                 </ScrollView>
             ) : (
-                <View style={{ justifyContent: "center", flexGrow: 1, alignItems: "center" }}>
-                    <CustomText style={{ marginBottom: 20 }}>Add you first goal</CustomText>
+                <View style={styles.initialMessageContainer}>
+                    <CustomText style={styles.initialMessage}>Add you first goal</CustomText>
                     {renderButton()}
                 </View>
             )}
@@ -130,4 +130,12 @@ const styles = StyleSheet.create({
     button: {
         width: 100,
     },
+    initialMessageContainer: {
+        justifyContent: "center",
+        flexGrow: 1,
+        alignItems: "center"
+    },
+    initialMessage: {
+        marginBottom: 20
+    }
 });

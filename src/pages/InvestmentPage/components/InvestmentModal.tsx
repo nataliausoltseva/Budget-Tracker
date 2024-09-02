@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { Button, NativeSyntheticEvent, TextInputChangeEventData, View } from "react-native"
+import { Button, NativeSyntheticEvent, StyleSheet, TextInputChangeEventData, View } from "react-native"
 import CustomModal from "../../../components/CustomModal";
 import CustomText from "../../../components/CustomText";
 import CustomInput from "../../../components/CustomInput";
@@ -116,49 +116,102 @@ const InvestmentModal = ({ onSave, onClose, investment = null }: Props) => {
         onClose();
     }
 
+    const styles = StyleSheet.create({
+        modal: {
+            width: 300
+        },
+        title: {
+            textAlign: "center",
+            marginBottom: 20
+        },
+        inputContainer: {
+            flexDirection: "row",
+            justifyContent: "space-between",
+            marginTop: 10
+        },
+        relativeCentre: {
+            position: "relative",
+            justifyContent: "center"
+        },
+        bigInput: {
+            width: 115
+        },
+        percent: {
+            position: "absolute",
+            right: 0,
+            paddingTop: 12
+        },
+        margin: {
+            marginBottom: 10
+        },
+        smallInput: {
+            width: 50
+        },
+        term: {
+            flexDirection: "row"
+        },
+        terms: {
+            marginTop: 5,
+            marginLeft: 10
+        },
+        largeInput: {
+            width: 90
+        },
+        button: {
+            width: 150
+        },
+        date: {
+            fontSize: 12
+        },
+        saveButtonContainer: {
+            alignItems: "center",
+            marginTop: 30
+        }
+    })
+
     return (
         <View>
-            <CustomModal isVisible={true} onClose={_onClose} style={{ width: 300 }}>
-                <CustomText style={{ textAlign: "center", marginBottom: 20 }}>{investment === null ? "New" : "Your"} instment</CustomText>
+            <CustomModal onClose={_onClose} style={styles.modal} isVisible>
+                <CustomText style={styles.title}>{investment === null ? "New" : "Your"} instment</CustomText>
                 <CustomInput
                     label={"Name"}
                     placeholder='Enter expense name'
                     value={item.name}
                     onChange={_onNameChange}
                 />
-                <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 10 }}>
+                <View style={styles.inputContainer}>
                     <CustomInput
                         label={"Amount"}
                         value={item.amount.toString()}
                         onChange={_onAmountChange}
-                        style={{ width: 115 }}
+                        style={styles.bigInput}
                         isNumeric
                     />
-                    <View style={{ position: "relative", justifyContent: "center" }}>
+                    <View style={styles.relativeCentre}>
                         <CustomInput
                             label={"Tax rate"}
                             value={item.taxRate}
                             onChange={_onTaxRateChange}
-                            style={{ width: 115 }}
+                            style={styles.bigInput}
                             isNumeric
                         />
                         {item.taxRate !== "" && (
-                            <View style={{ position: "absolute", right: 0, paddingTop: 12 }}>
+                            <View style={styles.percent}>
                                 <CustomText>%</CustomText>
                             </View>
                         )}
                     </View>
                 </View>
-                <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 10, marginBottom: 10 }}>
-                    <View style={{ flexDirection: "row" }}>
+                <View style={[styles.inputContainer, styles.margin]}>
+                    <View style={styles.term}>
                         <CustomInput
                             label={"Term"}
                             value={item.term.toString()}
                             onChange={_onTermChange}
-                            style={{ width: 50 }}
+                            style={styles.smallInput}
                             isNumeric
                         />
-                        <View style={{ marginTop: 5, marginLeft: 10 }}>
+                        <View style={styles.terms}>
                             <Dropdown
                                 value={item.termPeriod.label}
                                 onSelect={onTermPeriodChange}
@@ -167,28 +220,28 @@ const InvestmentModal = ({ onSave, onClose, investment = null }: Props) => {
                             />
                         </View>
                     </View>
-                    <View style={{ position: "relative", justifyContent: "center" }}>
+                    <View style={styles.relativeCentre}>
                         <CustomInput
                             label={"Term Rate"}
                             value={item.rate.toString()}
                             onChange={_onRateChange}
-                            style={{ width: 90 }}
+                            style={styles.largeInput}
                             isNumeric
                         />
                         {item.taxRate !== "" && (
-                            <View style={{ position: "absolute", right: 0, paddingTop: 12 }}>
+                            <View style={styles.percent}>
                                 <CustomText>%</CustomText>
                             </View>
                         )}
                     </View>
                 </View>
-                <CustomText style={{ fontSize: 12 }}>Start date</CustomText>
+                <CustomText style={styles.date}>Start date</CustomText>
                 <DatePicker
                     value={new Date(item.startDate.toString())}
                     onChange={_onStartDateChange}
                 />
-                <View style={{ alignItems: "center", marginTop: 30 }}>
-                    <View style={{ width: 150 }}>
+                <View style={styles.saveButtonContainer}>
+                    <View style={styles.button}>
                         <Button
                             title="Save"
                             onPress={_onSave}

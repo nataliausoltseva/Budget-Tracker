@@ -15,19 +15,39 @@ type Props = {
 const TransactionItem = ({ item, onDelete, onEdit }: Props) => {
     const [editVisible, setEditVisible] = useState(false);
 
+    const styles = StyleSheet.create({
+        container: {
+            flexDirection: "row",
+            marginBottom: 15
+        },
+        wrapper: {
+            justifyContent: "space-between",
+            flexGrow: 1
+        },
+        row: {
+            flexDirection: "row",
+            justifyContent: "space-between"
+        },
+        actions: {
+            flexDirection: "row",
+            marginTop: 7,
+            marginLeft: 10
+        }
+    });
+
     return (
-        <View style={{ flexDirection: "row", marginBottom: 15 }}>
-            <View style={{ justifyContent: "space-between", flexGrow: 1 }}>
-                <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+        <View style={styles.container}>
+            <View style={styles.wrapper}>
+                <View style={styles.row}>
                     <CustomText>Amount:</CustomText>
                     <CustomText>{item.amount.toString()}</CustomText>
                 </View>
-                <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+                <View style={styles.row}>
                     <CustomText>Date:</CustomText>
                     <CustomText>{formatDate(item.date)}</CustomText>
                 </View>
             </View>
-            <View style={{ flexDirection: "row", marginTop: 7, marginLeft: 10 }}>
+            <View style={styles.actions}>
                 <TrashIcon onPress={onDelete} />
                 <PenIcon onPress={() => setEditVisible(true)} />
             </View>
@@ -44,9 +64,3 @@ const TransactionItem = ({ item, onDelete, onEdit }: Props) => {
 }
 
 export default TransactionItem;
-
-const styles = StyleSheet.create({
-    button: {
-        width: 20
-    },
-});

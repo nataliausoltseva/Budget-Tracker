@@ -47,16 +47,42 @@ const TransactionModal = ({ goalTotalSaved = 0, transaction, isVisible = false, 
         onClose();
     }
 
+
+    const styles = StyleSheet.create({
+        container: {
+            minHeight: 192,
+        },
+        modal: {
+            width: 250
+        },
+        title: {
+            textAlign: "center",
+            marginBottom: 20
+        },
+        datePicker: {
+            marginTop: 20
+        },
+        date: {
+            marginBottom: 10,
+            fontSize: 12
+        },
+        buttonContainer: {
+            alignItems: "center",
+            marginTop: 20
+        },
+        button: {
+            width: 100
+        }
+    });
+
     return (
         <View style={styles.container}>
             <CustomModal
                 isVisible={true}
                 onClose={_onClose}
-                style={{ width: 250 }}
+                style={styles.modal}
             >
-                <CustomText style={{ textAlign: "center", marginBottom: 20 }}>
-                    {transaction === null ? "New" : "Your"} transaction
-                </CustomText>
+                <CustomText style={styles.title}>{transaction === null ? "New" : "Your"} transaction</CustomText>
                 <CustomInput
                     label={"Amount"}
                     placeholder='Transaction amount'
@@ -64,15 +90,15 @@ const TransactionModal = ({ goalTotalSaved = 0, transaction, isVisible = false, 
                     onChange={onAmountChange}
                     isNumeric
                 />
-                <View style={{ marginTop: 20 }}>
-                    <CustomText style={{ marginBottom: 10, fontSize: 12 }}>Date by</CustomText>
+                <View style={styles.datePicker}>
+                    <CustomText style={styles.date}>Date by</CustomText>
                     <DatePicker
                         value={date}
                         onChange={setDate}
                     />
                 </View>
-                <View style={{ alignItems: "center", marginTop: 20 }}>
-                    <View style={{ width: 100 }}>
+                <View style={styles.buttonContainer}>
+                    <View style={styles.button}>
                         <Button
                             title={"Save"}
                             onPress={_onSave}
@@ -87,9 +113,3 @@ const TransactionModal = ({ goalTotalSaved = 0, transaction, isVisible = false, 
 }
 
 export default TransactionModal;
-
-const styles = StyleSheet.create({
-    container: {
-        minHeight: 192,
-    },
-});
