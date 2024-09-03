@@ -11,12 +11,12 @@ type Props = {
 const SecondaryIncomeForm = ({ income, setIncome, isEditable = true }: Props) => {
     const secondaryIncomeHolder = useRef("");
 
-    const onIncomeChange = (e: NativeSyntheticEvent<TextInputChangeEventData>) => {
-        secondaryIncomeHolder.current = e.nativeEvent.text || "";
+    const onIncomeChange = (value: string) => {
+        secondaryIncomeHolder.current = value || "";
 
         if (secondaryIncomeHolder.current) {
             setIncome(parseFloat(secondaryIncomeHolder.current));
-        } else if (!e.nativeEvent.text) {
+        } else if (!value) {
             setIncome(0);
         }
     }

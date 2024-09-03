@@ -12,15 +12,15 @@ type Props = {
 const SuperannuationForm = ({ option, setSuperannuationOption, isEditable = false }: Props) => {
     const inputHolder = useRef(option.toString());
 
-    const onCustomOptionChange = (e: NativeSyntheticEvent<TextInputChangeEventData>) => {
-        inputHolder.current = e.nativeEvent.text || "";
+    const onCustomOptionChange = (value: string) => {
+        inputHolder.current = value || "";
 
         if (inputHolder.current) {
             setSuperannuationOption(parseFloat(inputHolder.current));
-        } else if (!e.nativeEvent.text) {
+        } else if (!value) {
             setSuperannuationOption(0);
         }
-        setSuperannuationOption(parseInt(e.nativeEvent.text));
+        setSuperannuationOption(parseInt(value));
     }
 
     const styles = StyleSheet.create({
@@ -47,6 +47,7 @@ const SuperannuationForm = ({ option, setSuperannuationOption, isEditable = fals
                     onChange={onCustomOptionChange}
                     style={styles.input}
                     isEditable={isEditable}
+                    max={100}
                     isNumeric
                 />
                 {inputHolder.current && (

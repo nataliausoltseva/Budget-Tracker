@@ -186,13 +186,13 @@ const useIncome = () => {
         };
     }
 
-    const onTaxThresholdsChange = (e: NativeSyntheticEvent<TextInputChangeEventData>, index: number, isRate: boolean) => {
+    const onTaxThresholdsChange = (value: string, index: number, isRate: boolean) => {
         setTaxThresholds(prevState => {
             const newThresholds = [...prevState];
             if (isRate) {
-                newThresholds[index].rate = e.nativeEvent.text || "";
+                newThresholds[index].rate = value || "";
             } else {
-                newThresholds[index].max = e.nativeEvent.text || "";
+                newThresholds[index].max = value || "";
             }
 
             return newThresholds;

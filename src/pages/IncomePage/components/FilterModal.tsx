@@ -24,7 +24,7 @@ type Props = {
     secondaryIncome: number,
     setSecondaryIncome: (value: number) => void,
     taxThresholds: TaxThreshold[],
-    onTaxThresholdsChange: (e: NativeSyntheticEvent<TextInputChangeEventData>, index: number, isRate: boolean) => void,
+    onTaxThresholdsChange: (value: string, index: number, isRate: boolean) => void,
 }
 
 const FilterModal = ({
@@ -94,7 +94,7 @@ const FilterModal = ({
                             key={`${index}-thresholds`}
                             style={[styles.input, styles.inputText]}
                             value={index === taxThresholds.length - 1 ? (taxThresholds[taxThresholds.length - 2].max + 1).toString() + "+" : threshold.max.toString()}
-                            onChange={(e) => onTaxThresholdsChange(e, index, false)}
+                            onChange={(value: string) => onTaxThresholdsChange(value, index, false)}
                             isEditable={index < taxThresholds.length - 1}
                             isNumeric
                         />
@@ -108,7 +108,8 @@ const FilterModal = ({
                                 key={`${index}-rate`}
                                 style={[styles.input, styles.inputText]}
                                 value={threshold.rate}
-                                onChange={(e) => onTaxThresholdsChange(e, index, true)}
+                                onChange={(value: string) => onTaxThresholdsChange(value, index, true)}
+                                max={100}
                                 isNumeric
                             />
                             {threshold.rate && (

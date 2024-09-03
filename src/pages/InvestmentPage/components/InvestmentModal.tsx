@@ -51,38 +51,38 @@ const InvestmentModal = ({ onSave, onClose, investment = null }: Props) => {
         }
     }, [investment]);
 
-    const _onNameChange = (e: NativeSyntheticEvent<TextInputChangeEventData>) => {
+    const _onNameChange = (name: string) => {
         setItem({
             ...item,
-            name: e.nativeEvent.text || ""
+            name: name || ""
         });
     }
 
-    const _onAmountChange = (e: NativeSyntheticEvent<TextInputChangeEventData>) => {
+    const _onAmountChange = (amount: string) => {
         setItem({
             ...item,
-            amount: e.nativeEvent.text || ""
+            amount: amount || ""
         });
     }
 
-    const _onRateChange = (e: NativeSyntheticEvent<TextInputChangeEventData>) => {
+    const _onRateChange = (rate: string) => {
         setItem({
             ...item,
-            rate: e.nativeEvent.text || ""
+            rate: rate || ""
         });
     }
 
-    const _onTermChange = (e: NativeSyntheticEvent<TextInputChangeEventData>) => {
+    const _onTermChange = (term: string) => {
         setItem({
             ...item,
-            term: e.nativeEvent.text || ""
+            term: term || ""
         });
     }
 
-    const _onTaxRateChange = (e: NativeSyntheticEvent<TextInputChangeEventData>) => {
+    const _onTaxRateChange = (taxRate: string) => {
         setItem({
             ...item,
-            taxRate: e.nativeEvent.text || ""
+            taxRate: taxRate || ""
         });
     }
 
@@ -193,6 +193,7 @@ const InvestmentModal = ({ onSave, onClose, investment = null }: Props) => {
                             value={item.taxRate}
                             onChange={_onTaxRateChange}
                             style={styles.bigInput}
+                            max={100}
                             isNumeric
                         />
                         {item.taxRate !== "" && (
@@ -226,6 +227,7 @@ const InvestmentModal = ({ onSave, onClose, investment = null }: Props) => {
                             value={item.rate.toString()}
                             onChange={_onRateChange}
                             style={styles.largeInput}
+                            max={100}
                             isNumeric
                         />
                         {item.taxRate !== "" && (
