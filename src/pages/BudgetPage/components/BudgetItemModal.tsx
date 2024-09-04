@@ -34,8 +34,8 @@ const BudgetItemModal = ({ onSave, onClose, expense = null }: Props) => {
         }
     }, [expense]);
 
-    const _onAmountChange = (e: NativeSyntheticEvent<TextInputChangeEventData>) => {
-        amountInputHolder.current = e.nativeEvent.text || "";
+    const _onAmountChange = (amount: string) => {
+        amountInputHolder.current = amount || "";
         if (amountInputHolder.current) {
             onAmountChange(amountInputHolder.current);
         } else if (!amountInputHolder.current) {
@@ -48,10 +48,10 @@ const BudgetItemModal = ({ onSave, onClose, expense = null }: Props) => {
         onClose();
     }
 
-    const onNameChange = (e: NativeSyntheticEvent<TextInputChangeEventData>) => {
+    const onNameChange = (name: string) => {
         setItem({
             ...item,
-            name: e.nativeEvent.text || ""
+            name: name || ""
         });
     }
 

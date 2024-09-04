@@ -12,12 +12,12 @@ type Props = {
 }
 
 const StudentLoanForm = ({ rate, threshold, setRate, setThreshold, isEditable = true, }: Props) => {
-    const onRateChange = (e: NativeSyntheticEvent<TextInputChangeEventData>) => {
-        setRate(parseFloat(e.nativeEvent.text));
+    const onRateChange = (value: string) => {
+        setRate(parseFloat(value));
     }
 
-    const onThresholdChange = (e: NativeSyntheticEvent<TextInputChangeEventData>) => {
-        setThreshold(parseFloat(e.nativeEvent.text));
+    const onThresholdChange = (value: string) => {
+        setThreshold(parseFloat(value));
     }
 
     const styles = StyleSheet.create({
@@ -61,6 +61,7 @@ const StudentLoanForm = ({ rate, threshold, setRate, setThreshold, isEditable = 
                         value={rate.toString()}
                         onChange={onRateChange}
                         isEditable={isEditable}
+                        max={100}
                         isNumeric
                     />
                     {rate && (

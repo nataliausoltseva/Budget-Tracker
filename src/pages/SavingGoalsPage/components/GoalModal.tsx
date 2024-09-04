@@ -47,16 +47,16 @@ const GoalModal = ({ onSave, isVisible = false, onClose, goal = null }: Props) =
         _onClose();
     }
 
-    const onNameChange = (e: NativeSyntheticEvent<TextInputChangeEventData>) => {
-        setName(e.nativeEvent.text || "");
+    const onNameChange = (name: string) => {
+        setName(name || "");
     }
 
-    const onAmountChange = (e: NativeSyntheticEvent<TextInputChangeEventData>) => {
-        setAmount(e.nativeEvent.text);
+    const onAmountChange = (amount: string) => {
+        setAmount(amount);
     }
 
-    const onSavedAmountChange = (e: NativeSyntheticEvent<TextInputChangeEventData>) => {
-        setSavedAmount(e.nativeEvent.text);
+    const onSavedAmountChange = (amount: string) => {
+        setSavedAmount(amount);
     }
 
     const _onClose = () => {

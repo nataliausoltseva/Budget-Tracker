@@ -6,17 +6,48 @@ import CustomText from './CustomText';
 type Props = {
     placeholder?: string,
     value?: string,
-    onChange?: (e: NativeSyntheticEvent<TextInputChangeEventData>) => void,
+    onChange: (value: string) => void,
     otherProps?: TextInputProps,
     isNumeric?: boolean,
     style?: StyleProp<TextStyle> | undefined,
     isEditable?: boolean,
     label?: string,
+    max?: number,
+    min?: number,
 }
 
-const CustomInput = ({ placeholder = "", value, onChange, isNumeric = false, isEditable = true, otherProps, style, label }: Props) => {
+const CustomInput = ({
+    placeholder = "",
+    label = "",
+    value = "",
+    isNumeric = false,
+    isEditable = true,
+    max = 0,
+    min = 0,
+    onChange,
+    otherProps,
+    style,
+}: Props
+) => {
     const appState = useContext(AppContext);
 
+    const _onChange = (e: NativeSyntheticEvent<TextInputChangeEventData>) => {
+        const text = e.nativeEvent.text;
+        if (isNumeric && text) {
+            const numericValue = parseFloat(text);
+            if (numericValue > max) {
+                onChange(max.toString());
+                return;
+            }
+
+            if (numericValue < min) {
+                onChange(min.toString());
+                return;
+            }
+        }
+
+        onChange(text);
+    }
 
     const styles = StyleSheet.create({
         label: {
@@ -32,6 +63,7 @@ const CustomInput = ({ placeholder = "", value, onChange, isNumeric = false, isE
             opacity: isEditable ? 1 : 0.3
         }
     });
+
     return (
         <View>
             {label && (
@@ -41,7 +73,7 @@ const CustomInput = ({ placeholder = "", value, onChange, isNumeric = false, isE
                 placeholder={placeholder}
                 placeholderTextColor={appState.isDarkMode ? "#ffffff80" : "#00000080"}
                 value={value}
-                onChange={onChange}
+                onChange={_onChange}
                 editable={isEditable}
                 style={[styles.input, style]}
                 {...{

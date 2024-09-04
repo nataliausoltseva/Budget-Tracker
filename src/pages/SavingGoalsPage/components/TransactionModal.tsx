@@ -37,8 +37,8 @@ const TransactionModal = ({ goalTotalSaved = 0, transaction, isVisible = false, 
         _onClose();
     }
 
-    const onAmountChange = (e: NativeSyntheticEvent<TextInputChangeEventData>) => {
-        setAmount(e.nativeEvent.text);
+    const onAmountChange = (amount: string) => {
+        setAmount(amount);
     }
 
     const _onClose = () => {

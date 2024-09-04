@@ -104,8 +104,8 @@ const BudgetPage = ({ isHidden = false, showHistoryModal = false, storageData = 
         setShowModal(false);
     }
 
-    const onLabelChange = (e: NativeSyntheticEvent<TextInputChangeEventData>) => {
-        setDataLabel(e.nativeEvent.text);
+    const onLabelChange = (label: string) => {
+        setDataLabel(label);
     }
 
     const onSaveData = async () => {

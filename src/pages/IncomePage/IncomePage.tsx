@@ -79,12 +79,12 @@ const IncomePage = ({ isHidden = false, showHistoryModal = false, storageData = 
         populateData
     } = usePieChart();
 
-    const onIncomeAmountChange = (e: NativeSyntheticEvent<TextInputChangeEventData>) => {
-        primaryIncomeHolder.current = e.nativeEvent.text || "";
+    const onIncomeAmountChange = (amount: string) => {
+        primaryIncomeHolder.current = amount || "";
 
         if (primaryIncomeHolder.current) {
             onPrimaryIncomeChange(parseFloat(primaryIncomeHolder.current));
-        } else if (!e.nativeEvent.text) {
+        } else if (!amount) {
             onPrimaryIncomeChange(0);
         }
     }
@@ -172,8 +172,8 @@ const IncomePage = ({ isHidden = false, showHistoryModal = false, storageData = 
         onCalculate(HEADERS[index + 1]);
     }
 
-    const onLabelChange = (e: NativeSyntheticEvent<TextInputChangeEventData>) => {
-        setDataLabel(e.nativeEvent.text);
+    const onLabelChange = (label: string) => {
+        setDataLabel(label);
     }
 
     const onSaveData = async () => {
