@@ -1,11 +1,12 @@
 import { useContext, useEffect, useState } from "react";
-import { Button, NativeSyntheticEvent, StyleSheet, TextInputChangeEventData, View } from "react-native"
+import { Button, StyleSheet, View } from "react-native";
+
+import CustomInput from "../../../components/CustomInput";
 import CustomModal from "../../../components/CustomModal";
 import CustomText from "../../../components/CustomText";
-import CustomInput from "../../../components/CustomInput";
+import DatePicker from "../../../components/DatePicker";
 import Dropdown from "../../../components/Dropdown";
 import { AppContext } from "../../../context/AppContext";
-import DatePicker from "../../../components/DatePicker";
 
 type Props = {
     onClose: () => void,

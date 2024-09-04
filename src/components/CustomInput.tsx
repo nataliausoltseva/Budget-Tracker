@@ -37,10 +37,12 @@ const CustomInput = ({
             const numericValue = parseFloat(text);
             if (numericValue > max) {
                 onChange(max.toString());
+                return;
             }
 
             if (numericValue < min) {
                 onChange(min.toString());
+                return;
             }
         }
 

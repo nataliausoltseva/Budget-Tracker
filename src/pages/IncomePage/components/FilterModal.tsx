@@ -103,9 +103,8 @@ const FilterModal = ({
                 <View>
                     <CustomText>Tax Rates</CustomText>
                     {taxThresholds.map((threshold: TaxThreshold, index: number) => (
-                        <View style={styles.taxBracketWrapper}>
+                        <View style={styles.taxBracketWrapper} key={`${index}-rate`}>
                             <CustomInput
-                                key={`${index}-rate`}
                                 style={[styles.input, styles.inputText]}
                                 value={threshold.rate}
                                 onChange={(value: string) => onTaxThresholdsChange(value, index, true)}
