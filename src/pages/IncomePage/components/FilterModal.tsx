@@ -103,11 +103,13 @@ const FilterModal = ({
                     label={"Superannuation"}
                 />
                 <ChevronIcon onPress={() => onToggle('superannuation')} style={[styles.icon, { transform: [{ rotate: `${isExpanded.includes('superannuation') ? 180 : 0}deg` }] }]} />
-                <SuperannuationForm
-                    option={superannuationOption}
-                    setSuperannuationOption={onSuperannuationChange}
-                    isEditable={hasSuperannuation}
-                />
+                {isExpanded.includes('superannuation') && (
+                    <SuperannuationForm
+                        option={superannuationOption}
+                        setSuperannuationOption={onSuperannuationChange}
+                        isEditable={hasSuperannuation}
+                    />
+                )}
             </View>
             <View>
                 <CheckBox
@@ -116,13 +118,15 @@ const FilterModal = ({
                     label='Student Loan'
                 />
                 <ChevronIcon onPress={() => onToggle('student-loan')} style={[styles.icon, { transform: [{ rotate: `${isExpanded.includes('student-loan') ? 180 : 0}deg` }] }]} />
-                <StudentLoanForm
-                    rate={studentLoanRate}
-                    threshold={studentLoanThreshold}
-                    setRate={(rate: number) => onStudentLoanChange(rate, null)}
-                    setThreshold={(threshold: number) => onStudentLoanChange(null, threshold)}
-                    isEditable={hasStudentLoan}
-                />
+                {isExpanded.includes('student-loan') && (
+                    <StudentLoanForm
+                        rate={studentLoanRate}
+                        threshold={studentLoanThreshold}
+                        setRate={(rate: number) => onStudentLoanChange(rate, null)}
+                        setThreshold={(threshold: number) => onStudentLoanChange(null, threshold)}
+                        isEditable={hasStudentLoan}
+                    />
+                )}
             </View>
             <View style={styles.container}>
                 <CheckBox
@@ -131,46 +135,52 @@ const FilterModal = ({
                     label='Secondary Income'
                 />
                 <ChevronIcon onPress={() => onToggle('secondary-income')} style={[styles.icon, { transform: [{ rotate: `${isExpanded.includes('secondary-income') ? 180 : 0}deg` }] }]} />
-                <SecondaryIncomeForm
-                    income={secondaryIncome}
-                    setIncome={setSecondaryIncome}
-                    isEditable={hasSecondaryIncome}
-                />
+                {isExpanded.includes('secondary-income') && (
+                    <SecondaryIncomeForm
+                        income={secondaryIncome}
+                        setIncome={setSecondaryIncome}
+                        isEditable={hasSecondaryIncome}
+                    />
+                )}
             </View>
             <View style={styles.taxBracketsContainer}>
                 <ChevronIcon onPress={() => onToggle('income-brackets')} style={[styles.icon, { transform: [{ rotate: `${isExpanded.includes('income-brackets') ? 180 : 0}deg` }] }]} />
-                <View>
-                    <CustomText>Income Thresholds</CustomText>
-                    {taxThresholds.map((threshold: TaxThreshold, index: number) => (
-                        <CustomInput
-                            key={`${index}-thresholds`}
-                            style={[styles.input, styles.inputText]}
-                            value={index === taxThresholds.length - 1 ? (taxThresholds[taxThresholds.length - 2].max + 1).toString() + "+" : threshold.max.toString()}
-                            onChange={(value: string) => onTaxThresholdsChange(value, index, false)}
-                            isEditable={index < taxThresholds.length - 1}
-                            isNumeric
-                        />
-                    ))}
-                </View>
-                <View>
-                    <CustomText>Tax Rates</CustomText>
-                    {taxThresholds.map((threshold: TaxThreshold, index: number) => (
-                        <View style={styles.taxBracketWrapper} key={`${index}-rate`}>
-                            <CustomInput
-                                style={[styles.input, styles.inputText]}
-                                value={threshold.rate}
-                                onChange={(value: string) => onTaxThresholdsChange(value, index, true)}
-                                max={100}
-                                isNumeric
-                            />
-                            {threshold.rate && (
-                                <View style={styles.percent}>
-                                    <CustomText>%</CustomText>
-                                </View>
-                            )}
+                {isExpanded.includes('income-brackets') && (
+                    <>
+                        <View>
+                            <CustomText>Income Thresholds</CustomText>
+                            {taxThresholds.map((threshold: TaxThreshold, index: number) => (
+                                <CustomInput
+                                    key={`${index}-thresholds`}
+                                    style={[styles.input, styles.inputText]}
+                                    value={index === taxThresholds.length - 1 ? (taxThresholds[taxThresholds.length - 2].max + 1).toString() + "+" : threshold.max.toString()}
+                                    onChange={(value: string) => onTaxThresholdsChange(value, index, false)}
+                                    isEditable={index < taxThresholds.length - 1}
+                                    isNumeric
+                                />
+                            ))}
                         </View>
-                    ))}
-                </View>
+                        <View>
+                            <CustomText>Tax Rates</CustomText>
+                            {taxThresholds.map((threshold: TaxThreshold, index: number) => (
+                                <View style={styles.taxBracketWrapper} key={`${index}-rate`}>
+                                    <CustomInput
+                                        style={[styles.input, styles.inputText]}
+                                        value={threshold.rate}
+                                        onChange={(value: string) => onTaxThresholdsChange(value, index, true)}
+                                        max={100}
+                                        isNumeric
+                                    />
+                                    {threshold.rate && (
+                                        <View style={styles.percent}>
+                                            <CustomText>%</CustomText>
+                                        </View>
+                                    )}
+                                </View>
+                            ))}
+                        </View>
+                    </>
+                )}
             </View>
         </CustomModal>
     )
