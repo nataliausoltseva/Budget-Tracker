@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { NativeSyntheticEvent, StyleSheet, TextInputChangeEventData, View } from 'react-native';
 import CustomModal from '../../../components/CustomModal';
 import SuperannuationForm from './SuperannuationForm';
@@ -7,6 +7,7 @@ import SecondaryIncomeForm from './SecondaryIncomeForm';
 import CheckBox from '../../../components/Checkbox';
 import CustomText from '../../../components/CustomText';
 import CustomInput from '../../../components/CustomInput';
+import ChevronIcon from '../../../components/ChevronIcon';
 
 type Props = {
     onClose: () => void,
@@ -45,6 +46,53 @@ const FilterModal = ({
     taxThresholds,
     onTaxThresholdsChange,
 }: Props) => {
+    const [isExpanded, setIsExpanded] = useState<string[]>([]);
+
+    const onToggle = (key: string) => {
+        setIsExpanded(prevState => {
+            let newExpanded = [...prevState];
+
+            if (newExpanded.includes(key)) {
+                newExpanded = newExpanded.filter(item => item !== key);
+            } else {
+                newExpanded.push(key);
+            }
+
+            return newExpanded;
+        })
+    }
+
+    const styles = StyleSheet.create({
+        modal: {
+            gap: 10
+        },
+        container: {
+            flexDirection: "row"
+        },
+        taxBracketsContainer: {
+            flexDirection: 'row',
+            justifyContent: "space-evenly",
+            marginTop: 20
+        },
+        inputText: {
+            textAlign: "center"
+        },
+        input: {
+            marginLeft: 10,
+            width: 70
+        },
+        taxBracketWrapper: {
+            position: "relative",
+            justifyContent: "center"
+        },
+        percent: {
+            position: "absolute",
+            right: 0
+        },
+        icon: {
+            width: 20,
+        },
+    });
 
     return (
         <CustomModal onClose={onClose} isVisible={true} style={styles.modal}>
@@ -54,6 +102,7 @@ const FilterModal = ({
                     onPress={nextChecked => setHasSuperannuation(nextChecked)}
                     label={"Superannuation"}
                 />
+                <ChevronIcon onPress={() => onToggle('superannuation')} style={[styles.icon, { transform: [{ rotate: `${isExpanded.includes('superannuation') ? 180 : 0}deg` }] }]} />
                 <SuperannuationForm
                     option={superannuationOption}
                     setSuperannuationOption={onSuperannuationChange}
@@ -66,6 +115,7 @@ const FilterModal = ({
                     onPress={nextChecked => setHasStudentLoan(nextChecked)}
                     label='Student Loan'
                 />
+                <ChevronIcon onPress={() => onToggle('student-loan')} style={[styles.icon, { transform: [{ rotate: `${isExpanded.includes('student-loan') ? 180 : 0}deg` }] }]} />
                 <StudentLoanForm
                     rate={studentLoanRate}
                     threshold={studentLoanThreshold}
@@ -80,6 +130,7 @@ const FilterModal = ({
                     onPress={nextChecked => setHasSecondaryIncome(nextChecked)}
                     label='Secondary Income'
                 />
+                <ChevronIcon onPress={() => onToggle('secondary-income')} style={[styles.icon, { transform: [{ rotate: `${isExpanded.includes('secondary-income') ? 180 : 0}deg` }] }]} />
                 <SecondaryIncomeForm
                     income={secondaryIncome}
                     setIncome={setSecondaryIncome}
@@ -87,6 +138,7 @@ const FilterModal = ({
                 />
             </View>
             <View style={styles.taxBracketsContainer}>
+                <ChevronIcon onPress={() => onToggle('income-brackets')} style={[styles.icon, { transform: [{ rotate: `${isExpanded.includes('income-brackets') ? 180 : 0}deg` }] }]} />
                 <View>
                     <CustomText>Income Thresholds</CustomText>
                     {taxThresholds.map((threshold: TaxThreshold, index: number) => (
@@ -125,33 +177,3 @@ const FilterModal = ({
 }
 
 export default FilterModal;
-
-
-const styles = StyleSheet.create({
-    modal: {
-        gap: 10
-    },
-    container: {
-        flexDirection: "row"
-    },
-    taxBracketsContainer: {
-        flexDirection: 'row',
-        justifyContent: "space-evenly",
-        marginTop: 20
-    },
-    inputText: {
-        textAlign: "center"
-    },
-    input: {
-        marginLeft: 10,
-        width: 70
-    },
-    taxBracketWrapper: {
-        position: "relative",
-        justifyContent: "center"
-    },
-    percent: {
-        position: "absolute",
-        right: 0
-    }
-});
