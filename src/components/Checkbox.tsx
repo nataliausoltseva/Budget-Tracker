@@ -1,4 +1,4 @@
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
 import React from "react";
 import CheckboxIcon from "./CheckboxIcon";
 import CustomText from "./CustomText";
@@ -11,10 +11,10 @@ type Props = {
 
 const CheckBox = ({ isChecked = false, onPress, label }: Props) => {
     return (
-        <View style={styles.container}>
-            <CheckboxIcon onPress={() => onPress(!isChecked)} isChecked={isChecked} />
+        <TouchableOpacity style={styles.container} onPress={() => onPress(!isChecked)}>
+            <CheckboxIcon isChecked={isChecked} />
             <CustomText style={styles.label}>{label}</CustomText>
-        </View>
+        </TouchableOpacity>
     );
 };
 

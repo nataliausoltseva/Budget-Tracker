@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { NativeSyntheticEvent, StyleSheet, TextInputChangeEventData, View } from 'react-native';
+import { NativeSyntheticEvent, StyleSheet, TextInputChangeEventData, Touchable, TouchableWithoutFeedback, TouchableWithoutFeedbackComponent, View } from 'react-native';
 import CustomModal from '../../../components/CustomModal';
 import SuperannuationForm from './SuperannuationForm';
 import StudentLoanForm from './StudentLoanForm';
@@ -64,15 +64,21 @@ const FilterModal = ({
 
     const styles = StyleSheet.create({
         modal: {
-            gap: 10
+            gap: 10,
+            width: 350
         },
         container: {
-            flexDirection: "row"
+            flexDirection: "column"
         },
         taxBracketsContainer: {
-            flexDirection: 'row',
+            flexDirection: 'column',
             justifyContent: "space-evenly",
-            marginTop: 20
+        },
+        bracketsWrapper: {
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+            marginTop: 10,
         },
         inputText: {
             textAlign: "center"
@@ -92,17 +98,31 @@ const FilterModal = ({
         icon: {
             width: 20,
         },
+        titleContainer: {
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+            flexGrow: 1
+        },
+        columnBracketItem: {
+            alignItems: "center"
+        }
     });
 
     return (
         <CustomModal onClose={onClose} isVisible={true} style={styles.modal}>
             <View style={styles.container}>
-                <CheckBox
-                    isChecked={hasSuperannuation}
-                    onPress={nextChecked => setHasSuperannuation(nextChecked)}
-                    label={"Superannuation"}
-                />
-                <ChevronIcon onPress={() => onToggle('superannuation')} style={[styles.icon, { transform: [{ rotate: `${isExpanded.includes('superannuation') ? 180 : 0}deg` }] }]} />
+                <View style={styles.titleContainer}>
+                    <CheckBox
+                        isChecked={hasSuperannuation}
+                        onPress={nextChecked => setHasSuperannuation(nextChecked)}
+                        label={"Superannuation"}
+                    />
+                    <ChevronIcon
+                        onPress={() => onToggle('superannuation')}
+                        style={[styles.icon, { transform: [{ rotate: `${isExpanded.includes('superannuation') ? 180 : 0}deg` }] }]}
+                    />
+                </View>
                 {isExpanded.includes('superannuation') && (
                     <SuperannuationForm
                         option={superannuationOption}
@@ -112,12 +132,17 @@ const FilterModal = ({
                 )}
             </View>
             <View>
-                <CheckBox
-                    isChecked={hasStudentLoan}
-                    onPress={nextChecked => setHasStudentLoan(nextChecked)}
-                    label='Student Loan'
-                />
-                <ChevronIcon onPress={() => onToggle('student-loan')} style={[styles.icon, { transform: [{ rotate: `${isExpanded.includes('student-loan') ? 180 : 0}deg` }] }]} />
+                <View style={styles.titleContainer}>
+                    <CheckBox
+                        isChecked={hasStudentLoan}
+                        onPress={nextChecked => setHasStudentLoan(nextChecked)}
+                        label='Student Loan'
+                    />
+                    <ChevronIcon
+                        onPress={() => onToggle('student-loan')}
+                        style={[styles.icon, { transform: [{ rotate: `${isExpanded.includes('student-loan') ? 180 : 0}deg` }] }]}
+                    />
+                </View>
                 {isExpanded.includes('student-loan') && (
                     <StudentLoanForm
                         rate={studentLoanRate}
@@ -129,12 +154,17 @@ const FilterModal = ({
                 )}
             </View>
             <View style={styles.container}>
-                <CheckBox
-                    isChecked={hasSecondaryIncome}
-                    onPress={nextChecked => setHasSecondaryIncome(nextChecked)}
-                    label='Secondary Income'
-                />
-                <ChevronIcon onPress={() => onToggle('secondary-income')} style={[styles.icon, { transform: [{ rotate: `${isExpanded.includes('secondary-income') ? 180 : 0}deg` }] }]} />
+                <View style={styles.titleContainer}>
+                    <CheckBox
+                        isChecked={hasSecondaryIncome}
+                        onPress={nextChecked => setHasSecondaryIncome(nextChecked)}
+                        label='Secondary Income'
+                    />
+                    <ChevronIcon
+                        onPress={() => onToggle('secondary-income')}
+                        style={[styles.icon, { transform: [{ rotate: `${isExpanded.includes('secondary-income') ? 180 : 0}deg` }] }]}
+                    />
+                </View>
                 {isExpanded.includes('secondary-income') && (
                     <SecondaryIncomeForm
                         income={secondaryIncome}
@@ -144,11 +174,17 @@ const FilterModal = ({
                 )}
             </View>
             <View style={styles.taxBracketsContainer}>
-                <ChevronIcon onPress={() => onToggle('income-brackets')} style={[styles.icon, { transform: [{ rotate: `${isExpanded.includes('income-brackets') ? 180 : 0}deg` }] }]} />
+                <View style={styles.titleContainer}>
+                    <CustomText>Income brackets</CustomText>
+                    <ChevronIcon
+                        onPress={() => onToggle('income-brackets')}
+                        style={[styles.icon, { transform: [{ rotate: `${isExpanded.includes('income-brackets') ? 180 : 0}deg` }] }]}
+                    />
+                </View>
                 {isExpanded.includes('income-brackets') && (
-                    <>
-                        <View>
-                            <CustomText>Income Thresholds</CustomText>
+                    <View style={styles.bracketsWrapper}>
+                        <View style={styles.columnBracketItem}>
+                            <CustomText>Thresholds</CustomText>
                             {taxThresholds.map((threshold: TaxThreshold, index: number) => (
                                 <CustomInput
                                     key={`${index}-thresholds`}
@@ -160,8 +196,8 @@ const FilterModal = ({
                                 />
                             ))}
                         </View>
-                        <View>
-                            <CustomText>Tax Rates</CustomText>
+                        <View style={styles.columnBracketItem}>
+                            <CustomText>Rates</CustomText>
                             {taxThresholds.map((threshold: TaxThreshold, index: number) => (
                                 <View style={styles.taxBracketWrapper} key={`${index}-rate`}>
                                     <CustomInput
@@ -179,7 +215,7 @@ const FilterModal = ({
                                 </View>
                             ))}
                         </View>
-                    </>
+                    </View>
                 )}
             </View>
         </CustomModal>
