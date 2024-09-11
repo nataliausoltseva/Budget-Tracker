@@ -12,8 +12,8 @@ type Props = {
     style?: StyleProp<TextStyle> | undefined,
     isEditable?: boolean,
     label?: string,
-    max?: number,
-    min?: number,
+    max?: number | null,
+    min?: number | null,
 }
 
 const CustomInput = ({
@@ -22,8 +22,8 @@ const CustomInput = ({
     value = "",
     isNumeric = false,
     isEditable = true,
-    max = 0,
-    min = 0,
+    max = null,
+    min = null,
     onChange,
     otherProps,
     style,
@@ -35,12 +35,12 @@ const CustomInput = ({
         const text = e.nativeEvent.text;
         if (isNumeric && text) {
             const numericValue = parseFloat(text);
-            if (numericValue > max) {
+            if (max && numericValue > max) {
                 onChange(max.toString());
                 return;
             }
 
-            if (numericValue < min) {
+            if (min && numericValue < min) {
                 onChange(min.toString());
                 return;
             }

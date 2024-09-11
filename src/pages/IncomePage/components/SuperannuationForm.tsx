@@ -26,10 +26,11 @@ const SuperannuationForm = ({ option, setSuperannuationOption, isEditable = fals
     const styles = StyleSheet.create({
         contianer: {
             position: "relative",
-            justifyContent: 'center'
+            justifyContent: 'center',
+            width: 80,
+
         },
         input: {
-            width: 50,
             marginLeft: 10
         },
         percent: {
