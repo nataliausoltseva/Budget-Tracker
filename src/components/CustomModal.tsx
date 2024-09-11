@@ -24,7 +24,13 @@ const CustomModal = ({ children, isVisible = false, onClose, hasOverlay = true, 
                 onRequestClose={onClose}
             >
                 <TouchableOpacity onPress={onClose} style={[styles.centeredView, hasOverlay ? styles.backdrop : []]}>
-                    <View style={[{ backgroundColor: appState.isDarkMode ? "#33294e" : "white", padding: 20, borderRadius: 8 }, style]}>
+                    <View
+                        style={[{ backgroundColor: appState.isDarkMode ? "#33294e" : "white", padding: 20, borderRadius: 8 }, style]}
+                        onStartShouldSetResponder={() => true}
+                        onTouchEnd={(e) => {
+                            e.stopPropagation();
+                        }}
+                    >
                         {children}
                     </View>
                 </TouchableOpacity>

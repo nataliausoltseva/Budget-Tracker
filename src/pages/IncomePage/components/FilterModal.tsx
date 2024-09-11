@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { NativeSyntheticEvent, StyleSheet, TextInputChangeEventData, Touchable, TouchableWithoutFeedback, TouchableWithoutFeedbackComponent, View } from 'react-native';
+import { NativeSyntheticEvent, StyleSheet, TextInputChangeEventData, Touchable, TouchableOpacity, TouchableWithoutFeedback, TouchableWithoutFeedbackComponent, View } from 'react-native';
 import CustomModal from '../../../components/CustomModal';
 import SuperannuationForm from './SuperannuationForm';
 import StudentLoanForm from './StudentLoanForm';
@@ -106,23 +106,26 @@ const FilterModal = ({
         },
         columnBracketItem: {
             alignItems: "center"
+        },
+        incomeBracketTitle: {
+            marginLeft: 32
         }
     });
 
     return (
         <CustomModal onClose={onClose} isVisible={true} style={styles.modal}>
             <View style={styles.container}>
-                <View style={styles.titleContainer}>
+                <TouchableOpacity style={styles.titleContainer} onPress={() => onToggle('superannuation')}>
                     <CheckBox
                         isChecked={hasSuperannuation}
                         onPress={nextChecked => setHasSuperannuation(nextChecked)}
                         label={"Superannuation"}
                     />
                     <ChevronIcon
-                        onPress={() => onToggle('superannuation')}
                         style={[styles.icon, { transform: [{ rotate: `${isExpanded.includes('superannuation') ? 180 : 0}deg` }] }]}
+                        onPress={() => onToggle('superannuation')}
                     />
-                </View>
+                </TouchableOpacity>
                 {isExpanded.includes('superannuation') && (
                     <SuperannuationForm
                         option={superannuationOption}
@@ -132,17 +135,17 @@ const FilterModal = ({
                 )}
             </View>
             <View>
-                <View style={styles.titleContainer}>
+                <TouchableOpacity style={styles.titleContainer} onPress={() => onToggle('student-loan')}>
                     <CheckBox
                         isChecked={hasStudentLoan}
                         onPress={nextChecked => setHasStudentLoan(nextChecked)}
                         label='Student Loan'
                     />
                     <ChevronIcon
-                        onPress={() => onToggle('student-loan')}
                         style={[styles.icon, { transform: [{ rotate: `${isExpanded.includes('student-loan') ? 180 : 0}deg` }] }]}
+                        onPress={() => onToggle('student-loan')}
                     />
-                </View>
+                </TouchableOpacity>
                 {isExpanded.includes('student-loan') && (
                     <StudentLoanForm
                         rate={studentLoanRate}
@@ -154,17 +157,17 @@ const FilterModal = ({
                 )}
             </View>
             <View style={styles.container}>
-                <View style={styles.titleContainer}>
+                <TouchableOpacity style={styles.titleContainer} onPress={() => onToggle('secondary-income')}>
                     <CheckBox
                         isChecked={hasSecondaryIncome}
                         onPress={nextChecked => setHasSecondaryIncome(nextChecked)}
                         label='Secondary Income'
                     />
                     <ChevronIcon
-                        onPress={() => onToggle('secondary-income')}
                         style={[styles.icon, { transform: [{ rotate: `${isExpanded.includes('secondary-income') ? 180 : 0}deg` }] }]}
+                        onPress={() => onToggle('secondary-income')}
                     />
-                </View>
+                </TouchableOpacity>
                 {isExpanded.includes('secondary-income') && (
                     <SecondaryIncomeForm
                         income={secondaryIncome}
@@ -174,13 +177,13 @@ const FilterModal = ({
                 )}
             </View>
             <View style={styles.taxBracketsContainer}>
-                <View style={styles.titleContainer}>
-                    <CustomText>Income brackets</CustomText>
+                <TouchableOpacity style={styles.titleContainer} onPress={() => onToggle('income-brackets')}>
+                    <CustomText style={styles.incomeBracketTitle}>Income brackets</CustomText>
                     <ChevronIcon
-                        onPress={() => onToggle('income-brackets')}
                         style={[styles.icon, { transform: [{ rotate: `${isExpanded.includes('income-brackets') ? 180 : 0}deg` }] }]}
+                        onPress={() => onToggle('income-brackets')}
                     />
-                </View>
+                </TouchableOpacity>
                 {isExpanded.includes('income-brackets') && (
                     <View style={styles.bracketsWrapper}>
                         <View style={styles.columnBracketItem}>

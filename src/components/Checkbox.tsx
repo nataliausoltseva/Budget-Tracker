@@ -12,7 +12,7 @@ type Props = {
 const CheckBox = ({ isChecked = false, onPress, label }: Props) => {
     return (
         <TouchableOpacity style={styles.container} onPress={() => onPress(!isChecked)}>
-            <CheckboxIcon isChecked={isChecked} />
+            <CheckboxIcon isChecked={isChecked} onPress={() => onPress(!isChecked)} />
             <CustomText style={styles.label}>{label}</CustomText>
         </TouchableOpacity>
     );
@@ -25,6 +25,8 @@ const styles = StyleSheet.create({
         justifyContent: "flex-start",
         alignItems: "center",
         flexDirection: "row",
+        position: 'relative',
+        zIndex: 2,
     },
     label: {
         marginLeft: 5,
